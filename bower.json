@@ -12,16 +12,16 @@
     "angular-resource": "1.2.1",
     "angular-sanitize": "1.2.1",
     "angular-xeditable": ">=0.1.7",
-    "lodash": "~2.4.1",
+    "lodash": "~2.4.1"
   },
   "devDependencies": {
     "angular-mocks": "1.2.1",
     "angular-scenario": "1.2.1",
     "jquery": "2.0.3"
   },
-  "gitHead": "",
+  "gitHead": "1ec968cbad44477534ccf07ce5f8650e93589016",
   "repository": {
     "type": "git",
-    "url": git://github.com:nickburns2006/rxDataTable"
+    "url": "git://github.com/nickburns2006/rxDataTable"
   }
 }

@@ -1,0 +1,191 @@
+/**
+ * mixins.less
+ *
+ * Mixins & variables that we can use for other LESS files. Many of these were taken from the following:
+ * Source: https://github.com/dmitryf/elements/blob/master/elements.less
+ *
+ * @project encore
+ * @version 1.0
+ * @author Ernie Hsiung
+ * @copyright Year
+ * @license Type
+ */
+
+@modal-select-tag-width: 221px;
+@maxFlexBoxColumnWidth: 10;
+
+.opacity(@opacity: 0.5) {
+    -moz-opacity: @opacity;
+    -khtml-opacity: @opacity;
+    -webkit-opacity: @opacity;
+    opacity: @opacity;
+    @opperc: @opacity * 100;
+    -ms-filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=@{opperc})";
+    filter: ~"alpha(opacity=@{opperc})";
+}
+
+.box-shadow(@arguments) {
+    -webkit-box-shadow: @arguments;
+    -moz-box-shadow: @arguments;
+    -ms-box-shadow: @arguments;
+    box-shadow: @arguments;
+}
+
+.user-select(@value) {
+    -webkit-user-select: @value;
+    -khtml-user-select: @value;
+    -moz-user-select: @value;
+    -o-user-select: @value;
+    user-select: @value;
+}
+
+.transition(@duration:0.2s, @ease:ease-out) {
+    .transition-property(all, @duration, @ease);
+}
+
+.transition-property(@property: all, @duration: 0.2s, @ease:ease-out, @delay: 0s) when (@delay > 0s) {
+    .transition-value(@property @duration @delay @ease);
+}
+
+.transition-value(@value) {
+    -webkit-transition: @value;
+    -moz-transition: @value;
+    -o-transition: @value;
+    transition: @value;
+}
+
+.transition-property(@property: all, @duration: 0.2s, @ease:ease-out, @delay: 0s) when (@delay = 0s) {
+    .transition-value(@property @duration @ease);
+}
+
+.border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+    -webkit-border-top-right-radius: @topright;
+    -webkit-border-bottom-right-radius: @bottomright;
+    -webkit-border-bottom-left-radius: @bottomleft;
+    -webkit-border-top-left-radius: @topleft;
+    -moz-border-radius-topright: @topright;
+    -moz-border-radius-bottomright: @bottomright;
+    -moz-border-radius-bottomleft: @bottomleft;
+    -moz-border-radius-topleft: @topleft;
+    border-top-right-radius: @topright;
+    border-bottom-right-radius: @bottomright;
+    border-bottom-left-radius: @bottomleft;
+    border-top-left-radius: @topleft;
+    .background-clip(padding-box);
+}
+
+.background-clip(@argument: padding-box) {
+    -moz-background-clip: @argument;
+    -webkit-background-clip: @argument;
+    background-clip: @argument;
+}
+
+.string-swap(@a, @b, @c) when(@a = @b) {
+    @a: @c;
+}
+
+.flexbox-direction(@direction: row) {
+    -webkit-flex-direction: @direction;
+    -moz-flex-direction: @direction;
+    -ms-flex-direction: @direction;
+    flex-direction: @direction;
+}
+
+.flexbox-order(@order: 0) {
+    -webkit-box-order: @order;
+    -mox-box-order: @order;
+    -webkit-flex-order: @order;
+    order: @order;
+}
+
+.flexbox-wrap(@wrap: nowrap) {
+    -webkit-box-wrap: @wrap;
+    -moz-box-wrap: @wrap;
+    flex-wrap: @wrap;
+}
+
+.flexbox-display() {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.flexbox(@count: 1) {
+    -webkit-box-flex: @count;
+    -moz-box-flex: @count;
+    -webkit-flex: @count;
+    -ms-flex: @count;
+    flex: @count;
+}
+
+.flex-flow(@direction: row, @wrap: nowrap) {
+    .flexbox-direction(@direction);
+    .flexbox-wrap(@wrap);
+}
+
+.flexbox-pack(@pack: start) {
+    -webkit-box-pack: @pack;
+    -moz-box-pack: @pack;
+    -webkit-flex-pack: @pack;
+}
+
+.flexbox-align(@align: stretch) {
+    -webkit-box-pack: @align;
+    -moz-box-pack: @align;
+    -webkit-flex-pack: @align;
+}
+
+.flexbox-grow(@ratio: 1) {
+    -webkit-flex-grow: @ratio;
+    -moz-flex-grow: @ratio;
+    -webkit-box-grow: @ratio;
+}
+
+// We're going to create a set list of columns for quick flexbox assignment.
+.flexbox-column-loop (@index) when (@index > 0) {
+    // create the actual css selector
+    .flex-columns-@{index} {
+        .flexbox(@index);
+    }
+
+    .flexbox-column-loop(@index - 1);
+}
+
+.flexbox-column-loop(@maxFlexBoxColumnWidth);
+
+.backface-visibility(@visible: hidden) {
+    backface-visibility: @visible;
+    -webkit-backface-visibility: @visible; /* Chrome and Safari */
+    -moz-backface-visibility: @visible; /* Firefox */
+    -ms-backface-visibility: @visible; /* Internet Explorer */
+}
+
+.background-image-gradient(@img) {
+    background-image: -webkit-linear-gradient(@img); 
+    background-image: -moz-linear-gradient(@img); 
+    background-image: -ms-linear-gradient(@img); 
+    background-image: linear-gradient(@img); 
+}
+
+.box-sizing(@box) {
+    -webkit-box-sizing: @box;
+    -moz-box-sizing: @box;
+    -ms-box-sizing: @box;
+    box-sizing: @box;
+}
+
+.background-size(@w, @h) {
+    -webkit-background-size: @w @h;
+    -moz-background-size: @w @h;
+    -ms-background-size: @w @h;
+    background-size: @w @h;
+}
+
+.animation(@anim) {
+    -webkit-animation: @anim;
+    -moz-animation: @anim;
+    -ms-animation: @anim;
+    animation: @anim;
+}

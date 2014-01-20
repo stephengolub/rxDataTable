@@ -1,0 +1,23 @@
+<ul class="pagination">
+    <li ng-class="{disabled: pageTracking.pageNumber == 0}" class="pagination-first">
+        <a ng-click="pageTracking.pageNumber = 0" ng-hide="pageTracking.pageNumber == 0">First</a>
+        <span ng-show="pageTracking.pageNumber == 0">First</span>
+    </li>
+    <li ng-class="{disabled: pageTracking.pageNumber == 0}" class="pagination-prev">
+        <a ng-click="pageTracking.pageNumber = (pageTracking.pageNumber - 1)" ng-hide="pageTracking.pageNumber == 0">« Prev</a>
+        <span ng-show="pageTracking.pageNumber == 0">« Prev</span>
+    </li>
+    
+    <li ng-repeat="n in pageTracking | Page " ng-class="{active: n == pageTracking.pageNumber, 'page-number-last': n == pageTracking.totalPages - 1}" class="pagination-page">
+        <a ng-click="pageTracking.pageNumber = n">{{n + 1}}</a>
+    </li>
+
+    <li ng-class="{disabled: pageTracking.pageNumber == pageTracking.totalPages - 1 || pageTracking.total == 0}" class="pagination-next">
+        <a ng-click="pageTracking.pageNumber = (pageTracking.pageNumber + 1)" ng-hide="pageTracking.pageNumber == pageTracking.totalPages - 1 || pageTracking.total == 0"> Next »</a>
+        <span ng-show="pageTracking.pageNumber == pageTracking.totalPages - 1">Next »</span>
+    </li>
+    <li ng-class="{disabled: pageTracking.pageNumber == pageTracking.totalPages - 1}" class="pagination-last">
+        <a ng-click="pageTracking.pageNumber = pageTracking.totalPages - 1" ng-hide="pageTracking.pageNumber == pageTracking.totalPages - 1">Last</a>
+        <span ng-show="pageTracking.pageNumber == pageTracking.totalPages - 1">Last</span>
+    </li>
+</ul>

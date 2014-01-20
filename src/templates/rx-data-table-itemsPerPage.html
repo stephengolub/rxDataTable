@@ -1,0 +1,6 @@
+<form id="itemsPerPageForm" class="itemsPerPage">
+    <label for="itemsPerPageSelector">{{ label }}</label>
+    <select name="itemsPerPageSelector" id="itemsPerPageSelector" ng-model="pager.itemsPerPage" ng-change="updatePaging()">
+        <option ng-repeat="i in pager.itemSizeList">{{ i }}</option>
+    </select>
+</form>

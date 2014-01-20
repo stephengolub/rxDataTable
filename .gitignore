@@ -1,0 +1,62 @@
+# app specific stuff
+.tmp
+.sass-cache
+coverage
+bower_components
+*.sw*
+captures/*
+.DS_Store
+src/styles/rx-data-table.css
+src/styles/rx-data-table.css
+src/scripts/rx-data-table.js
+src/scripts/rx-data-table.tpls.js
+# Allow the option to use a local protractor conf
+test/protractor.conf.local.js
+
+# node stuff
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+pids
+logs
+results
+npm-debug.log
+node_modules
+
+# Common mac files:
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# SublimeText project files
+*.sublime-workspace
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VIM stuff
+*.s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+
