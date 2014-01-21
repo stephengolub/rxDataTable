@@ -13,7 +13,7 @@ describe('Pagination', function () {
     describe('Directive: rxPaginate', function () {
         // TODO redo these tests to use class names for finding first, prev, next, last, etc items
 
-        var el, items, scope, compile,
+        var el, items, scope, compile, filter,
             validTemplate = '<rx-data-table-paginate page-tracking="pager"></rx-data-table-paginate>';
 
         beforeEach(function() {
@@ -22,7 +22,8 @@ describe('Pagination', function () {
             module('src/templates/rx-data-table-paginate.html');
 
             // Inject in angular constructs
-            inject(function($rootScope, $compile, $filter, $templateCache) {
+            inject(function($rootScope, $compile, $filter) {
+                filter = $filter;
                 scope = $rootScope.$new();
                 scope.pager = angular.copy(mockPageTracking);
                 compile = $compile;
@@ -201,8 +202,8 @@ describe('Pagination', function () {
         beforeEach(function() {
             module('rxDataTable');
 
-            inject(function($filter) {
-                page = $filter('Page');
+            inject(function(filter) {
+                page = filter('Page');
             });
         });
 

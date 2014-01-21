@@ -1,6 +1,6 @@
 {
   "name": "rx-data-table",
-  "version": "0.5.0",
+  "version": "0.3.0",
   "dependencies": {},
   "devDependencies": {
     "grunt-regarde": "~0.1.1",
@@ -11,6 +11,7 @@
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-requirejs": "~0.4.0",
     "grunt-contrib-uglify": "~0.2.1",
+    "grunt-contrib-jshint": "~0.7.0",
     "grunt-shell": "~0.4.0",
     "grunt": "~0.4.2",
     "grunt-contrib-less": "~0.5.2",
@@ -30,7 +31,8 @@
     "karma-chai": "0.0.1",
     "sinon-chai": "~2.4.0",
     "karma-sinon-chai": "~0.1.4",
-    "sinon": "~1.7.3"
+    "sinon": "~1.7.3",
+    "grunt-bower-release": "0.0.2"
   },
   "repository": {
     "type": "git",
