@@ -15,9 +15,9 @@ describe('Data Table Directive', function () {
         module('rxDataTable');
 
         // We need to load all of the templates that are going to be used
-        module('src/templates/rx-data-table.html');
-        module('src/templates/rx-data-table-paginate.html');
-        module('src/templates/rx-data-table-itemsPerPage.html');
+        module('rx-data-table.html');
+        module('rx-data-table-paginate.html');
+        module('rx-data-table-itemsPerPage.html');
 
         // Inject in angular constructs
         inject(function($rootScope, $compile, $document, $timeout,
@@ -417,9 +417,9 @@ describe('Data Table Directive', function () {
         var row2StatusText = $.trim(row2Status.text());
         var row3StatusText = $.trim(row3Status.text());
 
-        var row1StatusIcon = row1Status.find('.data-table-cell-icon'); 
-        var row2StatusIcon = row2Status.find('.data-table-cell-icon'); 
-        var row3StatusIcon = row3Status.find('.data-table-cell-icon'); 
+        var row1StatusIcon = row1Status.find('.data-table-cell-icon');
+        var row2StatusIcon = row2Status.find('.data-table-cell-icon');
+        var row3StatusIcon = row3Status.find('.data-table-cell-icon');
 
         expect(row1StatusIcon.hasClass('item-state-img')).to.equal(true);
         expect(row2StatusIcon.hasClass('item-state-img')).to.equal(true);

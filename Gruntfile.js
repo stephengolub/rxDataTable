@@ -3,8 +3,8 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         cmpnt: grunt.file.readJSON('bower.json'),
-        dist: "dist",
-        banner: '/*! rxDataTable v<%= cmpnt.version %> by Stephen Golub(stephen.golub@rackspace.com) - ' + 
+        dist: 'dist',
+        banner: '/*! rxDataTable v<%= cmpnt.version %> by Stephen Golub(stephen.golub@rackspace.com) - ' +
                 'https://github.com/nickburns2006/rxDataTable - New BSD License */\n',
         clean: {
             working: {
@@ -41,6 +41,7 @@ module.exports = function(grunt) {
             js: {
                 src: [
                     'src/scripts/rx-data-table.src.js',
+                    'src/scripts/paginate.js',
                     'src/scripts/rx-data-table.tpls.js'
                 ],
                 dest: 'src/scripts/rx-data-table.js'
@@ -126,6 +127,27 @@ module.exports = function(grunt) {
                     'chmod u+x ../.git/hooks/pre-commit'
                 ].join(' && ')
             }
+        },
+        jshint: {
+            options: {
+                jshintrc: '.jshintrc'
+            },
+            all: [
+                'Gruntfile.js',
+                'src/scripts/paginate.js',
+                'src/scripts/paginate.spec.js',
+                'src/scripts/rx-data-table.src.js',
+                'src/scripts/rx-data-table.spec.js',
+                'test/**/*.js'
+            ],
+            scripts: [
+                'src/scripts/paginate.js',
+                'src/scripts/rx-data-table.src.js',
+                '!app/scripts/**/*.spec.js'
+            ],
+            specs: [
+                'app/scripts/**/*.spec.js'
+            ]
         }
     });
 
@@ -135,6 +157,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-hustler');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-shell');
