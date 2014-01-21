@@ -106,11 +106,11 @@
                             <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row) | filter:$viewValue" e-typeahead-loading="loadingData" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span>
                             <!-- Same as ng-switch-when="text" -->
                             <span ng-switch-default class="data-editable-field" editable-text="row[column.dataField]" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span>
+                            <i class="fa fa-refresh data-table-type-loader" ng-show="loadingData"></i>
+                            <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value">
+                                <i class="fa fa-times fa-lg"></i>
+                            </button>
                         </span>
-                        <i class="fa fa-refresh data-table-type-loader" ng-show="loadingData"></i>
-                        <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value">
-                            <i class="fa fa-times fa-lg"></i>
-                        </button>
                     </span>
                 </span>
             </div>
