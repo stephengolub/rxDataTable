@@ -1,0 +1,111 @@
+ @ngdoc overview
+ @name Data Table Directive
+ @description
+
+ Data Table Directive Guide
+ ==========================
+ 
+ ##Overview##
+ The `rx-data-table` directive is designed to pretty much be a catch-all
+ solution for displaying data in a table format in a basic or extremely
+ complex style. It has some basic CSS styling included, but provides hooks
+ for you to attach conditional styles to each row or column.
+ 
+ ###Some Key Features###
+ - Single or Multi-Column Sorting
+ - Column Display Presets
+ - Individual Data-Driven Cell Styling
+ - CSS FlexBox display for fluid space display
+ 
+ <a name="column-object"></a>
+ ##Column Object Attributes##
+ 
+ | Attribute  | Type      | Details   |
+ |------------|-----------|-----------|
+ | checkbox   | <a href class="label type-hint type-hint-boolean">boolean=false</a>  | If this is true, then the field becomes a checkbox and relies on the dataField property to apply ID Values to the checkboxes. |
+ | class      | <a href class="label type-hint type-hint-string">string</a>  | This is a css class that gets applied to the div that wraps the data. |
+ | cols       | <a href class="label type-hint type-hint-number">number</a>  | This is the value that will be passed to the flexbox css code. This is a proportional value, so if you put a value of `2` on one column and a value of `1` on another column, the first column will **always** be twice the size of the second. |
+ | dataField  | <a href class="label type-hint type-hint-string">string</a>  | This is the data field on the object that this column will display |
+ | editable   | <a href class="label type-hint type-hint-string">string</a> | This attribute should be an object describing how you want to handle field editing. The description of the available attributes and configuration can be found {@link #/guides/rx-data-table#editable here}. |
+ | emptyValue    | <a href class="label type-hint type-hint-string">string</a> | If set, the string value of this attribute will be displayed if this field is editable and empty. |
+ | filter     | <a href class="label type-hint type-hint-string">string</a> | If you specify this attribute, then the value will be resolved to the appropriate filter. The filter should expect row, column objects to be passed to it. |
+ | help       | <a href class="label type-hint type-hint-object">object</a>  |If this is specified, then the column will have a help bubble beside the header that can have information populating it. The object MUST have a `body` attribute which should be the body of the text. It can also have a `title` attribute that will give the popover a title header. |
+ | hideable   | <a href class="label type-hint type-hint-boolean">boolean=false</a> | This is used to determine whether this column can be hidden in the column reordering/hide/display configuration dialog. This doesn't mean that the presets themselves can't hide them, it just prevents the users from hiding it. |
+ | icon       | <a href class="label type-hint type-hint-array">array.&lt;object&gt;</a>  | This is a list of objects that will resolve to icons to be displayed. The attributes for the objects are as follows: <ul><li>**name**: If this is specified, the column uses Font Awesome icons. The name is the name of the Font Awesome icon class.</li><li>**class**: If class is specified, then a div is created and the class is applied to it.</li><li>**field**: Which field should the icon get its data from.</li><li>**fieldValue**: What should the field be compared against to determinewhether or not this particular icon should be shown. If this is not applied, then a truthy check is done on the field.</li><li>**alt**: This is the alt text that gets applied to the icon.</li></ul> |
+ | linkField  | <a href class="label type-hint type-hint-string">string</a>  | This is the data field where a link will be pulled from for the a href link. |
+ | ng-class   | <a href class="label type-hint type-hint-function">function(row)</a>  | This is a function that gets passed the row. The return value is expected to be a string that will get applied as a class. |
+ | sortField  | <a href class="label type-hint type-hint-string">string</a>  | This is the data field that the column will sort by. If it is not supplied, the column will default to sort by the dataField. |
+ | sortInverse| <a href class="label type-hint type-hint-boolean">boolean=false</a> | Should the display of this column's sort be inverted. |
+ | title      | <a href class="label type-hint type-hint-string">string</a>  | The column header title. This is required unless the column type is a checkbox. |
+ | tooltip    | <a href class="label type-hint type-hint-string">string</a> | This should be a string value to the data field that you want to populate the tooltip with. |
+ 
+ 
+ <a name="editable"></a>
+ ##Inline Table-Cell Editing##
+ 
+ The Data Table Directive has the capability to have individual fields have the
+ ability to be edited. You can even have conditions be applied that make a
+ field editable on rows that only meet certain conditions.
+ 
+ | Attribute  | Type      | Details   |
+ |------------|-----------|-----------|
+ | clause      | <a href class="label type-hint type-hint-function">function(row)</a>  | This is a function that should evaluate to a boolean value. The function will get passed the data row object so that you can run your evaluation on it. |
+ | endpoint      | <a href class="label type-hint type-hint-object">object</a>  | This attribute is used to update the data on the server on save. It is expecting an object with two attributes: <ul><li>**url** - <a href class="label type-hint type-hint-string">string</a> This should be a url (absolute or relative) that you will submit the data to. If you put in a field name inside curly-braces, it will resolve them to the row's field values (i.e. '/api/{system}')</li><li>**method** <a href class="label type-hint type-hint-string">string</a> This should be the HTTP method to use. (i.e. GET, PUT, POST, etc.)</li></ul> |
+ | data | <a href class="label type-hint type-hint-function">function(row)</a>  | This is a function that should return a promise or a list of options to display in the typeahead (see the options attribute for structure). It will be passed the data row object. |
+ | options      | <a href class="label type-hint type-hint-array">array.&lt;object&gt;</a>  | This attribute will tell the directive to make this editable field a select box and provide options to the user for selection. They are standard select options with value and text attributes: <ul><li>**value** - <a href class="label type-hint type-hint-string">string</a> This is the value that will get passed back to the api call.</li><li>**text** - <a href class="label type-hint type-hint-string">string</a> This is the value that the user will see in the select dropdown</li></ul> |
+ | nullable      | <a href class="label type-hint type-hint-boolean">boolean</a>  | This is a boolean value that if set to true will add an `X` next to the field that will allow users to click and quickly set the values on the item's field empty. |
+ 
+##Examples##
+<doc:example>
+   <doc:source>
+      <script> 
+         require('/app/scripts/directives/rx-data-table.js');
+         var app = angular.module('dt-example1', ['rxDataTableModule']);
+
+         function Ctrl($scope) {
+             $scope.columns = [
+                 {
+                     'title': 'ID',
+                     'cols': '1',
+                     'dataField': 'id',
+                 },
+                 {
+                     'title': 'Name',
+                     'cols': '2',
+                     'dataField': 'name',
+                 },
+                 {
+                     'title': 'Team',
+                     'cols': '2',
+                     'dataField': 'team',
+                 }
+             ];
+             $scope.data = [
+                 {
+                     'id': '0',
+                     'name': 'George',
+                     'team': 'a2'
+                 },
+                 {
+                     'id': '1',
+                     'name': 'Shep',
+                     'team': 'a1'
+                 }
+             ];
+             $scope.colDisplay = {
+                 index: 0,
+                 config: [0,1]
+             };
+             $scope.presets = [
+                 {
+                     title: 'Default',
+                     config: [0,1]
+                 }
+             ];
+         }
+      </script>
+      <div ng-controller="Ctrl">
+          <rx-data-table list-of-data="data" column-configuration="columns" column-display="colDisplay" column-presets="presets" visibility="true" row-key="team" ></rx-data-table>
+      </div>
+   </doc:source>
+</doc:example>

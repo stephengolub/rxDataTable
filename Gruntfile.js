@@ -148,6 +148,18 @@ module.exports = function(grunt) {
             specs: [
                 'app/scripts/**/*.spec.js'
             ]
+        },
+        ngdocs: {
+            options: {
+                'dest': 'dist/ngdocs',
+                'title': 'rxDataTable Developer Documentation',
+                'html5Mode': false
+            },
+            guides: {
+                src: ['guides/**/*.ngdoc'],
+                title: 'rxDataTable Developer Guides'
+            },
+            all: ['src/scripts/**/*.js']
         }
     });
 
@@ -161,6 +173,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-hustler');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-shell');
+    grunt.loadNpmTasks('grunt-ngdocs');
 
     grunt.registerTask('dev', [
         'clean',
@@ -173,7 +186,8 @@ module.exports = function(grunt) {
     grunt.registerTask('default', [
         'dev',
         'uglify',
-        'cssmin'
+        'cssmin',
+        'ngdocs'
     ]);
 
     grunt.registerTask('test', [

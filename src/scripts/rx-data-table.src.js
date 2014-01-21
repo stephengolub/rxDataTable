@@ -4,14 +4,14 @@ var app = angular.module('rxDataTable', []);
  *
  * @ngdoc directive
  * @namespace rxDataTable
- * @name encore.directives:rxDataTable
+ * @name rxDataTable
  * @restrict E
  * @description
  * Directive that creates a data table with responsive design properties. This
  * requires the following directives:
  *
- * - {@link encore.components.paginate:rxPaginate rxPaginate} Pagination Directive
- * - {@link encore.components.paginate:rxItemsPerPage rxItemsPerPage} Items per Page Directive
+ * - {@link rxDataTable.paginate:rxPaginate rxPaginate} Pagination Directive
+ * - {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage} Items per Page Directive
  * 
  * @param {Object} pager This is the page tracking object for the directive. If
  * no page tracking object is passed in, then the data table will be shown
