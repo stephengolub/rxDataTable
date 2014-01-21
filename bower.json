@@ -1,6 +1,6 @@
 {
   "name": "rx-data-table",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A full-featured data table directive for angularJS",
   "main": "rx-data-table.js",
   "author": "Stephen Golub",
@@ -19,7 +19,7 @@
     "angular-scenario": "1.2.1",
     "jquery": "2.0.3"
   },
-  "gitHead": "134ae6abfb45e90d0a6c79a149ad18471752ba12",
+  "gitHead": "1ec968cbad44477534ccf07ce5f8650e93589016",
   "repository": {
     "type": "git",
     "url": "git://github.com/nickburns2006/rxDataTable"
