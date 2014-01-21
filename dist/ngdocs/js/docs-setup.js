@@ -42,6 +42,24 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "rxDataTable.paginate:Page",
+      "shortName": "Page",
+      "type": "filter",
+      "moduleName": "rxDataTable",
+      "shortDescription": "This is the pagination filter that is used to limit the number of pages",
+      "keywords": "api created displayed filter instance limit list number numbers pager pagetracking paginate pagination rxdatatable service"
+    },
+    {
+      "section": "api",
+      "id": "rxDataTable.paginate:PageTracking",
+      "shortName": "PageTracking",
+      "type": "service",
+      "moduleName": "rxDataTable",
+      "shortDescription": "This is the data service that can be used in conjunction with the pagination",
+      "keywords": "api class conjunction controls createinstance current data determine directive display function generate href initialzed instance item items items_per_page_step itemsizelist itemsperpage iteration list max_per_page min_per_page number object objects pageinit pagenumber pagestoshow pagetracking paginate pagination rxdatatable rxdatatable-paginate-page rxdatatable-paginate-pagetracking-page rxitemsperpage service set setting showall size store stored tables total"
+    },
+    {
+      "section": "api",
       "id": "rxDataTable.paginate:PageTracking",
       "shortName": "PageTracking",
       "type": "service",
@@ -60,12 +78,39 @@ NG_DOCS={
     },
     {
       "section": "api",
+      "id": "rxDataTable.paginate:Paginate",
+      "shortName": "Paginate",
+      "type": "filter",
+      "moduleName": "rxDataTable",
+      "shortDescription": "This is the pagination filter that is used to calculate the division in the",
+      "keywords": "api calculate created current division filter instance items list object pager pagetracking paginate pagination paging rxdatatable service sliced"
+    },
+    {
+      "section": "api",
       "id": "rxDataTable.paginate:rxItemsPerPage",
       "shortName": "rxItemsPerPage",
       "type": "directive",
       "moduleName": "rxDataTable",
       "shortDescription": "Directive that takes in a page-tracking object and a label for what to call",
       "keywords": "allows api box call change defaults directive instance items label list object outputs page-tracking pager paginate restricting rxdatatable select service takes time tracking"
+    },
+    {
+      "section": "api",
+      "id": "rxDataTable.paginate:rxItemsPerPage",
+      "shortName": "rxItemsPerPage",
+      "type": "directive",
+      "moduleName": "rxDataTable",
+      "shortDescription": "Directive that takes in a page-tracking object and a label for what to call",
+      "keywords": "allows api box call change defaults directive instance items label list object outputs page-tracking pager paginate restricting rxdatatable select service takes time tracking"
+    },
+    {
+      "section": "api",
+      "id": "rxDataTable.paginate:rxPaginate",
+      "shortName": "rxPaginate",
+      "type": "directive",
+      "moduleName": "rxDataTable",
+      "shortDescription": "Directive that takes in the page tracking object and outputs a page",
+      "keywords": "api controller directive display instance maximum number number-of-pages object outputs page-tracking paginate rxdatatable service switching takes time tracking"
     },
     {
       "section": "api",
