@@ -19,4 +19,4 @@ git diff --cached --name-only | \
     echo 'Please remove debugging statements before commiting.' && exit 1
     
 cd "$(git rev-parse --show-toplevel)/frontend"
-grunt jshint:all
+grunt jshint

@@ -122,9 +122,9 @@ module.exports = function(grunt) {
             },
             hooks: {
                 command: [
-                    'rm -f ../.git/hooks/pre-commit',
-                    'cp tasks/git-hooks/pre-commit ../.git/hooks/',
-                    'chmod u+x ../.git/hooks/pre-commit'
+                    'rm -f ./.git/hooks/pre-commit',
+                    'cp git-hooks/pre-commit ./.git/hooks/',
+                    'chmod u+x ./.git/hooks/pre-commit'
                 ].join(' && ')
             }
         },
@@ -132,22 +132,16 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: '.jshintrc'
             },
-            all: [
-                'Gruntfile.js',
-                'src/scripts/paginate.js',
-                'src/scripts/paginate.spec.js',
-                'src/scripts/rx-data-table.src.js',
-                'src/scripts/rx-data-table.spec.js',
-                'test/**/*.js'
-            ],
             scripts: [
-                'src/scripts/paginate.js',
-                'src/scripts/rx-data-table.src.js',
-                '!app/scripts/**/*.spec.js'
+                'src/scripts/*.src.js',
+                'src/scripts/**/*.src.js',
             ],
             specs: [
-                'app/scripts/**/*.spec.js'
-            ]
+                'src/scripts/*.spec.js',
+                'src/scripts/**/*.spec.js'
+            ],
+            misc: [ 'Gruntfile.js',
+                    'test/**/*.js' ]
         },
         ngdocs: {
             options: {
