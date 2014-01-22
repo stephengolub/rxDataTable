@@ -20,3 +20,4 @@ git diff --cached --name-only | \
     
 cd "$(git rev-parse --show-toplevel)/frontend"
 grunt jshint
+grunt karma:single
