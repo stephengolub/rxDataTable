@@ -15,9 +15,9 @@ describe('Data Table Directive', function () {
         module('rxDataTable');
 
         // We need to load all of the templates that are going to be used
-        module('rx-data-table.html');
-        module('rx-data-table-paginate.html');
-        module('rx-data-table-itemsPerPage.html');
+        module('src/templates/rx-data-table.html');
+        module('src/templates/rx-data-table-paginate.html');
+        module('src/templates/rx-data-table-itemsPerPage.html');
 
         // Inject in angular constructs
         inject(function($rootScope, $compile, $document, $timeout,

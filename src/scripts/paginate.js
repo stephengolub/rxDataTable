@@ -15,7 +15,7 @@ angular.module('rxDataTable')
  */
     .directive('rxDataTablePaginate', function () {
         return {
-            templateUrl: 'rx-data-table-paginate.html',
+            templateUrl: 'src/templates/rx-data-table-paginate.html',
             replace: true,
             restrict: 'E',
             scope: {
@@ -96,7 +96,7 @@ angular.module('rxDataTable')
         return {
             restrict: 'E',
             replace: true,
-            templateUrl: 'rx-data-table-itemsPerPage.html',
+            templateUrl: 'src/templates/rx-data-table-itemsPerPage.html',
             scope: {
                 label: '@',
                 pager: '='

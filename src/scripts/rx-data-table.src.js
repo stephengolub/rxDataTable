@@ -67,7 +67,7 @@ var app = angular.module('rxDataTable', []);
 app.directive('rxDataTable', function ($http, $timeout, $document, $filter) {
     return {
         restrict: 'E',
-        templateUrl: 'rx-data-table.html',
+        templateUrl: 'src/templates/rx-data-table.html',
         replace: true,
         scope: {
             visibility: '@',
