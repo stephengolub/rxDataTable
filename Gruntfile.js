@@ -70,7 +70,7 @@ module.exports = function(grunt) {
                     'src/scripts/rx-data-table.tpls.js': 'src/templates/**/*.html'
                 },
                 options: {
-                    trim: 'src/templates/',
+                    trim: '',
                     module: 'rxDataTable'
                 }
             }
