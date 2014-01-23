@@ -213,15 +213,38 @@ describe('Data Table Directive', function () {
             ];
 
             scope.pager = PageTracking.createInstance();
+
             // Now we need to grab the individual templates and put them in the
             // cache. This has to be done instead of the whenGET calls due to
             // the URL and Filepaths not being the same.
-
-            /* jshint maxlen:1000 */
-            httpBackend.when('PUT', '/api/item/Manual/140102-0000012', '{"assigned":null}').respond('{ "ref_no": "140102-0000012", "severity": 3, "item_link": "http://www.rackspace.com", "subject": "Test Item 4", "assigned": null, "status": "Pending Customer", "state": "Pending", "system": "Manual" }');
-            httpBackend.when('PUT', '/api/item/Manual/140102-0000012', '{"status":"Pending Maintenance"}').respond('{ "ref_no": "140102-0000012", "severity": 3, "item_link": "http://www.rackspace.com", "subject": "Test Item 4", "assigned": "Andrew Yurisich", "status": "Pending Maintenance", "state": "Pending", "system": "Manual" }');
-
-            httpBackend.when('PUT', '/api/item/Manual/140102-0000012', '{"status":"Pending"}').respond(400, 'Failure');
+            var route = '/api/item/Manual/140102-0000012';
+            var unassigned = JSON.stringify(
+                {
+                    'assigned': null,
+                    'item_link': 'http://www.rackspace.com',
+                    'ref_no': '140102-0000012',
+                    'severity': 3,
+                    'state': 'Pending',
+                    'status': 'Pending Customer',
+                    'subject': 'Test Item 4',
+                    'system': 'Manual'
+                }
+            );
+            var pending = JSON.stringify(
+                {
+                    'assigned': 'Andrew Yurisich',
+                    'item_link': 'http://www.rackspace.com',
+                    'ref_no': '140102-0000012',
+                    'severity': 3,
+                    'state': 'Pending',
+                    'status': 'Pending Maintenance',
+                    'subject': 'Test Item 4',
+                    'system': 'Manual'
+                }
+            );
+            httpBackend.when('PUT', route, '{"assigned":null}').respond(unassigned);
+            httpBackend.when('PUT', route, '{"status":"Pending Maintenance"}').respond(pending);
+            httpBackend.when('PUT', route, '{"status":"Pending"}').respond(400, 'Failure');
         });
 
         el = helpers.createDirective(validTemplate, compile, scope);

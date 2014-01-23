@@ -186,8 +186,8 @@ module.exports = function(grunt) {
         stubby: {
             stubsServer: {
                 files: [{
-                    src: [ 'test/api-mocks/*.yaml',
-                           'test/api-mocks/**/*.yaml' ]
+                    src: [ 'test/api-mocks/requests/*.yaml',
+                           'test/api-mocks/requests/**/*.yaml' ]
                 }]
             }
         },
