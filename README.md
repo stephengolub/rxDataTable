@@ -20,7 +20,7 @@ for you to attach conditional styles to each row or column.
 ##Get started##
 
 1. You must already have an angular project set up.
-2. Install via (bower)[bower.io]:
+2. Install via [bower](http://bower.io):
 ```
 bower install angular-rx-data-table
 ```
