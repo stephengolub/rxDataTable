@@ -287,6 +287,20 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+        bump: {
+            options: {
+                files: ['package.json', 'bower.json'],
+                commit: true,
+                commitMessage: 'Release v%VERSION%',
+                commitFiles: ['-a'], // '-a' for all files
+                createTag: true,
+                tagName: 'v%VERSION%',
+                tagMessage: 'Version %VERSION%',
+                push: true,
+                pushTo: 'origin',
+                gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d' // options to use with '$ git describe'
+            }
         }
 
     });
@@ -305,6 +319,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-ngdocs');
     grunt.loadNpmTasks('grunt-stubby');
+    grunt.loadNpmTasks('grunt-bump');
 
     grunt.registerTask('dev', [
         'clean',
@@ -325,6 +340,11 @@ module.exports = function(grunt) {
         'connect:livereload',
         'stubby',
         'watch'
+    ]);
+
+    grunt.registerTask('release', [
+        'default',
+        'bump'
     ]);
 
     // TODO: Testing/page objects
