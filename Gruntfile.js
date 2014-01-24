@@ -1,4 +1,21 @@
 /* jshint node:true */
+
+var gruntConnectConfig = {
+    app: 'app',
+    dist : 'dist',
+    ngdocs: 'ngdocs',
+    open: {
+        hostname: 'localhost',
+        port: 9000
+    },
+    liveReloadPage: require('connect-livereload')({ port: 35729 }),
+    proxyRequest: require('grunt-connect-proxy/lib/utils').proxyRequest,
+    modRewrite: require('connect-modrewrite'),
+    mountFolder : function (connect, dir) {
+        return connect.static(require('path').resolve(dir));
+    }
+};
+
 module.exports = function(grunt) {
 
     grunt.initConfig({
@@ -11,6 +28,7 @@ module.exports = function(grunt) {
                 src: ['src/scripts/rx-data-table.js', 'src/styles/rx-data-table.css']
             }
         },
+
         copy: {
             styles: {
                 files: [
@@ -25,6 +43,7 @@ module.exports = function(grunt) {
                 ]
             }
         },
+
         uglify: {
             js: {
                 src: ['<%=dist %>/scripts/rx-data-table.js'],
@@ -37,6 +56,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         concat: {
             js: {
                 src: [
@@ -47,6 +67,7 @@ module.exports = function(grunt) {
                 dest: 'src/scripts/rx-data-table.js'
             }
         },
+
         less: {
             css: {
                 files: {
@@ -54,6 +75,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         cssmin: {
             css: {
                 files: {
@@ -64,6 +86,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         ngTemplateCache: {
             views: {
                 files: {
@@ -75,6 +98,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         karma: {
             options: {
                 configFile: 'karma.conf.js',
@@ -90,6 +114,7 @@ module.exports = function(grunt) {
                 browsers: ['PhantomJS', 'Chrome', 'ChromeCanary', 'Firefox', 'Safari']
             }
         },
+
         shell: {
             protractor: {
                 options: {
@@ -128,6 +153,7 @@ module.exports = function(grunt) {
                 ].join(' && ')
             }
         },
+
         jshint: {
             options: {
                 jshintrc: '.jshintrc'
@@ -143,6 +169,7 @@ module.exports = function(grunt) {
             misc: [ 'Gruntfile.js',
                     'test/**/*.js' ]
         },
+
         ngdocs: {
             options: {
                 'dest': 'dist/ngdocs',
@@ -154,7 +181,114 @@ module.exports = function(grunt) {
                 title: 'rxDataTable Developer Guides'
             },
             all: ['src/scripts/**/*.js']
+        },
+
+        stubby: {
+            stubsServer: {
+                files: [{
+                    src: [ 'test/api-mocks/requests/*.yaml',
+                           'test/api-mocks/requests/**/*.yaml' ]
+                }]
+            }
+        },
+
+        watch: {
+            scripts: {
+                files: ['Gruntfile.js', 'src/scripts/**/*.js', '!src/scripts/**/*.spec.js'],
+                tasks: ['jshint:scripts', 'karma:single'],
+                options: {
+                    livereload: true
+                }
+            },
+            specs: {
+                files: ['app/scripts/**/*.spec.js'],
+                tasks: ['jshint:specs', 'karma:single'],
+                options: {
+                    livereload: false
+                }
+            },
+            css: {
+                files: ['app/styles/**/*.less'],
+                tasks: ['less'],
+                options: {
+                    livereload: true
+                }
+            },
+            html: {
+                files: ['app/index.html', 'app/views/{,*/}*.html'],
+                options: {
+                    livereload: true
+                }
+            }
+        },
+
+        connect: {
+            options: {
+                port: 9000,
+                hostname: 'localhost'
+            },
+            proxies: [
+                {
+                    context: '/api',
+                    host: 'localhost',
+                    port: 8882,
+                    https: false,
+                    changeOrigin: false,
+                    rewrite: {
+                        '/api': '/api'
+                    }
+                }
+            ],
+            livereload: {
+                options: {
+                    middleware: function(cnct) {
+                        var config = gruntConnectConfig;
+                        return [
+                            config.proxyRequest,
+                            config.modRewrite(['!\\.\\w+$ /']),
+                            config.liveReloadPage,
+                            config.mountFolder(cnct, '.tmp'),
+                            config.mountFolder(cnct, config.app)
+                        ];
+                    }
+                }
+            },
+            test: {
+                options: {
+                    middleware: function(cnct) {
+                        var config = gruntConnectConfig;
+                        return [
+                            config.proxyRequest,
+                            config.modRewrite(['!\\.\\w+$ /']),
+                            config.liveReloadPage,
+                            config.mountFolder(cnct, '.tmp'),
+                            config.mountFolder(cnct, config.app)
+                        ];
+                    }
+                }
+            },
+            dist: {
+                options: {
+                    middleware: function(cnct) {
+                        var config = gruntConnectConfig;
+                        return [
+                            config.mountFolder(cnct, config.dist)
+                        ];
+                    }
+                }
+            },
+            docs: {
+                options: {
+                    middleware: function (cnct) {
+                        var config = gruntConnectConfig;
+                        return [
+                            config.mountFolder(cnct, config.ngdocs)
+                        ];
+                    }
+                }
+            }
         }
+
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -164,10 +298,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-hustler');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-ngdocs');
+    grunt.loadNpmTasks('grunt-stubby');
 
     grunt.registerTask('dev', [
         'clean',
@@ -184,7 +321,17 @@ module.exports = function(grunt) {
         'ngdocs'
     ]);
 
-    grunt.registerTask('test', [
-        'karma'
+    grunt.registerTask('serve', [
+        'connect:livereload',
+        'stubby',
+        'watch'
     ]);
+
+    // TODO: Testing/page objects
+    // grunt.registerTask('test', [
+    //     // Note: This tasks requires a stubbed server already running
+    //     'karma',
+    //     'shell:protractor'
+    // ]);
+
 };

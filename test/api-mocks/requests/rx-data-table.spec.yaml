@@ -1,0 +1,47 @@
+-   request:
+        url: ^/api/item/Manual/140102-0000012$
+        method: PUT
+        headers:
+          content-type: application/json
+        post: '{"assigned":null}'
+    response:
+        status: 200
+        file: test/api-mocks/responses/rx-data-table/item-unassigned.json
+
+-   request:
+        url: ^/api/item/Manual/140102-0000012$
+        method: PUT
+        headers:
+            content-type: application/json
+        post: '{"status":"Pending Maintenance"}'
+    response:
+        status: 200
+        file: test/api-mocks/responses/rx-data-table/status-pending-maintenance.json
+
+-   request:
+        url: ^/api/item/Manual/140102-0000012$
+        method: PUT
+        headers:
+            content-type: application/json
+        post: '{"status":"Pending"}'
+    response:
+        status: 400
+        body: 'Failure'
+
+-   request:
+        url: ^/api/mocks/config/default$
+        method: GET
+    response:
+        status: 200
+        file: test/api-mocks/responses/rx-data-table/config.json
+        headers:
+          content-type: application/json
+
+-   request:
+        url: ^/api/mocks/data/default$
+        method: GET
+    response:
+        status: 200
+        file: test/api-mocks/responses/rx-data-table/data.json
+        headers:
+          content-type: application/json
