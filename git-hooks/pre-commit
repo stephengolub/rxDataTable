@@ -18,6 +18,4 @@ git diff --cached --name-only | \
     GREP_COLOR='37;41' xargs grep --color --with-filename -n $FORBIDDEN && \
     echo 'Please remove debugging statements before commiting.' && exit 1
     
-cd "$(git rev-parse --show-toplevel)/frontend"
-grunt jshint
-grunt karma:single
+grunt jshint && grunt karma:single
