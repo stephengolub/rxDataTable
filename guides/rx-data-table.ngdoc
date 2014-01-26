@@ -54,6 +54,9 @@
  | data | <a href class="label type-hint type-hint-function">function(row)</a>  | This is a function that should return a promise or a list of options to display in the typeahead (see the options attribute for structure). It will be passed the data row object. |
  | options      | <a href class="label type-hint type-hint-array">array.&lt;object&gt;</a>  | This attribute will tell the directive to make this editable field a select box and provide options to the user for selection. They are standard select options with value and text attributes: <ul><li>**value** - <a href class="label type-hint type-hint-string">string</a> This is the value that will get passed back to the api call.</li><li>**text** - <a href class="label type-hint type-hint-string">string</a> This is the value that the user will see in the select dropdown</li></ul> |
  | nullable      | <a href class="label type-hint type-hint-boolean">boolean</a>  | This is a boolean value that if set to true will add an `X` next to the field that will allow users to click and quickly set the values on the item's field empty. |
+ | preUpdate     | <a href class="label type-hint type-hint-function">function(column, row, newValue)</a> | This method will run just before a server update is called. This method must return a value of **`true`** or the update will halt. | 
+ | postUpdateSuccess     | <a href class="label type-hint type-hint-function">function(column, row, newValue)</a> | This method will run after the update is successfully completed with the server, if it does so. |
+ | postUpdateError     | <a href class="label type-hint type-hint-function">function(column, row, newValue)</a> | This method will run after the update fails to complete with the server, if it does so. It will not rollback any of the changes applied during the **`updateMethod`**, unless you specifically add them to this method. |
  
 ##Examples##
 <doc:example>

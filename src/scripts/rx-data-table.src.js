@@ -178,6 +178,25 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter) {
                         elementScope.$form.$hide();
                     }
 
+                    // Now we are going to check to see if there is a
+                    // pre-update callback that needs to happen.
+                    if (_.has(column.editable, 'preUpdate') && _.isFunction(column.editable.preUpdate)) {
+                        // This will stop updating with a false value returned
+                        // from the preUpdate function.
+                        if (!column.editable.preUpdate(column, row, data)) {
+                            scope.updateFieldStatus = {
+                                'status': 'error',
+                                'message': 'There was an error running the pre update method and the data was not saved.'
+                            };
+
+                            $timeout(function () {
+                                scope.updateFieldStatus = undefined;
+                            }, 3000);
+
+                            return;
+                        }
+                    }
+
                     // We'll run the method
                     updateMethod(updateURL, updateBody).then(function () {
                         scope.updateFieldStatus = {
@@ -185,6 +204,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter) {
                             'message': 'Saved data for "' + column.title + '" field'
                         };
                         row[column.dataField] = _.clone(data);
+
+                        // Now we are going to check to see if there is a
+                        // post-update-success callback that needs to happen.
+                        if (_.has(column.editable, 'postUpdateSuccess') && _.isFunction(column.editable.postUpdateSuccess)) {
+                            column.editable.postUpdateSuccess(column, row, data);
+                        }
 
                         return true;
                     }, function (data) {
@@ -200,6 +225,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter) {
                         }
 
                         scope.$emit('data-table-error', errorMessage);
+
+                        // Now we are going to check to see if there is a
+                        // post-update-error callback that needs to happen.
+                        if (_.has(column.editable, 'postUpdateError') && _.isFunction(column.editable.postUpdateError)) {
+                            column.editable.postUpdateError(column, row, data);
+                        }
 
                         return false;
                     }).then(function () {
