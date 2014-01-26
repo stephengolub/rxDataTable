@@ -710,7 +710,6 @@ angular.module('rxDataTable')
             },
             link: function(scope) {
                 if (!scope.pager.pageInit) {
-                    //scope.pager.ticketsPerPage = TQSettings.getObjectData('paging');
                     scope.pager.pageInit = true;
                 }
                             
