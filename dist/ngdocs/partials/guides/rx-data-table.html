@@ -147,6 +147,21 @@ field editable on rows that only meet certain conditions.</p>
 <td><a href class="label type-hint type-hint-boolean">boolean</a></td>
 <td>This is a boolean value that if set to true will add an <code>X</code> next to the field that will allow users to click and quickly set the values on the item&#39;s field empty.</td>
 </tr>
+<tr>
+<td>preUpdate</td>
+<td><a href class="label type-hint type-hint-function">function(column, row, newValue)</a></td>
+<td>This method will run just before a server update is called. This method must return a value of <strong><code>true</code></strong> or the update will halt.</td>
+</tr>
+<tr>
+<td>postUpdateSuccess</td>
+<td><a href class="label type-hint type-hint-function">function(column, row, newValue)</a></td>
+<td>This method will run after the update is successfully completed with the server.</td>
+</tr>
+<tr>
+<td>postUpdateError</td>
+<td><a href class="label type-hint type-hint-function">function(column, row, newValue)</a></td>
+<td>This method will run after the update is fails to complete with the server.</td>
+</tr>
 </tbody>
 </table>
 <h3 id="data-table-directive-guide_examples">Examples</h3>
