@@ -122,6 +122,10 @@
   border-right: 1px solid #6e6e6e;
   margin-right: -2px;
 }
+.data-header-cell .btn-link {
+  background: none;
+  border: none;
+}
 .data-header-cell .data-link,
 .data-header-cell .checkbox-span {
   display: block;
