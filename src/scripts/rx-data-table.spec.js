@@ -83,6 +83,16 @@ describe('Data Table Directive', function () {
                             { value: 'Pending Maintenance', text: 'Pending Maintenance'},
                             { value: 'Solved', text: 'Solved'}
                         ],
+                        'preUpdate': function (column, row, newData) {
+                            scope.$emit('pre-update-method', column, row, newData);
+                            return true;
+                        },
+                        'postUpdateSuccess': function (column, row, newData) {
+                            scope.$emit('post-update-success-method', column, row, newData);
+                        },
+                        'postUpdateError': function (column, row, newData) {
+                            scope.$emit('post-update-error-method', column, row, newData);
+                        },
                         'endpoint': {
                             'url': '/api/item/{system}/{ref_no}',
                             'method': 'put'
@@ -496,7 +506,7 @@ describe('Data Table Directive', function () {
         var assnNullable = assnColumn.find('.data-table-field-nullable');
 
         expect(assnNullable.length).to.equal(1);
-        assnNullable.click();
+        helpers.clickElement(assnNullable);
         httpBackend.flush();
         expect(scope.dtData[3].assigned).to.equal(null);
     });
@@ -528,6 +538,46 @@ describe('Data Table Directive', function () {
             {status:'error',message:'Error saving data for "Status" field'});
         timeout.flush();
         expect(elScope.updateFieldStatus).to.equal(undefined);
+    });
+
+    it('should run pre update and post update success methods', function () {
+        var preUpdateWent = false;
+        var postUpdateSuccessWent = false;
+        var postUpdateErrorWent = false;
+        var statusConfig = scope.dtConfig[3];
+        var dataRow = scope.dtData[3];
+
+        scope.$on('pre-update-method', function () {
+            preUpdateWent = true;
+        });
+        scope.$on('post-update-success-method', function () {
+            postUpdateSuccessWent = true;
+        });
+        scope.$on('post-update-error-method', function () {
+            postUpdateErrorWent = true;
+        });
+
+        elScope.updateField(statusConfig, dataRow, 'Pending Maintenance');
+        httpBackend.flush();
+
+        expect(preUpdateWent).to.equal(true);
+        expect(postUpdateSuccessWent).to.equal(true);
+        expect(postUpdateErrorWent).to.equal(false);
+    });
+
+    it('should run post update error method', function () {
+        var postUpdateErrorWent = false;
+        var statusConfig = scope.dtConfig[3];
+        var dataRow = scope.dtData[3];
+
+        scope.$on('post-update-error-method', function () {
+            postUpdateErrorWent = true;
+        });
+
+        elScope.updateField(statusConfig, dataRow, 'Pending');
+        httpBackend.flush();
+
+        expect(postUpdateErrorWent).to.equal(true);
     });
 
     it('should return false for a field that is not editable', function () {
