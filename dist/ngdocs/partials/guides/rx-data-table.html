@@ -155,12 +155,12 @@ field editable on rows that only meet certain conditions.</p>
 <tr>
 <td>postUpdateSuccess</td>
 <td><a href class="label type-hint type-hint-function">function(column, row, newValue)</a></td>
-<td>This method will run after the update is successfully completed with the server.</td>
+<td>This method will run after the update is successfully completed with the server, if it does so.</td>
 </tr>
 <tr>
 <td>postUpdateError</td>
 <td><a href class="label type-hint type-hint-function">function(column, row, newValue)</a></td>
-<td>This method will run after the update is fails to complete with the server.</td>
+<td>This method will run after the update fails to complete with the server, if it does so. It will not rollback any of the changes applied during the <strong><code>updateMethod</code></strong>, unless you specifically add them to this method.</td>
 </tr>
 </tbody>
 </table>
