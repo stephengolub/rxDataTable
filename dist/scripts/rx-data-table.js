@@ -184,6 +184,15 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter) {
                         // This will stop updating with a false value returned
                         // from the preUpdate function.
                         if (!column.editable.preUpdate(column, row, data)) {
+                            scope.updateFieldStatus = {
+                                'status': 'error',
+                                'message': 'There was an error running the pre update method and the data was not saved.'
+                            };
+
+                            $timeout(function () {
+                                scope.updateFieldStatus = undefined;
+                            }, 3000);
+
                             return;
                         }
                     }
