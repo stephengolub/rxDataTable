@@ -37,7 +37,8 @@
     "connect-modrewrite": "~0.5.11",
     "grunt-connect-proxy": "~0.1.7",
     "grunt-contrib-jshint": "~0.8.0",
-    "grunt-stubby": "~0.1.4"
+    "grunt-stubby": "~0.1.4",
+    "grunt-bump": "0.0.13"
   },
   "repository": {
     "type": "git",
