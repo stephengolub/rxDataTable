@@ -25,6 +25,8 @@ var app = angular.module('rxDataTable', []);
  *                       row of the table
  * @param {string='Items'} item-name This is what the data table will fill in
  *                      to indicate what the items in it really are.
+ * @param {number=} notify-duration This is a default notification duration in
+ *      milliseconds. This value is 3000 by default.
  * @param {function=} checkbox-event The function that you want to run whenever
  * a checkbox is clicked. Only used for a checkbox field. This takes the
  * following arguments: **`chkBoxKey`**, **`chkBox`**, **`chkBoxCheckedStatus`**
@@ -79,6 +81,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             defaultSort: '@',
             checkboxEvent: '&',
             columnMultiSort: '@',
+            notifyDuration: '@',
             columnReordering: '@'
         },
         link: function (scope) {
@@ -87,6 +90,8 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             scope.configurationVisible = false;
             scope.enableColumnMultiSort = (!_.isEmpty(scope.columnMultiSort)) ? scope.columnMultiSort : false;
             scope.enableColumnReordering = (!_.isEmpty(scope.columnReordering)) ? scope.columnReordering : false;
+
+            scope.defaultNotificationDuration = (_.isUndefined(scope.notifyDuration)) ? 3000 : parseInt(scope.notifyDuration, 10);
 
             if (_.isUndefined(scope.pager)) {
                 scope.pager = PageTracking.createInstance();
@@ -160,7 +165,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             scope.showStatusMessage = function(type, message, duration) {
                 if (_.isUndefined(duration)) {
-                    duration = 3000;
+                    duration = scope.defaultNotificationDuration;
                 }
 
                 scope.updateFieldStatus = {
@@ -242,7 +247,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
                         return false;
                     }).then(function () {
-                        $timeout(scope.clearStatusMessage.bind(scope), 3000);
+                        $timeout(scope.clearStatusMessage.bind(scope), scope.defaultNotificationDuration);
 
                         return true;
                     });
@@ -257,7 +262,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             scope.$on('data-table-error', function ($event, errorString, errorDisplayTimeout) {
                 if (_.isEmpty(errorDisplayTimeout)) {
-                    errorDisplayTimeout = 3000;
+                    errorDisplayTimeout = scope.defaultNotificationDuration;
                 }
 
                 scope.showStatusMessage('error', errorString, errorDisplayTimeout);
