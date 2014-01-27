@@ -15,7 +15,6 @@ requires the following directives:</p>
        pager="{Object}"
        [list-of-data="{Array.&lt;Object&gt;}"]
        [default-sort="{string}"]
-       [visibility="{expression}"]
        [row-key="{string}"]
        item-name="{string='Items'}"
        [checkbox-event="{function}"]
@@ -33,8 +32,6 @@ without pagination.</p>
 </div></td></tr><tr><td>default-sort <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is the default sort predicate. This should
 should be a string that will evaluate to
 an array of predicates. (i.e. <strong><code>&quot;[&#39;-severity&#39;]&quot;</code></strong>)</p>
-</div></td></tr><tr><td>visibility <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-expression">expression</a></td><td><div class="rxdatatable-page"><p>If the expression is
-truthy, then the table is shown or hidden respectively</p>
 </div></td></tr><tr><td>row-key <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is the attribute of the data objects that will
 be used to attatch a data-value-key paramater to each
 row of the table</p>
