@@ -614,4 +614,25 @@ describe('Data Table Directive', function () {
         elScope.showColumn(5);
         expect(scope.dtColumnDisplay.config.length).to.equal(6);
     });
+
+    it('should have a default notify duration', function () {
+        expect(elScope.defaultNotificationDuration).to.equal(3000);
+    });
+
+    it('should bring in a passed in notification duration', function () {
+        validTemplate = '<rx-data-table row-key="ref_no" visibilty="true"\
+            column-configuration="dtConfig" list-of-data="dtData" total-columns="12"\
+            column-display="dtColumnDisplay" column-presets="dtColumnPresets"\
+            default-sort="[\'-severity\']"\
+            row-style="{class: \'item-color-mapping\', field: \'severity\',\
+                bool: false}"\
+            column-multi-sort="true" column-reordering="true"\
+            notify-duration="5000"\
+            checkbox-event="checkEvent"></rx-data-table>';
+
+        el = helpers.createDirective(validTemplate, compile, scope);
+        elScope = el.isolateScope();
+
+        expect(elScope.defaultNotificationDuration).to.equal(5000);
+    });
 });
