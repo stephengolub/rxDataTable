@@ -158,12 +158,29 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
+            scope.showStatusMessage = function(type, message, duration) {
+                if (_.isUndefined(duration)) {
+                    duration = 3000;
+                }
+
+                scope.updateFieldStatus = {
+                    'status': type,
+                    'message': message
+                };
+
+                if (_.isNumber(duration)) {
+                    $timeout(scope.clearStatusMessage.bind(scope), duration);
+                }
+            };
+
+            scope.clearStatusMessage = function() {
+                scope.updateFieldStatus = undefined;
+            };
+
             scope.updateField = function(column, row, data, elementScope) {
                 if (_.has(column.editable, 'endpoint')) {
-                    scope.updateFieldStatus = {
-                        'status': 'saving',
-                        'message': 'Saving value for "' + column.title + '"'
-                    };
+                    scope.showStatusMessage('saving', 'Saving value for "' + column.title + '"', false);
+
                     var updateMethod = $http[column.editable.endpoint.method];
                     var updateBody = {};
                     updateBody[column.dataField] = data;
@@ -185,14 +202,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                         // This will stop updating with a false value returned
                         // from the preUpdate function.
                         if (!column.editable.preUpdate(column, row, data)) {
-                            scope.updateFieldStatus = {
-                                'status': 'error',
-                                'message': 'There was an error running the pre update method and the data was not saved.'
-                            };
-
-                            $timeout(function () {
-                                scope.updateFieldStatus = undefined;
-                            }, 3000);
+                            scope.showStatusMessage('error', 'There was an error running the pre update method and the data was not saved.');
 
                             return;
                         }
@@ -200,10 +210,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
                     // We'll run the method
                     updateMethod(updateURL, updateBody).then(function () {
-                        scope.updateFieldStatus = {
-                            'status': 'success',
-                            'message': 'Saved data for "' + column.title + '" field'
-                        };
+                        scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
                         row[column.dataField] = _.clone(data);
 
                         // Now we are going to check to see if there is a
@@ -235,9 +242,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
                         return false;
                     }).then(function () {
-                        $timeout(function () {
-                            scope.updateFieldStatus = undefined;
-                        }, 3000);
+                        $timeout(scope.clearStatusMessage.bind(scope), 3000);
 
                         return true;
                     });
@@ -255,10 +260,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     errorDisplayTimeout = 3000;
                 }
 
-                scope.updateFieldStatus = {
-                    'status': 'error',
-                    'message': errorString
-                };
+                scope.showStatusMessage('error', errorString, errorDisplayTimeout);
 
                 $timeout(function () {
                     scope.updateFieldStatus = undefined;
