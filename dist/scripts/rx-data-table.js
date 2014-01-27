@@ -64,14 +64,14 @@ var app = angular.module('rxDataTable', []);
  * @param {array.<object>} column-configuration This are the available column definitions, see the
  *    extended information for this in the {@link #/guides/rx-data-table#column-object Data Table Guide}
  */
-app.directive('rxDataTable', function ($http, $timeout, $document, $filter) {
+app.directive('rxDataTable', function ($http, $timeout, $document, $filter, PageTracking) {
     return {
         restrict: 'E',
         templateUrl: 'src/templates/rx-data-table.html',
         replace: true,
         scope: {
             visibility: '@',
-            pager: '=',
+            pager: '=?',
             columnConfiguration: '=',
             columnDisplay: '=',
             columnPresets: '=',
@@ -90,6 +90,10 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter) {
             scope.configurationVisible = false;
             scope.enableColumnMultiSort = (!_.isEmpty(scope.columnMultiSort)) ? scope.columnMultiSort : false;
             scope.enableColumnReordering = (!_.isEmpty(scope.columnReordering)) ? scope.columnReordering : false;
+
+            if (_.isUndefined(scope.pager)) {
+                scope.pager = PageTracking.createInstance();
+            }
 
             scope.getSortField = function (column) {
                 return (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
@@ -730,16 +734,20 @@ angular.module('rxDataTable')
  * @param {string='Items'} label This is the name of the items that you are
  * restricting. It defaults to 'Items' and thus outputs 'Items per page'
  */
-    directive('rxDataTableItemsPerPage', function() {
+    directive('rxDataTableItemsPerPage', function(PageTracking) {
         return {
             restrict: 'E',
             replace: true,
             templateUrl: 'src/templates/rx-data-table-itemsPerPage.html',
             scope: {
                 label: '@',
-                pager: '='
+                pager: '=?'
             },
             link: function(scope) {
+                if (_.isUndefined(scope.pager)) {
+                    scope.pager = PageTracking.createInstance();
+                }
+
                 if (!scope.pager.pageInit) {
                     scope.pager.pageInit = true;
                 }
