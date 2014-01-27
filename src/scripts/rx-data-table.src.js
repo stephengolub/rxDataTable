@@ -210,7 +210,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
                     // We'll run the method
                     updateMethod(updateURL, updateBody).then(function () {
-                        scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field', false);
+                        scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
                         row[column.dataField] = _.clone(data);
 
                         // Now we are going to check to see if there is a
@@ -260,10 +260,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     errorDisplayTimeout = 3000;
                 }
 
-                scope.updateFieldStatus = {
-                    'status': 'error',
-                    'message': errorString
-                };
+                scope.showStatusMessage('error', errorString, errorDisplayTimeout);
 
                 $timeout(function () {
                     scope.updateFieldStatus = undefined;
