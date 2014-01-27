@@ -92,16 +92,20 @@ angular.module('rxDataTable')
  * @param {string='Items'} label This is the name of the items that you are
  * restricting. It defaults to 'Items' and thus outputs 'Items per page'
  */
-    directive('rxDataTableItemsPerPage', function() {
+    directive('rxDataTableItemsPerPage', function(PageTracking) {
         return {
             restrict: 'E',
             replace: true,
             templateUrl: 'src/templates/rx-data-table-itemsPerPage.html',
             scope: {
                 label: '@',
-                pager: '='
+                pager: '=?'
             },
             link: function(scope) {
+                if (_.isUndefined(scope.pager)) {
+                    scope.pager = PageTracking.createInstance();
+                }
+
                 if (!scope.pager.pageInit) {
                     scope.pager.pageInit = true;
                 }
