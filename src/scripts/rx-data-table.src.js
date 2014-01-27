@@ -20,8 +20,6 @@ var app = angular.module('rxDataTable', []);
  * @param {string=} default-sort This is the default sort predicate. This should
  *                                   should be a string that will evaluate to
  *                                   an array of predicates. (i.e. **`"['-severity']"`**)
- * @param {expression=} visibility If the expression is
- *                      truthy, then the table is shown or hidden respectively
  * @param {string=} row-key This is the attribute of the data objects that will
  *                       be used to attatch a data-value-key paramater to each
  *                       row of the table
@@ -70,7 +68,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
         templateUrl: 'src/templates/rx-data-table.html',
         replace: true,
         scope: {
-            visibility: '@',
             pager: '=?',
             columnConfiguration: '=',
             columnDisplay: '=',
