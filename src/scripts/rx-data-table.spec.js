@@ -2,7 +2,7 @@
 /* jshint multistr: true */
 describe('Data Table Directive', function () {
     var el, scope, compile, elScope, document, httpBackend, timeout,
-        validTemplate = '<rx-data-table row-key="ref_no" pager="pager" visibilty="true"\
+        validTemplate = '<rx-data-table row-key="ref_no" visibilty="true"\
             column-configuration="dtConfig" list-of-data="dtData" total-columns="12"\
             column-display="dtColumnDisplay" column-presets="dtColumnPresets"\
             default-sort="[\'-severity\']"\
@@ -21,7 +21,7 @@ describe('Data Table Directive', function () {
 
         // Inject in angular constructs
         inject(function($rootScope, $compile, $document, $timeout,
-                $templateCache, $httpBackend, PageTracking) {
+                $templateCache, $httpBackend) {
             scope = $rootScope.$new();
             compile = $compile;
             document = $document;
@@ -221,8 +221,6 @@ describe('Data Table Directive', function () {
                     'system': 'Manual'
                 }
             ];
-
-            scope.pager = PageTracking.createInstance();
 
             // Now we need to grab the individual templates and put them in the
             // cache. This has to be done instead of the whenGET calls due to
