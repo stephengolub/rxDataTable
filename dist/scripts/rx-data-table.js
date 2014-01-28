@@ -315,7 +315,13 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             };
 
             scope.hasValue = function(row, column) {
-                return (_.has(row, column.dataField) && !_.isEmpty(row, column.dataField));
+                if (_.isArray(column.dataField)) {
+                    return _.any(column.dataField, function (fieldName) {
+                        return (_.has(this, fieldName) && !_.isEmpty(this, fieldName));
+                    }, row);
+                } else {
+                    return (_.has(row, column.dataField) && !_.isEmpty(row, column.dataField));
+                }
             };
 
             scope.getColumnValue = function (column, row) {
@@ -623,19 +629,31 @@ app.filter('UnusedSorts', function() {
 
 app.filter('ColumnValue', function ($filter) {
     return function (row, column, allowEditing) {
-        var columnValue = '';
+        var columnValue = {value: ''};
         allowEditing = (_.isUndefined(allowEditing)) ? true : allowEditing;
 
         var field = (_.has(column, 'displayField') && _.has(row, column.displayField)) ? column.displayField : column.dataField;
 
-        if (_.has(row, field)) {
-            if (_.has(column, 'filter')) {
-                columnValue = $filter(column.filter)(row[field]);
-            } else {
-                columnValue = row[field];
-            }
+        if (!_.isArray(field)) {
+            field = [field];
         }
 
+        _.forEach(field, function (fieldName, fieldIndex, field) {
+            if (_.has(this.row, fieldName)) {
+                if (_.has(this.column, 'filter')) {
+                    this.columnValue.value += $filter(this.column.filter)(this.row[fieldName]);
+                } else {
+                    this.columnValue.value += this.row[fieldName];
+                }
+
+                if (fieldIndex < field.length - 1) {
+                    this.columnValue.value += '\n';
+                }
+
+            }
+        }, {columnValue: columnValue, column: column, row: row});
+
+        columnValue = columnValue.value;
         if (allowEditing) {
             columnValue = ((_.isEmpty(columnValue)) && (_.has(column, 'emptyValue'))) ? column.emptyValue : columnValue;
         }
