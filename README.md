@@ -42,3 +42,7 @@ Obviously this requires you to have an [angularjs](http://angularjs.org/)
 project to use this.
 
 This project uses the [angular-xeditable](http://vitalets.github.io/angular-xeditable/ "angular-xeditable homepage") for it's inline editing capabilities.
+
+##License##
+
+[MIT](./LICENSE.md)
