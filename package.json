@@ -48,7 +48,7 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "test": "grunt test",
+    "test": "grunt karma:single",
     "postinstall": "grunt shell:hooks"
   }
 }
