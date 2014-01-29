@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/nickburns2006/rxDataTable.png?branch=master)](https://travis-ci.org/nickburns2006/rxDataTable)
 Data Table Directive
 ==========================
  
