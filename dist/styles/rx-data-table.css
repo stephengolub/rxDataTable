@@ -210,6 +210,7 @@
   color: #547917;
   border-bottom-color: #547917;
   font-weight: 600;
+  display: inline-block;
 }
 .data-editable .data-editable-field.editable-click:hover {
   cursor: pointer;
