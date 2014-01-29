@@ -1,7 +1,7 @@
 /* jshint node: true */
 /* jshint multistr: true */
 describe('Data Table Directive', function () {
-    var el, scope, compile, elScope, document, httpBackend, timeout,
+    var el, scope, compile, elScope, document, httpBackend, timeout, filter,
         validTemplate = '<rx-data-table row-key="ref_no" visibilty="true"\
             column-configuration="dtConfig" list-of-data="dtData" total-columns="12"\
             column-display="dtColumnDisplay" column-presets="dtColumnPresets"\
@@ -21,12 +21,13 @@ describe('Data Table Directive', function () {
 
         // Inject in angular constructs
         inject(function($rootScope, $compile, $document, $timeout,
-                $templateCache, $httpBackend) {
+                $templateCache, $httpBackend, $filter) {
             scope = $rootScope.$new();
             compile = $compile;
             document = $document;
             httpBackend = $httpBackend;
             timeout = $timeout;
+            filter = $filter;
 
             scope.checkEvent = function (checkId, checkBox, checkStatus) {
                 return checkStatus;
@@ -159,13 +160,19 @@ describe('Data Table Directive', function () {
                     'title': 'Assigned',
                     'cols': '3',
                     'dataField': 'assigned'
+                },
+                {
+                    'title': 'Multi-Line Subject',
+                    'cols': '4',
+                    'dataField': ['ref_no', 'subject'],
+                    'sortField': 'subject'
                 }
             ];
 
             scope.dtColumnPresets = [
                 {
                     'title': 'Default View',
-                    'config': [0,1,2,3,4]
+                    'config': [0,1,2,3,4,6]
                 },
                 {
                     'title': 'Non Editable Assignee',
@@ -175,7 +182,7 @@ describe('Data Table Directive', function () {
 
             scope.dtColumnDisplay = {
                 'index': 0,
-                'config': [0,1,2,3,4]
+                'config': [0,1,2,3,4,6]
             };
 
 
@@ -266,8 +273,8 @@ describe('Data Table Directive', function () {
         el = null;
     });
 
-    it('should build Table Headings from Configuration Data ', function () {
-        expect(el.find('.data-header .data-header-cell').length).to.equal(5);
+    it('should build Table Headings from Configuration Data', function () {
+        expect(el.find('.data-header .data-header-cell').length).to.equal(6);
     });
 
     it('should build Table Data dataRows from Configuration Data', function () {
@@ -306,7 +313,7 @@ describe('Data Table Directive', function () {
 
         var count = 0;
         var expectedValues = ['123456', '654321', '789100', '140102-0000012'];
-        
+
         el.find('.data-row').each(function () {
             expect($(this).attr('data-row-key')).to.equal(expectedValues[count]);
             count++;
@@ -326,8 +333,7 @@ describe('Data Table Directive', function () {
 
     it('should build Table Data rows in clicked sort order', function () {
         var itemHeaderALink = el.find('.data-header-cell[data-title="Item"] button');
-        // We're going to click on the Item Column and make sure it sorts by
-        // severity
+        // We're going to click on the Item Column and make sure it sorts by severity
         itemHeaderALink.click();
 
         scope.$digest();
@@ -369,13 +375,14 @@ describe('Data Table Directive', function () {
     it('should build a list for the select boxes in the multi column sort menu of sortable columns', function () {
         var options = elScope.getSortableColumnSelects();
 
-        expect(options.length).to.equal(4);
+        expect(options.length).to.equal(5);
 
         expect(options).to.deep.equal([
             {text: 'ID', value: 'severity'},
             {text: 'Subject', value: 'subject'},
             {text: 'Status', value: 'status'},
-            {text: 'Assigned', value: 'assigned'}
+            {text: 'Assigned', value: 'assigned'},
+            {text: 'Multi-Line Subject', value: 'subject'}
         ]);
     });
 
@@ -600,19 +607,19 @@ describe('Data Table Directive', function () {
         elScope.moveColumnUp(0);
         elScope.moveColumnDown(4);
         expect(scope.dtColumnDisplay.config[0]).to.equal(0);
-        expect(scope.dtColumnDisplay.config[4]).to.equal(4);
+        expect(scope.dtColumnDisplay.config[4]).to.equal(6);
     });
 
     it('should remove a column from the display', function () {
-        expect(scope.dtColumnDisplay.config.length).to.equal(5);
+        expect(scope.dtColumnDisplay.config.length).to.equal(6);
         elScope.removeColumn(4);
-        expect(scope.dtColumnDisplay.config.length).to.equal(4);
+        expect(scope.dtColumnDisplay.config.length).to.equal(5);
     });
 
     it('should add a column to the display', function () {
-        expect(scope.dtColumnDisplay.config.length).to.equal(5);
-        elScope.showColumn(5);
         expect(scope.dtColumnDisplay.config.length).to.equal(6);
+        elScope.showColumn(5);
+        expect(scope.dtColumnDisplay.config.length).to.equal(7);
     });
 
     it('should have a default notify duration', function () {
@@ -634,5 +641,13 @@ describe('Data Table Directive', function () {
         elScope = el.isolateScope();
 
         expect(elScope.defaultNotificationDuration).to.equal(5000);
+    });
+
+    it('should support multiple fields displaying in one cell', function () {
+        var expected = '140102-0000012\nTest Item 4';
+        var multiField = el.find('.data-row[data-row-key="140102-0000012"] [data-title="Multi-Line Subject"]');
+        var multiFieldContent = multiField.find('.data-cell-content');
+        expect($.trim(multiFieldContent.text())).to.equal(expected);
+        expect(filter('ColumnValue')(scope.dtData[3], scope.dtConfig[6])).to.equal(expected);
     });
 });
