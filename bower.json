@@ -24,5 +24,8 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/nickburns2006/rxDataTable"
+  },
+  "resolutions": {
+    "angular": "1.2.1"
   }
 }
