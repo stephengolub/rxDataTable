@@ -1,7 +1,7 @@
 /* jshint node:true */
 
 var gruntConnectConfig = {
-    app: 'app',
+    app: 'test/mock-app',
     dist : 'dist',
     ngdocs: 'ngdocs',
     open: {
@@ -167,7 +167,8 @@ module.exports = function(grunt) {
                 'src/scripts/**/*.spec.js'
             ],
             misc: [ 'Gruntfile.js',
-                    'test/**/*.js' ]
+                    'test/mock-app/src/*.js',
+                    'test/mock-app/src/**/*.js' ]
         },
 
         ngdocs: {

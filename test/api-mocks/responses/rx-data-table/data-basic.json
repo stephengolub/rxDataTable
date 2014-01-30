@@ -1,0 +1,50 @@
+[
+    {
+        "colorName": "Green",
+        "hex": "#00ff00",
+        "hexLink" : "http://hexpreview.com/0f0",
+        "compName": "Red",
+        "compHex": "#ff0000",
+        "compHexLink": "http://hexpreview.com/f00"
+    },
+    {
+        "colorName": "Blue",
+        "hex": "#0000ff",
+        "hexLink" : "http://hexpreview.com/00f",
+        "compName": "Orange",
+        "compHex": "#ffaa00",
+        "compHexLink": "http://hexpreview.com/fa0"
+    },
+    {
+        "colorName": "Purple",
+        "hex": "#ff00ff",
+        "hexLink" : "http://hexpreview.com/f0f",
+        "compName": "Yellow",
+        "compHex": "#ffff00",
+        "compHexLink": "http://hexpreview.com/ff0"
+    },
+    {
+        "colorName": "Red",
+        "hex": "#ff0000",
+        "hexLink" : "http://hexpreview.com/f00",
+        "compName": "Green",
+        "compHex": "#00ff00",
+        "compHexLink": "http://hexpreview.com/0f0"
+    },
+    {
+        "colorName": "Orange",
+        "hex": "#ffaa00",
+        "hexLink" : "http://hexpreview.com/fa0",
+        "compName": "Blue",
+        "compHex": "#0000ff",
+        "compHexLink": "http://hexpreview.com/00f"
+    },
+    {
+        "colorName": "Yellow",
+        "hex": "#ffff00",
+        "hexLink" : "http://hexpreview.com/ff0",
+        "compName": "Purple",
+        "compHex": "#ffff00",
+        "compHexLink": "http://hexpreview.com/ff0"
+    }
+]

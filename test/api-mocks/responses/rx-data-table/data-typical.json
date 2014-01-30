@@ -6,8 +6,7 @@
         "subject": "Test Item 1",
         "assigned": "Chris Cantu",
         "status": "Feedback Received",
-        "state": "Feedback Received",
-        "system": "Bob"
+        "state": "Feedback Received"
     },
     {
         "ref_no": "654321",
@@ -16,8 +15,7 @@
         "subject": "Test Item 2",
         "assigned": "Roger Enriquez",
         "status": "New",
-        "state": "New",
-        "system": "George"
+        "state": "New"
     },
     {
         "ref_no": "789100",
@@ -26,8 +24,7 @@
         "subject": "Test Item 3",
         "assigned": "Andrew Yurisich",
         "status": "Feedback Pending",
-        "state": "Pending",
-        "system": "Bob"
+        "state": "Pending"
     },
     {
         "ref_no": "140102-0000012",
@@ -36,7 +33,6 @@
         "subject": "Test Item 4",
         "assigned": "Andrew Yurisich",
         "status": "Pending Customer",
-        "state": "Pending",
-        "system": "Manual"
+        "state": "Pending"
     }
 ]
