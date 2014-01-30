@@ -17,9 +17,8 @@ var app = angular.module('rxDataTable', []);
  * no page tracking object is passed in, then the data table will be shown
  * without pagination.
  * @param {Array.<Object>=} list-of-data This is the list of data that the data table will represent 
- * @param {string=} default-sort This is the default sort predicate. This should
- *                                   should be a string that will evaluate to
- *                                   an array of predicates. (i.e. **`"['-severity']"`**)
+ * @param {Array.string=|string=} predicate This is the sort predicate. This should be an
+ *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**)
  * @param {string=} row-key This is the attribute of the data objects that will
  *                       be used to attatch a data-value-key paramater to each
  *                       row of the table
@@ -78,7 +77,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             rowStyle: '@',
             itemName: '@',
             listOfData: '&',
-            defaultSort: '@',
+            predicate: '=?',
             checkboxEvent: '&',
             columnMultiSort: '@',
             notifyDuration: '@',
@@ -353,9 +352,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 if (_.isObject(pred)) {
                     return pred;
                 }
-                if (_.isEmpty(pred)) {
-                    return scope.decompilePredicateString(scope.getDefaultPredicate());
-                }
 
                 var rev = false;
                 
@@ -551,14 +547,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 return (scope.getSortedIndex(column, inverted) >= 0);
             };
 
-            scope.getDefaultPredicate = function () {
-                if (!_.isEmpty(scope.defaultSort)) {
-                    return eval(scope.defaultSort);
-                } else {
-                    return [scope.compilePredicateString(scope.getConfig()[0])];
-                }
-            };
-
             scope.reversePredicate = function (index) {
                 var pred = scope.decompilePredicateString(scope.predicate[index]);
                 pred.reverse = scope.parseReverseSort(pred.column, pred.reverse);
@@ -596,7 +584,10 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
-            scope.predicate = scope.getDefaultPredicate();
+            if (_.isUndefined(scope.predicate)) {
+                scope.predicate = [scope.compilePredicateString(scope.getConfig()[0])];
+            }
+
 
             // Have to a setTimeout so that it's there.
             setTimeout(function () {

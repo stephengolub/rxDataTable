@@ -14,7 +14,7 @@ requires the following directives:</p>
 <div class="usage">as element:<pre class="prettyprint linenums">&lt;rx-data-table
        pager="{Object}"
        [list-of-data="{Array.&lt;Object&gt;}"]
-       [default-sort="{string}"]
+       [predicate="{Array.string=|string}"]
        [row-key="{string}"]
        item-name="{string='Items'}"
        [notify-duration="{number}"]
@@ -30,9 +30,8 @@ requires the following directives:</p>
 no page tracking object is passed in, then the data table will be shown
 without pagination.</p>
 </div></td></tr><tr><td>list-of-data <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-array">Array.&lt;Object&gt;</a></td><td><div class="rxdatatable-page"><p>This is the list of data that the data table will represent</p>
-</div></td></tr><tr><td>default-sort <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is the default sort predicate. This should
-should be a string that will evaluate to
-an array of predicates. (i.e. <strong><code>&quot;[&#39;-severity&#39;]&quot;</code></strong>)</p>
+</div></td></tr><tr><td>predicate <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-array">Array.string=</a><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is the sort predicate. This should be an
+array of strings that will be used as sort predicates. (i.e. <strong><code>&quot;[&#39;-severity&#39;]&quot;</code></strong>)</p>
 </div></td></tr><tr><td>row-key <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is the attribute of the data objects that will
 be used to attatch a data-value-key paramater to each
 row of the table</p>
