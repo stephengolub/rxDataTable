@@ -1,7 +1,7 @@
 /* jshint node:true */
 
 var gruntConnectConfig = {
-    app: 'app',
+    app: 'test/mock-app',
     dist : 'dist',
     ngdocs: 'ngdocs',
     open: {
@@ -151,6 +151,13 @@ module.exports = function(grunt) {
                     'cp git-hooks/pre-commit ./.git/hooks/',
                     'chmod u+x ./.git/hooks/pre-commit'
                 ].join(' && ')
+            },
+            linkBower: {
+                command: [
+                    'cd ./test/mock-app/',
+                    'ln -s ../../bower_components .',
+                    'cd ../../'
+                ].join(' && ')
             }
         },
 
@@ -167,7 +174,8 @@ module.exports = function(grunt) {
                 'src/scripts/**/*.spec.js'
             ],
             misc: [ 'Gruntfile.js',
-                    'test/**/*.js' ]
+                    'test/mock-app/src/*.js',
+                    'test/mock-app/src/**/*.js' ]
         },
 
         ngdocs: {
@@ -337,6 +345,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('serve', [
+        'shell:linkBower',
         'connect:livereload',
         'stubby',
         'watch'

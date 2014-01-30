@@ -1,0 +1,29 @@
+ <!doctype html>
+<html ng-app="demo">
+  <head>
+    <title>rxDataTable Demo</title>
+    <link rel="stylesheet" href="/dist/styles/rx-data-table.css" type="text/css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav-container">
+        <ul class="nav">
+          <li><a href="/simple">Simple</a></li>
+          <li><a href="/basic">Basic</a></li>
+          <li><a href="/typical">Typical</a></li>
+          <li><a href="/complex">Complex</a></li>
+          <li><a href="/full-featured">Full-Featured</a></li>
+        </ul>
+      </div>
+      <div ng-view></div>
+    </div>
+    <script src="/bower_components/angular/angular.js"></script>
+    <script src="/bower_components/angular-route/angular-route.js"></script>
+    <script src="/bower_components/angular-resource/angular-resource.js"></script>
+    <script src="/bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+    <script src="/bower_components/lodash/dist/lodash.js"></script>
+    <script src="/dist/scripts/rx-data-table.js"></script>
+    <script src="/src/scripts/app.js"></script>
+    <script src="/src/scripts/controllers.js"></script>
+  </body>
+</html>

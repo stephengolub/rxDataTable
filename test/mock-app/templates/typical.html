@@ -1,0 +1,12 @@
+<h1>{{title}}</h1>
+<rx-data-table
+   row-key="ref_no"
+   visibilty="true"
+   column-configuration="dtConfig"
+   list-of-data="dtData"
+   column-display="dtColumnDisplay"
+   column-presets="dtColumnPresets"
+   default-sort="['-severity']"
+   row-style="{class: 'item-color-mapping', field: 'severity', bool: false}"
+   checkbox-event="checkEvent">
+</rx-data-table>

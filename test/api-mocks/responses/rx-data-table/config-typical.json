@@ -1,0 +1,62 @@
+[
+    {
+        "checkbox": true,
+        "checkAll": true
+    },
+    {
+        "title": "ID",
+        "dataField": "ref_no",
+        "sortField": "severity",
+        "linkField": "item_link",
+        "cols": "2"
+    },
+    {
+        "title": "Subject",
+        "dataField": "subject",
+        "sortField": "subject",
+        "cols": "7"
+    },
+    {
+        "title": "Status",
+        "cols": "2",
+        "dataField": "status",
+        "class": "item-status",        
+        "icon": [
+            {
+                "field": "state",
+                "class": "item-state-img item-state-img-new",
+                "fieldValue": "New"
+            },
+            {
+                "field": "state",
+                "class": "item-state-img item-state-img-feedback-received",
+                "fieldValue": "Feedback Received"
+            },
+            {
+                "field": "state",
+                "class": "item-state-img item-state-img-active",
+                "fieldValue": "Active"
+            },
+            {
+                "field": "state",
+                "class": "item-state-img item-state-img-solved",
+                "fieldValue": "Solved"
+            },
+            {
+                "field": "state",
+                "class": "item-state-img item-state-img-scheduled",
+                "fieldValue": "Scheduled"
+            },
+            {
+                "field": "state",
+                "class": "item-state-img item-state-img-pending",
+                "fieldValue": "Pending"
+            }
+        ]
+    },
+    {
+        "title": "Assigned",
+        "cols": "3",
+        "dataField": "assigned"
+    }
+]
