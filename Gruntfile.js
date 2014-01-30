@@ -1,7 +1,7 @@
 /* jshint node:true */
 
 var gruntConnectConfig = {
-    app: 'app',
+    app: 'test/mock-app',
     dist : 'dist',
     ngdocs: 'ngdocs',
     open: {
