@@ -167,7 +167,8 @@ module.exports = function(grunt) {
                 'src/scripts/**/*.spec.js'
             ],
             misc: [ 'Gruntfile.js',
-                    'test/**/*.js' ]
+                    'test/mock-app/src/*.js',
+                    'test/mock-app/src/**/*.js' ]
         },
 
         ngdocs: {
