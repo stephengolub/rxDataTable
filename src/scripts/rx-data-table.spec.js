@@ -5,7 +5,7 @@ describe('Data Table Directive', function () {
         validTemplate = '<rx-data-table row-key="ref_no" visibilty="true"\
             column-configuration="dtConfig" list-of-data="dtData" total-columns="12"\
             column-display="dtColumnDisplay" column-presets="dtColumnPresets"\
-            default-sort="[\'-severity\']"\
+            predicate="predicate"\
             row-style="{class: \'item-color-mapping\', field: \'severity\',\
                 bool: false}"\
             column-multi-sort="true" column-reordering="true"\
@@ -28,6 +28,8 @@ describe('Data Table Directive', function () {
             httpBackend = $httpBackend;
             timeout = $timeout;
             filter = $filter;
+
+            scope.predicate = ['-severity'];
 
             scope.checkEvent = function (checkId, checkBox, checkStatus) {
                 return checkStatus;
@@ -412,11 +414,6 @@ describe('Data Table Directive', function () {
         elScope.predicate = ['-severity'];
         elScope.addColumnSort(scope.dtConfig[1]);
         expect(elScope.predicate).to.deep.equal(['severity']);
-    });
-
-    it('should sort by the first column if no default sort is provided', function () {
-        delete elScope.defaultSort;
-        expect(elScope.getDefaultPredicate()).to.deep.equal(['ref_no']);
     });
 
     it('should reverse the predicate by index', function () {

@@ -203,9 +203,9 @@ module.exports = function(grunt) {
         watch: {
             scripts: {
                 files: ['Gruntfile.js', 'src/scripts/**/*.js', '!src/scripts/**/*.spec.js'],
-                tasks: ['jshint:scripts', 'karma:single'],
+                tasks: ['jshint:scripts', 'karma:single', 'dev'],
                 options: {
-                    livereload: true
+                    livereload: 35730
                 }
             },
             specs: {
@@ -217,15 +217,16 @@ module.exports = function(grunt) {
             },
             css: {
                 files: ['app/styles/**/*.less'],
-                tasks: ['less'],
+                tasks: ['less', 'dev'],
                 options: {
-                    livereload: true
+                    livereload: 35730
                 }
             },
             html: {
                 files: ['app/index.html', 'app/views/{,*/}*.html'],
+                tasks: ['dev'],
                 options: {
-                    livereload: true
+                    livereload: 35730
                 }
             }
         },

@@ -13,12 +13,14 @@ var app = angular.module('rxDataTable', []);
  * - {@link rxDataTable.paginate:rxPaginate rxPaginate} Pagination Directive
  * - {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage} Items per Page Directive
  * 
- * @param {Object} pager This is the page tracking object for the directive. If
+ * @param {Object=} pager This is the page tracking object for the directive. If
  * no page tracking object is passed in, then the data table will be shown
  * without pagination.
- * @param {Array.<Object>=} list-of-data This is the list of data that the data table will represent 
- * @param {Array.string=|string=} predicate This is the sort predicate. This should be an
- *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**)
+ * @param {Array.<Object>} list-of-data This is the list of data that the data table will represent 
+ * @param {Array.string=|string=|boolean=} predicate This is the sort predicate. This should be an
+ *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**). 
+ *      You may also pass a value of **`false`** in order to disable sorting on
+ *      all columns that don't have a sortField value explicitely defined.
  * @param {string=} row-key This is the attribute of the data objects that will
  *                       be used to attatch a data-value-key paramater to each
  *                       row of the table
@@ -122,6 +124,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 var classes = {};
                 if (_.has(column, 'editable') && _.has(column.editable, 'nullable')) {
                     classes.nullable = column.editable.nullable;
+                }
+
+                var sortClass = scope.sortClass(column);
+
+                if (!_.isEmpty(sortClass)) {
+                    classes[sortClass] = true;
                 }
 
                 if (_.has(column, 'ng-class') && _.isFunction(column['ng-class'])) {
@@ -530,7 +538,15 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
+            scope.sortable = function (column) {
+                return ((scope.disableSorting && _.has(column, 'sortField')) || (!scope.disableSorting));
+            };
+
             scope.sort = function ($event, column) {
+                if (!scope.sortable(column)) {
+                    return;
+                }
+
                 if ($event.shiftKey) {
                     scope.addColumnSort(column);
                 } else {
@@ -538,8 +554,22 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
+            scope.sortClass = function (column) {
+                var index = scope.getSortedIndex(column);
+                if (index === -1) {
+                    index = scope.getSortedIndex(column, true);
+                }
+
+                if (index >= 0) {
+                    return 'sorted-' + index + '-' + ((scope.sortedBy(column)) ? 'asc' : 'desc');
+                }
+            };
+
             scope.getSortedIndex = function (column, inverted) {
                 var pred = scope.compilePredicateString(column, inverted);
+                if (_.isUndefined(scope.predicate)) {
+                    scope.predicate = [];
+                }
                 return scope.predicate.indexOf(pred);
             };
 
@@ -586,6 +616,11 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             if (_.isUndefined(scope.predicate)) {
                 scope.predicate = [scope.compilePredicateString(scope.getConfig()[0])];
+            } else if (scope.predicate === false) {
+                // This means we're going to be disabling sorting on all
+                // columns unless they have an explicit sort field
+                scope.disableSorting = true;
+                scope.predicate = [];
             }
 
 

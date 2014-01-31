@@ -12,9 +12,9 @@ requires the following directives:</p>
 </div></div>
 <h2 id="usage">Usage</h2>
 <div class="usage">as element:<pre class="prettyprint linenums">&lt;rx-data-table
-       pager="{Object}"
-       [list-of-data="{Array.&lt;Object&gt;}"]
-       [predicate="{Array.string=|string}"]
+       [pager="{Object}"]
+       list-of-data="{Array.&lt;Object&gt;}"
+       [predicate="{Array.string=|string=|boolean}"]
        [row-key="{string}"]
        item-name="{string='Items'}"
        [notify-duration="{number}"]
@@ -26,12 +26,14 @@ requires the following directives:</p>
        [column-reordering="{string}"]
        column-configuration="{array.&lt;object&gt;}"&gt;
 &lt;/rx-data-table&gt;</pre>
-<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>pager</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="rxdatatable-page"><p>This is the page tracking object for the directive. If
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>pager <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="rxdatatable-page"><p>This is the page tracking object for the directive. If
 no page tracking object is passed in, then the data table will be shown
 without pagination.</p>
-</div></td></tr><tr><td>list-of-data <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-array">Array.&lt;Object&gt;</a></td><td><div class="rxdatatable-page"><p>This is the list of data that the data table will represent</p>
-</div></td></tr><tr><td>predicate <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-array">Array.string=</a><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is the sort predicate. This should be an
-array of strings that will be used as sort predicates. (i.e. <strong><code>&quot;[&#39;-severity&#39;]&quot;</code></strong>)</p>
+</div></td></tr><tr><td>list-of-data</td><td><a href="" class="label type-hint type-hint-array">Array.&lt;Object&gt;</a></td><td><div class="rxdatatable-page"><p>This is the list of data that the data table will represent</p>
+</div></td></tr><tr><td>predicate <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-array">Array.string=</a><a href="" class="label type-hint type-hint-string">string=</a><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="rxdatatable-page"><p>This is the sort predicate. This should be an
+array of strings that will be used as sort predicates. (i.e. <strong><code>&quot;[&#39;-severity&#39;]&quot;</code></strong>). 
+You may also pass a value of <strong><code>false</code></strong> in order to disable sorting on
+all columns that don&#39;t have a sortField value explicitely defined.</p>
 </div></td></tr><tr><td>row-key <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is the attribute of the data objects that will
 be used to attatch a data-value-key paramater to each
 row of the table</p>
