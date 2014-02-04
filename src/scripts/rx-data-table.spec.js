@@ -2,14 +2,7 @@
 /* jshint multistr: true */
 describe('Data Table Directive', function () {
     var el, scope, compile, elScope, document, httpBackend, timeout, filter,
-        validTemplate = '<rx-data-table row-key="ref_no" visibilty="true"\
-            column-configuration="dtConfig" list-of-data="dtData" total-columns="12"\
-            column-display="dtColumnDisplay" column-presets="dtColumnPresets"\
-            predicate="predicate"\
-            row-style="{class: \'item-color-mapping\', field: \'severity\',\
-                bool: false}"\
-            column-multi-sort="true" column-reordering="true"\
-            checkbox-event="checkEvent"></rx-data-table>';
+        validTemplate;
 
     beforeEach(function () {
         module('rxDataTable');
@@ -28,6 +21,15 @@ describe('Data Table Directive', function () {
             httpBackend = $httpBackend;
             timeout = $timeout;
             filter = $filter;
+
+            validTemplate = '<rx-data-table row-key="ref_no" visibilty="true"\
+                column-configuration="dtConfig" list-of-data="dtData" total-columns="12"\
+                column-display="dtColumnDisplay" column-presets="dtColumnPresets"\
+                predicate="predicate"\
+                row-style="{class: \'item-color-mapping\', field: \'severity\',\
+                    bool: false}"\
+                column-multi-sort="true" column-reordering="true"\
+                checkbox-event="checkEvent"></rx-data-table>';
 
             scope.predicate = ['-severity'];
 
@@ -374,6 +376,20 @@ describe('Data Table Directive', function () {
         expect(el.find('.data-table-multi-sort').length).to.equal(1);
     });
 
+    it('should disable sorting on predicate="false"', function () {
+        validTemplate = '<rx-data-table\
+            column-configuration="dtConfig" list-of-data="dtData"\
+            predicate="predicate"></rx-data-table>';
+
+        scope.predicate = false;
+
+        el = helpers.createDirective(validTemplate, compile, scope);
+        elScope = el.isolateScope();
+
+        expect(elScope.disableSorting).to.equal(true);
+        expect(elScope.getPredicate()).to.deep.equal([]);
+    });
+
     it('should build a list for the select boxes in the multi column sort menu of sortable columns', function () {
         var options = elScope.getSortableColumnSelects();
 
@@ -627,7 +643,7 @@ describe('Data Table Directive', function () {
         validTemplate = '<rx-data-table row-key="ref_no" visibilty="true"\
             column-configuration="dtConfig" list-of-data="dtData" total-columns="12"\
             column-display="dtColumnDisplay" column-presets="dtColumnPresets"\
-            default-sort="[\'-severity\']"\
+            predicate="predicate"\
             row-style="{class: \'item-color-mapping\', field: \'severity\',\
                 bool: false}"\
             column-multi-sort="true" column-reordering="true"\

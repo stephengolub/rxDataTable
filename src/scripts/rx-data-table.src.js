@@ -117,6 +117,28 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 scope.columnDisplay = {index: 0};
             }
 
+            scope.getPredicate = function () {
+                if (scope.predicate === false) {
+                    // This means we're going to be disabling sorting on all
+                    // columns unless they have an explicit sort field
+                    scope.disableSorting = true;
+                    return [];
+                } else if (!_.isArray(scope.predicate)) {
+                    scope.predicate = [scope.compilePredicateString(scope.getConfig()[0])];
+                }
+
+                return scope.predicate;
+            };
+
+            scope.canAddNewMultiSort = function () {
+                var pred = scope.getPredicate();
+
+                if (_.isEmpty(_.last(pred))) {
+                    return false;
+                } else {
+                    return (pred.length < scope.columnConfiguration.length);
+                }
+            };
             scope.getSortField = function (column) {
                 return (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
             };
@@ -534,7 +556,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     scope.predicate = [scope.compilePredicateString(column)];
                 }
                 
-                angular.element(document).data('sortingData', scope.predicate);
+                angular.element(document).data('sortingData', scope.getPredicate());
             };
 
             scope.addColumnSort = function (column) {
@@ -544,7 +566,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     sortIndex = scope.getSortedIndex(column, true);
 
                     if (sortIndex >= 0) {
-                        if (scope.predicate.length > 1) {
+                        if (scope.getPredicate().length > 1) {
                             scope.predicate.splice(sortIndex, 1);
                         } else {
                             scope.predicate[sortIndex] = scope.compilePredicateString(column);
@@ -586,7 +608,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             scope.getSortedIndex = function (column, inverted) {
                 var pred = scope.compilePredicateString(column, inverted);
-                return scope.predicate.indexOf(pred);
+                return scope.getPredicate().indexOf(pred);
             };
 
             scope.sortedBy = function (column, inverted) {
@@ -594,7 +616,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             };
 
             scope.reversePredicate = function (index) {
-                var pred = scope.decompilePredicateString(scope.predicate[index]);
+                var pred = scope.decompilePredicateString(scope.getPredicate()[index]);
                 pred.reverse = scope.parseReverseSort(pred.column, pred.reverse);
                 scope.predicate[index] = scope.compilePredicateString(pred.column, !pred.reverse, true);
             };
@@ -607,7 +629,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             };
 
             scope.removePredicate = function (index) {
-                if (scope.predicate.length > 1) {
+                if (scope.getPredicate().length > 1) {
                     scope.predicate.splice(index, 1);
                 }
             };
@@ -629,15 +651,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     scope.configurationVisible = !scope.configurationVisible;
                 }
             };
-
-            if (_.isUndefined(scope.predicate)) {
-                scope.predicate = [scope.compilePredicateString(scope.getConfig()[0])];
-            } else if (scope.predicate === false) {
-                // This means we're going to be disabling sorting on all
-                // columns unless they have an explicit sort field
-                scope.disableSorting = true;
-                scope.predicate = [];
-            }
 
             // Have to a setTimeout so that it's there.
             setTimeout(function () {
