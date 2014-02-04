@@ -4,7 +4,6 @@
     </div>
     <div class="data-info-row">
         <strong ng-if="!pager.showAll">{{pager.first}} - {{pager.last}} of <span class='total-data-items'>{{pager.total}} {{ itemName && itemName || 'Items' }}</span></strong>
-        <strong ng-if="pager.showAll">{{ (listOfData().length > 0) && 1 || 0 }} - {{ listOfData().length }} of {{ listOfData().length }}</strong>
         <div class="data-table-config-container" ng-if="enableColumnReordering||enableColumnMultiSort" ng-class="{'dropdown-shown': configurationVisible}">
             <button class="btn-link" ng-click="toggleVisibility()">
                 <i class="fa fa-table data-table-config-icon" title="Configure Data Table"></i>
@@ -90,7 +89,7 @@
             </button>
         </div>
     </div>
-    <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate: pager track by row[rowKey]" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)">
+    <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate:pager track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)">
         <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)">
             <div ng-if="column.checkbox" class="checkbox">
                 <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction('{{ row[column.dataField] }}')" id="checkbox_{{ row[column.dataField] }}">

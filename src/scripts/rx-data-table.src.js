@@ -73,8 +73,8 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
         scope: {
             pager: '=?',
             columnConfiguration: '=',
-            columnDisplay: '=',
-            columnPresets: '=',
+            columnDisplay: '=?',
+            columnPresets: '=?',
             rowKey: '@',
             rowStyle: '@',
             itemName: '@',
@@ -96,6 +96,25 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             if (_.isUndefined(scope.pager)) {
                 scope.pager = PageTracking.createInstance();
+                scope.pager.showAll = true;
+            }
+
+            if (_.isUndefined(scope.columnPresets)) {
+                // There aren't any presets defined, so we are going to create
+                // a basic default view
+                scope.columnPresets = [
+                    {
+                        'title': 'Default View',
+                        'config': []
+                    }
+                ];
+
+                _.forEach(scope.columnConfiguration, function (column, index) {
+                    this.columnPresets[0].config.push(index);
+                }, scope);
+            }
+            if (_.isUndefined(scope.columnDisplay)) {
+                scope.columnDisplay = {index: 0};
             }
 
             scope.getSortField = function (column) {
@@ -567,9 +586,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             scope.getSortedIndex = function (column, inverted) {
                 var pred = scope.compilePredicateString(column, inverted);
-                if (_.isUndefined(scope.predicate)) {
-                    scope.predicate = [];
-                }
                 return scope.predicate.indexOf(pred);
             };
 
@@ -622,7 +638,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 scope.disableSorting = true;
                 scope.predicate = [];
             }
-
 
             // Have to a setTimeout so that it's there.
             setTimeout(function () {

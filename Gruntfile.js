@@ -268,7 +268,7 @@ module.exports = function(grunt) {
                         var config = gruntConnectConfig;
                         return [
                             config.proxyRequest,
-                            config.modRewrite(['!\\.\\w+$ /']),
+                            config.modRewrite(['!\\.html|\\.js|\\.css|\\.png$ /index.html [L]']),
                             config.liveReloadPage,
                             config.mountFolder(cnct, '.tmp'),
                             config.mountFolder(cnct, config.app)
