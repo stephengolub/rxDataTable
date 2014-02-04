@@ -28,9 +28,6 @@ var app = angular.module('rxDataTable', []);
  *                      to indicate what the items in it really are.
  * @param {number=} notify-duration This is a default notification duration in
  *      milliseconds. This value is 3000 by default.
- * @param {function=} checkbox-event The function that you want to run whenever
- * a checkbox is clicked. Only used for a checkbox field. This takes the
- * following arguments: **`chkBoxKey`**, **`chkBox`**, **`chkBoxCheckedStatus`**
  * @param {string=} row-style This is an object in a string format that is parsed
  *    in the code and applied to each row in the table.
  *
@@ -181,7 +178,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                         classes[classValue] = true;
                     }
                 } else if (_.has(column, 'ng-class') && _.isObject(column['ng-class'])) {
-                    classes.extend(column['ng-class']);
+                    classes = angular.extend(classes, column['ng-class']);
                 }
 
                 return classes;
@@ -230,86 +227,76 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 scope.updateFieldStatus = undefined;
             };
 
-            scope.updateField = function(column, row, data, elementScope) {
-                if (_.has(column.editable, 'endpoint')) {
-                    scope.showStatusMessage('saving', 'Saving value for "' + column.title + '"', false);
-
-                    var updateMethod = $http[column.editable.endpoint.method];
-                    var updateBody = {};
-                    updateBody[column.dataField] = data;
-                    var updateURL = column.editable.endpoint.url;
-                    var foundElements = /\{(\w+)\}/.exec(updateURL);
-
-                    while (foundElements) {
-                        updateURL = updateURL.replace(foundElements[0], row[foundElements[1]]);
-                        foundElements = /\{(\w+)\}/.exec(updateURL);
-                    }
-
-                    if ((!_.isEmpty(elementScope)) && (!_.isEmpty(elementScope.$form))) {
-                        elementScope.$form.$hide();
-                    }
-
-                    // Now we are going to check to see if there is a
-                    // pre-update callback that needs to happen.
-                    if (_.has(column.editable, 'preUpdate') && _.isFunction(column.editable.preUpdate)) {
-                        // This will stop updating with a false value returned
-                        // from the preUpdate function.
-                        if (!column.editable.preUpdate(column, row, data)) {
-                            scope.showStatusMessage('error', 'There was an error running the pre update method and the data was not saved.');
-
-                            return;
-                        }
-                    }
-
-                    // We'll run the method
-                    updateMethod(updateURL, updateBody).then(function () {
-                        scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
-                        row[column.dataField] = _.clone(data);
-
-                        // Now we are going to check to see if there is a
-                        // post-update-success callback that needs to happen.
-                        if (_.has(column.editable, 'postUpdateSuccess') && _.isFunction(column.editable.postUpdateSuccess)) {
-                            column.editable.postUpdateSuccess(column, row, data);
-                        }
-
-                        return true;
-                    }, function (data) {
-                        var errorData;
-                        try {
-                            errorData = JSON.parse(data);
-                        } catch (err) {}
-
-                        var errorMessage = 'Error saving data for "' + column.title + '" field';
-
-                        if (_.has(errorData, 'error')) {
-                            errorMessage.message += '\n' + errorData.error.message;
-                        }
-
-                        scope.$emit('data-table-error', errorMessage);
-
-                        // Now we are going to check to see if there is a
-                        // post-update-error callback that needs to happen.
-                        if (_.has(column.editable, 'postUpdateError') && _.isFunction(column.editable.postUpdateError)) {
-                            column.editable.postUpdateError(column, row, data);
-                        }
-
-                        return false;
-                    }).then(function () {
-                        $timeout(scope.clearStatusMessage.bind(scope), scope.defaultNotificationDuration);
-
-                        return true;
-                    });
-
-                    // We're returning false so that we are manually updating
-                    // the method on success
-                    return false;
-                } else {
+            scope.updateField = function(column, row, data) {
+                if (!_.has(column.editable, 'endpoint')) {
                     return false;
                 }
+                scope.showStatusMessage('saving', 'Saving value for "' + column.title + '"', false);
+
+                var updateMethod = $http[column.editable.endpoint.method];
+                var updateBody = {};
+                updateBody[column.dataField] = data;
+                var updateURL = column.editable.endpoint.url;
+                var foundElements = /\{(\w+)\}/.exec(updateURL);
+
+                while (foundElements) {
+                    updateURL = updateURL.replace(foundElements[0], row[foundElements[1]]);
+                    foundElements = /\{(\w+)\}/.exec(updateURL);
+                }
+
+                // Now we are going to check to see if there is a
+                // pre-update callback that needs to happen.
+                if (_.has(column.editable, 'preUpdate') && _.isFunction(column.editable.preUpdate)) {
+                    // This will stop updating with a false value returned
+                    // from the preUpdate function.
+                    if (!column.editable.preUpdate(column, row, data)) {
+                        scope.showStatusMessage('error', 'There was an error running the pre update method and the data was not saved.');
+
+                        return;
+                    }
+                }
+
+                // We'll run the method
+                updateMethod(updateURL, updateBody).then(function () {
+                    scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
+                    row[column.dataField] = _.clone(data);
+
+                    // Now we are going to check to see if there is a
+                    // post-update-success callback that needs to happen.
+                    if (_.has(column.editable, 'postUpdateSuccess') && _.isFunction(column.editable.postUpdateSuccess)) {
+                        column.editable.postUpdateSuccess(column, row, data);
+                    }
+
+                    return true;
+                }, function (responseData) {
+                    var errorMessage = 'Error saving data for "' + column.title + '" field';
+
+                    if (_.has(responseData.data, 'error')) {
+                        errorMessage += '\n' + responseData.data.error;
+                    }
+
+                    scope.$emit('data-table-error', errorMessage);
+
+                    // Now we are going to check to see if there is a
+                    // post-update-error callback that needs to happen.
+                    if (_.has(column.editable, 'postUpdateError') && _.isFunction(column.editable.postUpdateError)) {
+                        column.editable.postUpdateError(column, row, responseData);
+                    }
+
+                    return false;
+                }).then(function () {
+                    $timeout(scope.clearStatusMessage.bind(scope), scope.defaultNotificationDuration);
+
+                    return true;
+                });
+
+                // We're returning false so that we are manually updating
+                // the method on success
+                return false;
             };
 
             scope.$on('data-table-error', function ($event, errorString, errorDisplayTimeout) {
-                if (_.isEmpty(errorDisplayTimeout)) {
+                if (!_.isNumber(errorDisplayTimeout)) {
                     errorDisplayTimeout = scope.defaultNotificationDuration;
                 }
 
@@ -352,16 +339,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
-            scope.checkAll = function () {
-                var chx = document.querySelectorAll('div.data-table input[type="checkbox"]');
-                var chk = document.querySelector('div.data-table input[type="checkbox"]#check_all_checkbox');
-                _.forEach(chx, function(check) {
-                    if (check.checked !== this.checked) {
-                        angular.element(check).triggerHandler('click');
-                    }
-                }, chk);
-            };
-
             scope.hasValue = function(row, column) {
                 if (_.isArray(column.dataField)) {
                     return _.any(column.dataField, function (fieldName) {
@@ -372,41 +349,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
-            scope.getColumnValue = function (column, row) {
-                var columnValue = '';
-
-                var field = (_.has(column, 'displayField') && _.has(row, column.displayField)) ? column.displayField : column.dataField;
-
-                if (_.has(row, field)) {
-                    if (_.has(column, 'filter')) {
-                        columnValue = $filter(column.filter)(row[field]);
-                    } else {
-                        columnValue = row[field];
-                    }
-                }
-
-                return ((_.isEmpty(columnValue)) && (_.has(column, 'emptyValue'))) ? column.emptyValue : columnValue;
-            };
-
-            scope.clickAction = function (chkBoxKey) {
-                var chkBoxId = 'checkbox_' + chkBoxKey;
-
-                var chkBox = document.querySelector('input[type="checkbox"]#' + chkBoxId);
-                if (scope.checkboxEvent) {
-                    return scope.checkboxEvent(chkBoxKey, chkBox, chkBox.checked);
-                }
-            };
-
             scope.decompilePredicateString = function (pred) {
-                if (_.isObject(pred)) {
+                if (_.isArray(pred)) {
                     return pred;
                 }
 
                 var rev = false;
-                
-                if (_.isArray(pred)) {
-                    pred = (pred.length === 1) && pred[0] || 'emptysort';
-                }
                 
                 if (pred.substr(0,1) === '-') {
                     pred = pred.substr(1);

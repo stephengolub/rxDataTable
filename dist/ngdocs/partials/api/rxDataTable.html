@@ -18,7 +18,6 @@ requires the following directives:</p>
        [row-key="{string}"]
        item-name="{string='Items'}"
        [notify-duration="{number}"]
-       [checkbox-event="{function}"]
        [row-style="{string}"]
        column-display="{Object}"
        column-presets="{array.&lt;Object&gt;}"
@@ -41,9 +40,6 @@ row of the table</p>
 to indicate what the items in it really are.</p>
 </div></td></tr><tr><td>notify-duration <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="rxdatatable-page"><p>This is a default notification duration in
 milliseconds. This value is 3000 by default.</p>
-</div></td></tr><tr><td>checkbox-event <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="rxdatatable-page"><p>The function that you want to run whenever
-a checkbox is clicked. Only used for a checkbox field. This takes the
-following arguments: <strong><code>chkBoxKey</code></strong>, <strong><code>chkBox</code></strong>, <strong><code>chkBoxCheckedStatus</code></strong></p>
 </div></td></tr><tr><td>row-style <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is an object in a string format that is parsed
 in the code and applied to each row in the table.</p>
 <p>It takes three attributes:</p>
