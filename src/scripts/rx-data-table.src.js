@@ -13,13 +13,14 @@ var app = angular.module('rxDataTable', []);
  * - {@link rxDataTable.paginate:rxPaginate rxPaginate} Pagination Directive
  * - {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage} Items per Page Directive
  * 
- * @param {Object} pager This is the page tracking object for the directive. If
+ * @param {Object=} pager This is the page tracking object for the directive. If
  * no page tracking object is passed in, then the data table will be shown
  * without pagination.
- * @param {Array.<Object>=} list-of-data This is the list of data that the data table will represent 
- * @param {string=} default-sort This is the default sort predicate. This should
- *                                   should be a string that will evaluate to
- *                                   an array of predicates. (i.e. **`"['-severity']"`**)
+ * @param {Array.<Object>} list-of-data This is the list of data that the data table will represent 
+ * @param {Array.string=|string=|boolean=} predicate This is the sort predicate. This should be an
+ *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**). 
+ *      You may also pass a value of **`false`** in order to disable sorting on
+ *      all columns that don't have a sortField value explicitely defined.
  * @param {string=} row-key This is the attribute of the data objects that will
  *                       be used to attatch a data-value-key paramater to each
  *                       row of the table
@@ -27,9 +28,6 @@ var app = angular.module('rxDataTable', []);
  *                      to indicate what the items in it really are.
  * @param {number=} notify-duration This is a default notification duration in
  *      milliseconds. This value is 3000 by default.
- * @param {function=} checkbox-event The function that you want to run whenever
- * a checkbox is clicked. Only used for a checkbox field. This takes the
- * following arguments: **`chkBoxKey`**, **`chkBox`**, **`chkBoxCheckedStatus`**
  * @param {string=} row-style This is an object in a string format that is parsed
  *    in the code and applied to each row in the table.
  *
@@ -72,13 +70,13 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
         scope: {
             pager: '=?',
             columnConfiguration: '=',
-            columnDisplay: '=',
-            columnPresets: '=',
+            columnDisplay: '=?',
+            columnPresets: '=?',
             rowKey: '@',
             rowStyle: '@',
             itemName: '@',
             listOfData: '&',
-            defaultSort: '@',
+            predicate: '=?',
             checkboxEvent: '&',
             columnMultiSort: '@',
             notifyDuration: '@',
@@ -95,8 +93,49 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             if (_.isUndefined(scope.pager)) {
                 scope.pager = PageTracking.createInstance();
+                scope.pager.showAll = true;
             }
 
+            if (_.isUndefined(scope.columnPresets)) {
+                // There aren't any presets defined, so we are going to create
+                // a basic default view
+                scope.columnPresets = [
+                    {
+                        'title': 'Default View',
+                        'config': []
+                    }
+                ];
+
+                _.forEach(scope.columnConfiguration, function (column, index) {
+                    this.columnPresets[0].config.push(index);
+                }, scope);
+            }
+            if (_.isUndefined(scope.columnDisplay)) {
+                scope.columnDisplay = {index: 0};
+            }
+
+            scope.getPredicate = function () {
+                if (scope.predicate === false) {
+                    // This means we're going to be disabling sorting on all
+                    // columns unless they have an explicit sort field
+                    scope.disableSorting = true;
+                    return [];
+                } else if (!_.isArray(scope.predicate)) {
+                    scope.predicate = [scope.compilePredicateString(scope.getConfig()[0])];
+                }
+
+                return scope.predicate;
+            };
+
+            scope.canAddNewMultiSort = function () {
+                var pred = scope.getPredicate();
+
+                if (_.isEmpty(_.last(pred))) {
+                    return false;
+                } else {
+                    return (pred.length < scope.columnConfiguration.length);
+                }
+            };
             scope.getSortField = function (column) {
                 return (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
             };
@@ -125,6 +164,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     classes.nullable = column.editable.nullable;
                 }
 
+                var sortClass = scope.sortClass(column);
+
+                if (!_.isEmpty(sortClass)) {
+                    classes[sortClass] = true;
+                }
+
                 if (_.has(column, 'ng-class') && _.isFunction(column['ng-class'])) {
                     var classFunction = column['ng-class'];
                     var classValue = classFunction(row);
@@ -133,7 +178,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                         classes[classValue] = true;
                     }
                 } else if (_.has(column, 'ng-class') && _.isObject(column['ng-class'])) {
-                    classes.extend(column['ng-class']);
+                    classes = angular.extend(classes, column['ng-class']);
                 }
 
                 return classes;
@@ -182,86 +227,76 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 scope.updateFieldStatus = undefined;
             };
 
-            scope.updateField = function(column, row, data, elementScope) {
-                if (_.has(column.editable, 'endpoint')) {
-                    scope.showStatusMessage('saving', 'Saving value for "' + column.title + '"', false);
-
-                    var updateMethod = $http[column.editable.endpoint.method];
-                    var updateBody = {};
-                    updateBody[column.dataField] = data;
-                    var updateURL = column.editable.endpoint.url;
-                    var foundElements = /\{(\w+)\}/.exec(updateURL);
-
-                    while (foundElements) {
-                        updateURL = updateURL.replace(foundElements[0], row[foundElements[1]]);
-                        foundElements = /\{(\w+)\}/.exec(updateURL);
-                    }
-
-                    if ((!_.isEmpty(elementScope)) && (!_.isEmpty(elementScope.$form))) {
-                        elementScope.$form.$hide();
-                    }
-
-                    // Now we are going to check to see if there is a
-                    // pre-update callback that needs to happen.
-                    if (_.has(column.editable, 'preUpdate') && _.isFunction(column.editable.preUpdate)) {
-                        // This will stop updating with a false value returned
-                        // from the preUpdate function.
-                        if (!column.editable.preUpdate(column, row, data)) {
-                            scope.showStatusMessage('error', 'There was an error running the pre update method and the data was not saved.');
-
-                            return;
-                        }
-                    }
-
-                    // We'll run the method
-                    updateMethod(updateURL, updateBody).then(function () {
-                        scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
-                        row[column.dataField] = _.clone(data);
-
-                        // Now we are going to check to see if there is a
-                        // post-update-success callback that needs to happen.
-                        if (_.has(column.editable, 'postUpdateSuccess') && _.isFunction(column.editable.postUpdateSuccess)) {
-                            column.editable.postUpdateSuccess(column, row, data);
-                        }
-
-                        return true;
-                    }, function (data) {
-                        var errorData;
-                        try {
-                            errorData = JSON.parse(data);
-                        } catch (err) {}
-
-                        var errorMessage = 'Error saving data for "' + column.title + '" field';
-
-                        if (_.has(errorData, 'error')) {
-                            errorMessage.message += '\n' + errorData.error.message;
-                        }
-
-                        scope.$emit('data-table-error', errorMessage);
-
-                        // Now we are going to check to see if there is a
-                        // post-update-error callback that needs to happen.
-                        if (_.has(column.editable, 'postUpdateError') && _.isFunction(column.editable.postUpdateError)) {
-                            column.editable.postUpdateError(column, row, data);
-                        }
-
-                        return false;
-                    }).then(function () {
-                        $timeout(scope.clearStatusMessage.bind(scope), scope.defaultNotificationDuration);
-
-                        return true;
-                    });
-
-                    // We're returning false so that we are manually updating
-                    // the method on success
-                    return false;
-                } else {
+            scope.updateField = function(column, row, data) {
+                if (!_.has(column.editable, 'endpoint')) {
                     return false;
                 }
+                scope.showStatusMessage('saving', 'Saving value for "' + column.title + '"', false);
+
+                var updateMethod = $http[column.editable.endpoint.method];
+                var updateBody = {};
+                updateBody[column.dataField] = data;
+                var updateURL = column.editable.endpoint.url;
+                var foundElements = /\{(\w+)\}/.exec(updateURL);
+
+                while (foundElements) {
+                    updateURL = updateURL.replace(foundElements[0], row[foundElements[1]]);
+                    foundElements = /\{(\w+)\}/.exec(updateURL);
+                }
+
+                // Now we are going to check to see if there is a
+                // pre-update callback that needs to happen.
+                if (_.has(column.editable, 'preUpdate') && _.isFunction(column.editable.preUpdate)) {
+                    // This will stop updating with a false value returned
+                    // from the preUpdate function.
+                    if (!column.editable.preUpdate(column, row, data)) {
+                        scope.showStatusMessage('error', 'There was an error running the pre update method and the data was not saved.');
+
+                        return;
+                    }
+                }
+
+                // We'll run the method
+                updateMethod(updateURL, updateBody).then(function () {
+                    scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
+                    row[column.dataField] = _.clone(data);
+
+                    // Now we are going to check to see if there is a
+                    // post-update-success callback that needs to happen.
+                    if (_.has(column.editable, 'postUpdateSuccess') && _.isFunction(column.editable.postUpdateSuccess)) {
+                        column.editable.postUpdateSuccess(column, row, data);
+                    }
+
+                    return true;
+                }, function (responseData) {
+                    var errorMessage = 'Error saving data for "' + column.title + '" field';
+
+                    if (_.has(responseData.data, 'error')) {
+                        errorMessage += '\n' + responseData.data.error;
+                    }
+
+                    scope.$emit('data-table-error', errorMessage);
+
+                    // Now we are going to check to see if there is a
+                    // post-update-error callback that needs to happen.
+                    if (_.has(column.editable, 'postUpdateError') && _.isFunction(column.editable.postUpdateError)) {
+                        column.editable.postUpdateError(column, row, responseData);
+                    }
+
+                    return false;
+                }).then(function () {
+                    $timeout(scope.clearStatusMessage.bind(scope), scope.defaultNotificationDuration);
+
+                    return true;
+                });
+
+                // We're returning false so that we are manually updating
+                // the method on success
+                return false;
             };
 
             scope.$on('data-table-error', function ($event, errorString, errorDisplayTimeout) {
-                if (_.isEmpty(errorDisplayTimeout)) {
+                if (!_.isNumber(errorDisplayTimeout)) {
                     errorDisplayTimeout = scope.defaultNotificationDuration;
                 }
 
@@ -304,16 +339,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
-            scope.checkAll = function () {
-                var chx = document.querySelectorAll('div.data-table input[type="checkbox"]');
-                var chk = document.querySelector('div.data-table input[type="checkbox"]#check_all_checkbox');
-                _.forEach(chx, function(check) {
-                    if (check.checked !== this.checked) {
-                        angular.element(check).triggerHandler('click');
-                    }
-                }, chk);
-            };
-
             scope.hasValue = function(row, column) {
                 if (_.isArray(column.dataField)) {
                     return _.any(column.dataField, function (fieldName) {
@@ -324,44 +349,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
-            scope.getColumnValue = function (column, row) {
-                var columnValue = '';
-
-                var field = (_.has(column, 'displayField') && _.has(row, column.displayField)) ? column.displayField : column.dataField;
-
-                if (_.has(row, field)) {
-                    if (_.has(column, 'filter')) {
-                        columnValue = $filter(column.filter)(row[field]);
-                    } else {
-                        columnValue = row[field];
-                    }
-                }
-
-                return ((_.isEmpty(columnValue)) && (_.has(column, 'emptyValue'))) ? column.emptyValue : columnValue;
-            };
-
-            scope.clickAction = function (chkBoxKey) {
-                var chkBoxId = 'checkbox_' + chkBoxKey;
-
-                var chkBox = document.querySelector('input[type="checkbox"]#' + chkBoxId);
-                if (scope.checkboxEvent) {
-                    return scope.checkboxEvent(chkBoxKey, chkBox, chkBox.checked);
-                }
-            };
-
             scope.decompilePredicateString = function (pred) {
-                if (_.isObject(pred)) {
+                if (_.isArray(pred)) {
                     return pred;
-                }
-                if (_.isEmpty(pred)) {
-                    return scope.decompilePredicateString(scope.getDefaultPredicate());
                 }
 
                 var rev = false;
-                
-                if (_.isArray(pred)) {
-                    pred = (pred.length === 1) && pred[0] || 'emptysort';
-                }
                 
                 if (pred.substr(0,1) === '-') {
                     pred = pred.substr(1);
@@ -511,7 +504,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     scope.predicate = [scope.compilePredicateString(column)];
                 }
                 
-                angular.element(document).data('sortingData', scope.predicate);
+                angular.element(document).data('sortingData', scope.getPredicate());
             };
 
             scope.addColumnSort = function (column) {
@@ -521,7 +514,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     sortIndex = scope.getSortedIndex(column, true);
 
                     if (sortIndex >= 0) {
-                        if (scope.predicate.length > 1) {
+                        if (scope.getPredicate().length > 1) {
                             scope.predicate.splice(sortIndex, 1);
                         } else {
                             scope.predicate[sortIndex] = scope.compilePredicateString(column);
@@ -534,7 +527,15 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
+            scope.sortable = function (column) {
+                return ((scope.disableSorting && _.has(column, 'sortField')) || (!scope.disableSorting));
+            };
+
             scope.sort = function ($event, column) {
+                if (!scope.sortable(column)) {
+                    return;
+                }
+
                 if ($event.shiftKey) {
                     scope.addColumnSort(column);
                 } else {
@@ -542,25 +543,28 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
+            scope.sortClass = function (column) {
+                var index = scope.getSortedIndex(column);
+                if (index === -1) {
+                    index = scope.getSortedIndex(column, true);
+                }
+
+                if (index >= 0) {
+                    return 'sorted-' + index + '-' + ((scope.sortedBy(column)) ? 'asc' : 'desc');
+                }
+            };
+
             scope.getSortedIndex = function (column, inverted) {
                 var pred = scope.compilePredicateString(column, inverted);
-                return scope.predicate.indexOf(pred);
+                return scope.getPredicate().indexOf(pred);
             };
 
             scope.sortedBy = function (column, inverted) {
                 return (scope.getSortedIndex(column, inverted) >= 0);
             };
 
-            scope.getDefaultPredicate = function () {
-                if (!_.isEmpty(scope.defaultSort)) {
-                    return eval(scope.defaultSort);
-                } else {
-                    return [scope.compilePredicateString(scope.getConfig()[0])];
-                }
-            };
-
             scope.reversePredicate = function (index) {
-                var pred = scope.decompilePredicateString(scope.predicate[index]);
+                var pred = scope.decompilePredicateString(scope.getPredicate()[index]);
                 pred.reverse = scope.parseReverseSort(pred.column, pred.reverse);
                 scope.predicate[index] = scope.compilePredicateString(pred.column, !pred.reverse, true);
             };
@@ -573,7 +577,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             };
 
             scope.removePredicate = function (index) {
-                if (scope.predicate.length > 1) {
+                if (scope.getPredicate().length > 1) {
                     scope.predicate.splice(index, 1);
                 }
             };
@@ -595,8 +599,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     scope.configurationVisible = !scope.configurationVisible;
                 }
             };
-
-            scope.predicate = scope.getDefaultPredicate();
 
             // Have to a setTimeout so that it's there.
             setTimeout(function () {

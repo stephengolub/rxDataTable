@@ -123,6 +123,7 @@
   margin-right: -2px;
 }
 .data-header-cell .btn-link {
+  cursor: pointer;
   background: none;
   border: none;
 }

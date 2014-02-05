@@ -13,13 +13,14 @@ var app = angular.module('rxDataTable', []);
  * - {@link rxDataTable.paginate:rxPaginate rxPaginate} Pagination Directive
  * - {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage} Items per Page Directive
  * 
- * @param {Object} pager This is the page tracking object for the directive. If
+ * @param {Object=} pager This is the page tracking object for the directive. If
  * no page tracking object is passed in, then the data table will be shown
  * without pagination.
- * @param {Array.<Object>=} list-of-data This is the list of data that the data table will represent 
- * @param {string=} default-sort This is the default sort predicate. This should
- *                                   should be a string that will evaluate to
- *                                   an array of predicates. (i.e. **`"['-severity']"`**)
+ * @param {Array.<Object>} list-of-data This is the list of data that the data table will represent 
+ * @param {Array.string=|string=|boolean=} predicate This is the sort predicate. This should be an
+ *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**). 
+ *      You may also pass a value of **`false`** in order to disable sorting on
+ *      all columns that don't have a sortField value explicitely defined.
  * @param {string=} row-key This is the attribute of the data objects that will
  *                       be used to attatch a data-value-key paramater to each
  *                       row of the table
@@ -27,9 +28,6 @@ var app = angular.module('rxDataTable', []);
  *                      to indicate what the items in it really are.
  * @param {number=} notify-duration This is a default notification duration in
  *      milliseconds. This value is 3000 by default.
- * @param {function=} checkbox-event The function that you want to run whenever
- * a checkbox is clicked. Only used for a checkbox field. This takes the
- * following arguments: **`chkBoxKey`**, **`chkBox`**, **`chkBoxCheckedStatus`**
  * @param {string=} row-style This is an object in a string format that is parsed
  *    in the code and applied to each row in the table.
  *
@@ -72,13 +70,13 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
         scope: {
             pager: '=?',
             columnConfiguration: '=',
-            columnDisplay: '=',
-            columnPresets: '=',
+            columnDisplay: '=?',
+            columnPresets: '=?',
             rowKey: '@',
             rowStyle: '@',
             itemName: '@',
             listOfData: '&',
-            defaultSort: '@',
+            predicate: '=?',
             checkboxEvent: '&',
             columnMultiSort: '@',
             notifyDuration: '@',
@@ -95,8 +93,49 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             if (_.isUndefined(scope.pager)) {
                 scope.pager = PageTracking.createInstance();
+                scope.pager.showAll = true;
             }
 
+            if (_.isUndefined(scope.columnPresets)) {
+                // There aren't any presets defined, so we are going to create
+                // a basic default view
+                scope.columnPresets = [
+                    {
+                        'title': 'Default View',
+                        'config': []
+                    }
+                ];
+
+                _.forEach(scope.columnConfiguration, function (column, index) {
+                    this.columnPresets[0].config.push(index);
+                }, scope);
+            }
+            if (_.isUndefined(scope.columnDisplay)) {
+                scope.columnDisplay = {index: 0};
+            }
+
+            scope.getPredicate = function () {
+                if (scope.predicate === false) {
+                    // This means we're going to be disabling sorting on all
+                    // columns unless they have an explicit sort field
+                    scope.disableSorting = true;
+                    return [];
+                } else if (!_.isArray(scope.predicate)) {
+                    scope.predicate = [scope.compilePredicateString(scope.getConfig()[0])];
+                }
+
+                return scope.predicate;
+            };
+
+            scope.canAddNewMultiSort = function () {
+                var pred = scope.getPredicate();
+
+                if (_.isEmpty(_.last(pred))) {
+                    return false;
+                } else {
+                    return (pred.length < scope.columnConfiguration.length);
+                }
+            };
             scope.getSortField = function (column) {
                 return (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
             };
@@ -125,6 +164,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     classes.nullable = column.editable.nullable;
                 }
 
+                var sortClass = scope.sortClass(column);
+
+                if (!_.isEmpty(sortClass)) {
+                    classes[sortClass] = true;
+                }
+
                 if (_.has(column, 'ng-class') && _.isFunction(column['ng-class'])) {
                     var classFunction = column['ng-class'];
                     var classValue = classFunction(row);
@@ -133,7 +178,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                         classes[classValue] = true;
                     }
                 } else if (_.has(column, 'ng-class') && _.isObject(column['ng-class'])) {
-                    classes.extend(column['ng-class']);
+                    classes = angular.extend(classes, column['ng-class']);
                 }
 
                 return classes;
@@ -182,86 +227,76 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 scope.updateFieldStatus = undefined;
             };
 
-            scope.updateField = function(column, row, data, elementScope) {
-                if (_.has(column.editable, 'endpoint')) {
-                    scope.showStatusMessage('saving', 'Saving value for "' + column.title + '"', false);
-
-                    var updateMethod = $http[column.editable.endpoint.method];
-                    var updateBody = {};
-                    updateBody[column.dataField] = data;
-                    var updateURL = column.editable.endpoint.url;
-                    var foundElements = /\{(\w+)\}/.exec(updateURL);
-
-                    while (foundElements) {
-                        updateURL = updateURL.replace(foundElements[0], row[foundElements[1]]);
-                        foundElements = /\{(\w+)\}/.exec(updateURL);
-                    }
-
-                    if ((!_.isEmpty(elementScope)) && (!_.isEmpty(elementScope.$form))) {
-                        elementScope.$form.$hide();
-                    }
-
-                    // Now we are going to check to see if there is a
-                    // pre-update callback that needs to happen.
-                    if (_.has(column.editable, 'preUpdate') && _.isFunction(column.editable.preUpdate)) {
-                        // This will stop updating with a false value returned
-                        // from the preUpdate function.
-                        if (!column.editable.preUpdate(column, row, data)) {
-                            scope.showStatusMessage('error', 'There was an error running the pre update method and the data was not saved.');
-
-                            return;
-                        }
-                    }
-
-                    // We'll run the method
-                    updateMethod(updateURL, updateBody).then(function () {
-                        scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
-                        row[column.dataField] = _.clone(data);
-
-                        // Now we are going to check to see if there is a
-                        // post-update-success callback that needs to happen.
-                        if (_.has(column.editable, 'postUpdateSuccess') && _.isFunction(column.editable.postUpdateSuccess)) {
-                            column.editable.postUpdateSuccess(column, row, data);
-                        }
-
-                        return true;
-                    }, function (data) {
-                        var errorData;
-                        try {
-                            errorData = JSON.parse(data);
-                        } catch (err) {}
-
-                        var errorMessage = 'Error saving data for "' + column.title + '" field';
-
-                        if (_.has(errorData, 'error')) {
-                            errorMessage.message += '\n' + errorData.error.message;
-                        }
-
-                        scope.$emit('data-table-error', errorMessage);
-
-                        // Now we are going to check to see if there is a
-                        // post-update-error callback that needs to happen.
-                        if (_.has(column.editable, 'postUpdateError') && _.isFunction(column.editable.postUpdateError)) {
-                            column.editable.postUpdateError(column, row, data);
-                        }
-
-                        return false;
-                    }).then(function () {
-                        $timeout(scope.clearStatusMessage.bind(scope), scope.defaultNotificationDuration);
-
-                        return true;
-                    });
-
-                    // We're returning false so that we are manually updating
-                    // the method on success
-                    return false;
-                } else {
+            scope.updateField = function(column, row, data) {
+                if (!_.has(column.editable, 'endpoint')) {
                     return false;
                 }
+                scope.showStatusMessage('saving', 'Saving value for "' + column.title + '"', false);
+
+                var updateMethod = $http[column.editable.endpoint.method];
+                var updateBody = {};
+                updateBody[column.dataField] = data;
+                var updateURL = column.editable.endpoint.url;
+                var foundElements = /\{(\w+)\}/.exec(updateURL);
+
+                while (foundElements) {
+                    updateURL = updateURL.replace(foundElements[0], row[foundElements[1]]);
+                    foundElements = /\{(\w+)\}/.exec(updateURL);
+                }
+
+                // Now we are going to check to see if there is a
+                // pre-update callback that needs to happen.
+                if (_.has(column.editable, 'preUpdate') && _.isFunction(column.editable.preUpdate)) {
+                    // This will stop updating with a false value returned
+                    // from the preUpdate function.
+                    if (!column.editable.preUpdate(column, row, data)) {
+                        scope.showStatusMessage('error', 'There was an error running the pre update method and the data was not saved.');
+
+                        return;
+                    }
+                }
+
+                // We'll run the method
+                updateMethod(updateURL, updateBody).then(function () {
+                    scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
+                    row[column.dataField] = _.clone(data);
+
+                    // Now we are going to check to see if there is a
+                    // post-update-success callback that needs to happen.
+                    if (_.has(column.editable, 'postUpdateSuccess') && _.isFunction(column.editable.postUpdateSuccess)) {
+                        column.editable.postUpdateSuccess(column, row, data);
+                    }
+
+                    return true;
+                }, function (responseData) {
+                    var errorMessage = 'Error saving data for "' + column.title + '" field';
+
+                    if (_.has(responseData.data, 'error')) {
+                        errorMessage += '\n' + responseData.data.error;
+                    }
+
+                    scope.$emit('data-table-error', errorMessage);
+
+                    // Now we are going to check to see if there is a
+                    // post-update-error callback that needs to happen.
+                    if (_.has(column.editable, 'postUpdateError') && _.isFunction(column.editable.postUpdateError)) {
+                        column.editable.postUpdateError(column, row, responseData);
+                    }
+
+                    return false;
+                }).then(function () {
+                    $timeout(scope.clearStatusMessage.bind(scope), scope.defaultNotificationDuration);
+
+                    return true;
+                });
+
+                // We're returning false so that we are manually updating
+                // the method on success
+                return false;
             };
 
             scope.$on('data-table-error', function ($event, errorString, errorDisplayTimeout) {
-                if (_.isEmpty(errorDisplayTimeout)) {
+                if (!_.isNumber(errorDisplayTimeout)) {
                     errorDisplayTimeout = scope.defaultNotificationDuration;
                 }
 
@@ -304,16 +339,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
-            scope.checkAll = function () {
-                var chx = document.querySelectorAll('div.data-table input[type="checkbox"]');
-                var chk = document.querySelector('div.data-table input[type="checkbox"]#check_all_checkbox');
-                _.forEach(chx, function(check) {
-                    if (check.checked !== this.checked) {
-                        angular.element(check).triggerHandler('click');
-                    }
-                }, chk);
-            };
-
             scope.hasValue = function(row, column) {
                 if (_.isArray(column.dataField)) {
                     return _.any(column.dataField, function (fieldName) {
@@ -324,44 +349,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
-            scope.getColumnValue = function (column, row) {
-                var columnValue = '';
-
-                var field = (_.has(column, 'displayField') && _.has(row, column.displayField)) ? column.displayField : column.dataField;
-
-                if (_.has(row, field)) {
-                    if (_.has(column, 'filter')) {
-                        columnValue = $filter(column.filter)(row[field]);
-                    } else {
-                        columnValue = row[field];
-                    }
-                }
-
-                return ((_.isEmpty(columnValue)) && (_.has(column, 'emptyValue'))) ? column.emptyValue : columnValue;
-            };
-
-            scope.clickAction = function (chkBoxKey) {
-                var chkBoxId = 'checkbox_' + chkBoxKey;
-
-                var chkBox = document.querySelector('input[type="checkbox"]#' + chkBoxId);
-                if (scope.checkboxEvent) {
-                    return scope.checkboxEvent(chkBoxKey, chkBox, chkBox.checked);
-                }
-            };
-
             scope.decompilePredicateString = function (pred) {
-                if (_.isObject(pred)) {
+                if (_.isArray(pred)) {
                     return pred;
-                }
-                if (_.isEmpty(pred)) {
-                    return scope.decompilePredicateString(scope.getDefaultPredicate());
                 }
 
                 var rev = false;
-                
-                if (_.isArray(pred)) {
-                    pred = (pred.length === 1) && pred[0] || 'emptysort';
-                }
                 
                 if (pred.substr(0,1) === '-') {
                     pred = pred.substr(1);
@@ -511,7 +504,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     scope.predicate = [scope.compilePredicateString(column)];
                 }
                 
-                angular.element(document).data('sortingData', scope.predicate);
+                angular.element(document).data('sortingData', scope.getPredicate());
             };
 
             scope.addColumnSort = function (column) {
@@ -521,7 +514,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     sortIndex = scope.getSortedIndex(column, true);
 
                     if (sortIndex >= 0) {
-                        if (scope.predicate.length > 1) {
+                        if (scope.getPredicate().length > 1) {
                             scope.predicate.splice(sortIndex, 1);
                         } else {
                             scope.predicate[sortIndex] = scope.compilePredicateString(column);
@@ -534,7 +527,15 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
+            scope.sortable = function (column) {
+                return ((scope.disableSorting && _.has(column, 'sortField')) || (!scope.disableSorting));
+            };
+
             scope.sort = function ($event, column) {
+                if (!scope.sortable(column)) {
+                    return;
+                }
+
                 if ($event.shiftKey) {
                     scope.addColumnSort(column);
                 } else {
@@ -542,25 +543,28 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
+            scope.sortClass = function (column) {
+                var index = scope.getSortedIndex(column);
+                if (index === -1) {
+                    index = scope.getSortedIndex(column, true);
+                }
+
+                if (index >= 0) {
+                    return 'sorted-' + index + '-' + ((scope.sortedBy(column)) ? 'asc' : 'desc');
+                }
+            };
+
             scope.getSortedIndex = function (column, inverted) {
                 var pred = scope.compilePredicateString(column, inverted);
-                return scope.predicate.indexOf(pred);
+                return scope.getPredicate().indexOf(pred);
             };
 
             scope.sortedBy = function (column, inverted) {
                 return (scope.getSortedIndex(column, inverted) >= 0);
             };
 
-            scope.getDefaultPredicate = function () {
-                if (!_.isEmpty(scope.defaultSort)) {
-                    return eval(scope.defaultSort);
-                } else {
-                    return [scope.compilePredicateString(scope.getConfig()[0])];
-                }
-            };
-
             scope.reversePredicate = function (index) {
-                var pred = scope.decompilePredicateString(scope.predicate[index]);
+                var pred = scope.decompilePredicateString(scope.getPredicate()[index]);
                 pred.reverse = scope.parseReverseSort(pred.column, pred.reverse);
                 scope.predicate[index] = scope.compilePredicateString(pred.column, !pred.reverse, true);
             };
@@ -573,7 +577,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             };
 
             scope.removePredicate = function (index) {
-                if (scope.predicate.length > 1) {
+                if (scope.getPredicate().length > 1) {
                     scope.predicate.splice(index, 1);
                 }
             };
@@ -595,8 +599,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     scope.configurationVisible = !scope.configurationVisible;
                 }
             };
-
-            scope.predicate = scope.getDefaultPredicate();
 
             // Have to a setTimeout so that it's there.
             setTimeout(function () {
@@ -875,5 +877,5 @@ angular.module('rxDataTable')
 angular.module('rxDataTable').run(['$templateCache', function ($templateCache) {
 	$templateCache.put('src/templates/rx-data-table-itemsPerPage.html', '<form id="itemsPerPageForm" class="itemsPerPage"> <label for="itemsPerPageSelector">{{ label }}</label> <select name="itemsPerPageSelector" id="itemsPerPageSelector" ng-model="pager.itemsPerPage" ng-change="updatePaging()"> <option ng-repeat="i in pager.itemSizeList">{{ i }}</option> </select> </form> ');
 	$templateCache.put('src/templates/rx-data-table-paginate.html', '<ul class="pagination"> <li ng-class="{disabled: pageTracking.pageNumber==0}" class="pagination-first"> <a ng-click="pageTracking.pageNumber=0" ng-hide="pageTracking.pageNumber==0">First</a> <span ng-show="pageTracking.pageNumber==0">First</span> </li> <li ng-class="{disabled: pageTracking.pageNumber==0}" class="pagination-prev"> <a ng-click="pageTracking.pageNumber=(pageTracking.pageNumber - 1)" ng-hide="pageTracking.pageNumber==0">« Prev</a> <span ng-show="pageTracking.pageNumber==0">« Prev</span> </li> <li ng-repeat="n in pageTracking | Page " ng-class="{active: n==pageTracking.pageNumber, \'page-number-last\': n==pageTracking.totalPages - 1}" class="pagination-page"> <a ng-click="pageTracking.pageNumber=n">{{n + 1}}</a> </li> <li ng-class="{disabled: pageTracking.pageNumber==pageTracking.totalPages - 1 || pageTracking.total==0}" class="pagination-next"> <a ng-click="pageTracking.pageNumber=(pageTracking.pageNumber + 1)" ng-hide="pageTracking.pageNumber==pageTracking.totalPages - 1 || pageTracking.total==0"> Next »</a> <span ng-show="pageTracking.pageNumber==pageTracking.totalPages - 1">Next »</span> </li> <li ng-class="{disabled: pageTracking.pageNumber==pageTracking.totalPages - 1}" class="pagination-last"> <a ng-click="pageTracking.pageNumber=pageTracking.totalPages - 1" ng-hide="pageTracking.pageNumber==pageTracking.totalPages - 1">Last</a> <span ng-show="pageTracking.pageNumber==pageTracking.totalPages - 1">Last</span> </li> </ul> ');
-	$templateCache.put('src/templates/rx-data-table.html', '<div class="data-table"> <div class=\'alert\' ng-show="updateFieldStatus" ng-class="{\'loading\': updateFieldStatus.status==\'saving\', \'success\': updateFieldStatus.status==\'success\', \'error\': updateFieldStatus.status==\'error\'}"> {{ updateFieldStatus.message }} </div> <div class="data-info-row"> <strong ng-if="!pager.showAll">{{pager.first}} - {{pager.last}} of <span class=\'total-data-items\'>{{pager.total}} {{ itemName && itemName || \'Items\' }}</span></strong> <strong ng-if="pager.showAll">{{ (listOfData().length> 0) && 1 || 0 }} - {{ listOfData().length }} of {{ listOfData().length }}</strong> <div class="data-table-config-container" ng-if="enableColumnReordering||enableColumnMultiSort" ng-class="{\'dropdown-shown\': configurationVisible}"> <button class="btn-link" ng-click="toggleVisibility()"> <i class="fa fa-table data-table-config-icon" title="Configure Data Table"></i> </button> <div class="data-table-config reveal-animation" ng-show="configurationVisible"> <div class="header" ng-if="enableColumnMultiSort">Sorting</div> <div class="data-table-multi-sort" ng-if="enableColumnMultiSort"> <div class="data-config-row"> <div class="multi-sort-select header">Column</div> <div class="multi-sort-reverse-icon header">Dir</div> <div class="multi-sort-remove-icon header"><span ng-show="predicate.length> 1">Rem</span></div> </div> <div class="data-config-row" ng-repeat="pred in predicate" ng-init="predColumn=decompilePredicateString(pred)"> <div class="multi-sort-select"> <select name="sort-{{$index}}" ng-model="predColumn.column" ng-change="updatePredicate($index, predColumn.column)"> <option ng-repeat="column in getConfig() | UnusedSorts:predicate:predColumn.column" value="{{ getSortField(column) }}" ng-selected="getSortField(column)==predColumn.column">{{ column.title }}</option> </select> </div> <button class="btn-link multi-sort-reverse-icon" ng-click="reversePredicate($index)"> <i class="fa" ng-class="{\'fa-sort-amount-asc\': !parseReverseSort(predColumn.column, predColumn.reverse), \'fa-sort-amount-desc\': parseReverseSort(predColumn.column, predColumn.reverse)}"></i> </button> <div class="multi-sort-remove-icon"> <button class="btn-link" ng-click="removePredicate($index)"> <i class="fa fa-times" ng-if="predicate.length> 1"></i> </button> </div> </div> <button class="btn-link multi-sort-add" ng-if="(predicate.length <configObject.length) && (predicate[predicate.length-1].length> 0)" ng-click="predicate.push(\'\')"> Add New Sort </button> </div> <div class="header" ng-if="enableColumnReordering">Column Configuration</div> <div class="data-table-column-display" ng-if="enableColumnReordering"> <div class="data-config-row"> <div class="header">Column Presets</div> </div> <div class="data-config-row column-preset-row"> <select ng-options="preset.value as preset.text for preset in getColumnPresetSelects()" ng-model="columnDisplay.index"></select> </div> <div class="data-config-row"> <div class="header">Column Order</div> </div> <div class="data-config-row" ng-repeat="column in getConfig()"> <div class="data-config-column-title"> {{ column.title }} </div> <div class="column-order-arrows"> <button class="btn-link btn-move-down" ng-if="!$last" ng-click="moveColumnDown($index)"> <i class="fa fa-arrow-down"></i> </button> <button class="btn-link btn-move-up" ng-if="!$first" ng-click="moveColumnUp($index)"> <i class="fa fa-arrow-up"></i> </button> </div> <div class="column-hide-display"> <button class="btn-link" ng-click="removeColumn($index)"> <i class="fa fa-times"></i> </button> </div> </div> <div class="data-config-row" ng-if="getAvailableColumns().length> 0"> <div class="header">Available Columns</div> </div> <div class="data-config-row column-show-columns" ng-if="getAvailableColumns().length> 0"> <select ng-model="addColumn.index" ng-options="column.value as column.text for column in getAvailableColumns()"> </select> <button ng-click="showColumn(addColumn.index)" class="button button-tiny">add</button> </div> </div> </div> </div> </div> <div class="data-header"> <div class="data-header-cell data-column-{{ $index + 1 }} flex-columns-{{ column.cols }}" ng-repeat="column in getConfig()" data-title="{{ column.title && column.title || column.dataField }}"> <span class="checkbox-span" ng-if="column.checkbox && column.checkAll"> <input ng-click="checkAll(this)" type="checkbox" id="check_all_checkbox"> </span> <button ng-if="!column.checkbox" ng-click="sort($event, column)" class="btn-link data-link"> <span class=\'data-header-cell-content\'>{{ column.title }}</span> <i ng-if="column.help" class="fa fa-question-circle" data-popover="{{ column.help.body }}" data-popover-title="{{ column.help.title }}" data-trigger="focus"></i> <i class="fa fa-chevron-down" ng-show="sortedBy(column, true)"></i> <i class="fa fa-chevron-up" ng-show="sortedBy(column)"></i> </button> </div> </div> <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate: pager track by row[rowKey]" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)"> <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)"> <div ng-if="column.checkbox" class="checkbox"> <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction(\'{{ row[column.dataField] }}\')" id="checkbox_{{ row[column.dataField] }}"> </div> <div ng-if="!column.checkbox"> <i ng-repeat="icon in iconUnwrap(column, row, \'i\')" class="data-table-cell-icon {{ icon.name }}"></i> <div ng-repeat="icon in iconUnwrap(column, row, \'div\')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}"></div> <a ng-if="column.linkField && hasValue(row, column)" href="{{ row[column.linkField] }}" class="data-cell-content" target="_blank">{{ row | ColumnValue:column }}</a> <span ng-if="!column.linkField && hasValue(row, column)" class="data-cell-content"> <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span> <span ng-if="allowEditing(column,row)" class="data-editable"> <span ng-switch="getEditType(column, row)"> <span ng-switch-when="select" class="data-editable-field" editable-select="row[column.dataField]" e-ng-options="o.value as o.text for o in getEditableOptions(column, row)" buttons="no" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span> <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row) | filter:$viewValue" e-typeahead-loading="loadingData" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span> <span ng-switch-default class="data-editable-field" editable-text="row[column.dataField]" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span> <i class="fa fa-refresh data-table-type-loader" ng-show="loadingData"></i> <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value"> <i class="fa fa-times fa-lg"></i> </button> </span> </span> </span> </div> </div> </div> <div ng-if="!pager.showAll" class="pagination-container" ng-show="pager.total> 0"> <rx-data-table-paginate page-tracking="pager"/> </div> <div ng-if="!pager.showAll" class="items-per-page-container" ng-show="pager.total> 0"> <rx-data-table-items-per-page pager="pager" label="{{ itemName && itemName || \'Items\'}} Per Page"/></rx-data-table-items-per-page> </div> </div> ');
+	$templateCache.put('src/templates/rx-data-table.html', '<div class="data-table"> <div class=\'alert\' ng-show="updateFieldStatus" ng-class="{\'loading\': updateFieldStatus.status==\'saving\', \'success\': updateFieldStatus.status==\'success\', \'error\': updateFieldStatus.status==\'error\'}"> {{ updateFieldStatus.message }} </div> <div class="data-info-row"> <strong ng-if="!pager.showAll">{{pager.first}} - {{pager.last}} of <span class=\'total-data-items\'>{{pager.total}} {{ itemName && itemName || \'Items\' }}</span></strong> <div class="data-table-config-container" ng-if="enableColumnReordering||enableColumnMultiSort" ng-class="{\'dropdown-shown\': configurationVisible}"> <button class="btn-link" ng-click="toggleVisibility()"> <i class="fa fa-table data-table-config-icon" title="Configure Data Table"></i> </button> <div class="data-table-config reveal-animation" ng-show="configurationVisible"> <div class="header" ng-if="enableColumnMultiSort">Sorting</div> <div class="data-table-multi-sort" ng-if="enableColumnMultiSort"> <div class="data-config-row"> <div class="multi-sort-select header">Column</div> <div class="multi-sort-reverse-icon header">Dir</div> <div class="multi-sort-remove-icon header"><span ng-show="predicate.length> 1">Rem</span></div> </div> <div class="data-config-row" ng-repeat="pred in predicate" ng-init="predColumn=decompilePredicateString(pred)"> <div class="multi-sort-select"> <select name="sort-{{$index}}" ng-model="predColumn.column" ng-change="updatePredicate($index, predColumn.column)"> <option ng-repeat="column in getConfig() | UnusedSorts:predicate:predColumn.column" value="{{ getSortField(column) }}" ng-selected="getSortField(column)==predColumn.column">{{ column.title }}</option> </select> </div> <button class="btn-link multi-sort-reverse-icon" ng-click="reversePredicate($index)"> <i class="fa" ng-class="{\'fa-sort-amount-asc\': !parseReverseSort(predColumn.column, predColumn.reverse), \'fa-sort-amount-desc\': parseReverseSort(predColumn.column, predColumn.reverse)}"></i> </button> <div class="multi-sort-remove-icon"> <button class="btn-link" ng-click="removePredicate($index)"> <i class="fa fa-times" ng-if="predicate.length> 1"></i> </button> </div> </div> <button class="btn-link multi-sort-add" ng-if="canAddNewMultiSort()" ng-click="predicate.push(\'\')"> Add New Sort </button> </div> <div class="header" ng-if="enableColumnReordering">Column Configuration</div> <div class="data-table-column-display" ng-if="enableColumnReordering"> <div class="data-config-row"> <div class="header">Column Presets</div> </div> <div class="data-config-row column-preset-row"> <select ng-options="preset.value as preset.text for preset in getColumnPresetSelects()" ng-model="columnDisplay.index"></select> </div> <div class="data-config-row"> <div class="header">Column Order</div> </div> <div class="data-config-row" ng-repeat="column in getConfig()"> <div class="data-config-column-title"> {{ column.title }} </div> <div class="column-order-arrows"> <button class="btn-link btn-move-down" ng-if="!$last" ng-click="moveColumnDown($index)"> <i class="fa fa-arrow-down"></i> </button> <button class="btn-link btn-move-up" ng-if="!$first" ng-click="moveColumnUp($index)"> <i class="fa fa-arrow-up"></i> </button> </div> <div class="column-hide-display"> <button class="btn-link" ng-click="removeColumn($index)"> <i class="fa fa-times"></i> </button> </div> </div> <div class="data-config-row" ng-if="getAvailableColumns().length> 0"> <div class="header">Available Columns</div> </div> <div class="data-config-row column-show-columns" ng-if="getAvailableColumns().length> 0"> <select ng-model="addColumn.index" ng-options="column.value as column.text for column in getAvailableColumns()"> </select> <button ng-click="showColumn(addColumn.index)" class="button button-tiny">add</button> </div> </div> </div> </div> </div> <div class="data-header"> <div class="data-header-cell data-column-{{ $index + 1 }} flex-columns-{{ column.cols }}" ng-repeat="column in getConfig()" data-title="{{ column.title && column.title || column.dataField }}" ng-class="sortClass(column, $index)"> <span class="checkbox-span" ng-if="column.checkbox && column.checkAll"> <input ng-click="checkAll(this)" type="checkbox" id="check_all_checkbox"> </span> <button ng-if="!column.checkbox" ng-click="sort($event, column)" class="btn-link data-link"> <span class=\'data-header-cell-content\'>{{ column.title }}</span> <i ng-if="column.help" class="fa fa-question-circle" data-popover="{{ column.help.body }}" data-popover-title="{{ column.help.title }}" data-trigger="focus"></i> <i class="fa fa-chevron-down" ng-show="sortedBy(column, true)"></i> <i class="fa fa-chevron-up" ng-show="sortedBy(column)"></i> </button> </div> </div> <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate:pager track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)"> <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)"> <div ng-if="column.checkbox" class="checkbox"> <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction(\'{{ row[column.dataField] }}\')" id="checkbox_{{ row[column.dataField] }}"> </div> <div ng-if="!column.checkbox"> <i ng-repeat="icon in iconUnwrap(column, row, \'i\')" class="data-table-cell-icon {{ icon.name }}"></i> <div ng-repeat="icon in iconUnwrap(column, row, \'div\')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}"></div> <a ng-if="column.linkField && hasValue(row, column)" href="{{ row[column.linkField] }}" class="data-cell-content" target="_blank">{{ row | ColumnValue:column }}</a> <span ng-if="!column.linkField && hasValue(row, column)" class="data-cell-content"> <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span> <span ng-if="allowEditing(column,row)" class="data-editable"> <span ng-switch="getEditType(column, row)"> <span ng-switch-when="select" class="data-editable-field" editable-select="row[column.dataField]" e-ng-options="o.value as o.text for o in getEditableOptions(column, row)" buttons="no" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span> <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row) | filter:$viewValue" e-typeahead-loading="loadingData" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span> <span ng-switch-default class="data-editable-field" editable-text="row[column.dataField]" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span> <i class="fa fa-refresh data-table-type-loader" ng-show="loadingData"></i> <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value"> <i class="fa fa-times fa-lg"></i> </button> </span> </span> </span> </div> </div> </div> <div ng-if="!pager.showAll" class="pagination-container" ng-show="pager.total> 0"> <rx-data-table-paginate page-tracking="pager"/> </div> <div ng-if="!pager.showAll" class="items-per-page-container" ng-show="pager.total> 0"> <rx-data-table-items-per-page pager="pager" label="{{ itemName && itemName || \'Items\'}} Per Page"/></rx-data-table-items-per-page> </div> </div> ');
 }]);

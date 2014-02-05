@@ -45,6 +45,8 @@ angular.module('demo')
         'index': 0,
         'config': [0,1,2,3]
     };
+
+    $scope.dtDefaultSort = ['colorName'];
 })
 .controller('typicalCtrl', function ($scope, TableInfo) {
     $scope.title = 'Tickets';
@@ -61,6 +63,8 @@ angular.module('demo')
         'index': 0,
         'config': [0,1,2,3,4]
     };
+
+    $scope.dtDefaultSort = ['-severity'];
 })
 .controller('complexCtrl', function ($scope) {
     $scope.title = 'Complex';
