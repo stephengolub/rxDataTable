@@ -112,7 +112,7 @@ angular.module('rxDataTable')
                             
                 try {
                     scope.updatePaging = function () {
-                        scope.pager.ticketsPerPage = parseInt(scope.pager.ticketsPerPage, 10);
+                        scope.pager.itemsPerPage = parseInt(scope.pager.itemsPerPage, 10);
                         scope.pager.pageNumber = 0;
                     }.bind(scope);
                 } catch (err) {
@@ -157,8 +157,8 @@ angular.module('rxDataTable')
                 var added = first + pager.itemsPerPage;
                 var last = (added > items.length) ? items.length : added;
 
-                pager.first = first + 1;
-                pager.last = last;
+                pager.first = parseInt(first + 1, 10);
+                pager.last = parseInt(last, 10);
 
                 return items.slice(first, last);
             }
