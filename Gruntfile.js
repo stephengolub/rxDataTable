@@ -1,9 +1,11 @@
 /* jshint node:true */
+/* jshint camelcase:false */
 
 var gruntConnectConfig = {
-    app: 'test/mock-app',
+    app: 'docs',
     dist : 'dist',
-    ngdocs: 'ngdocs',
+    coverage: 'coverage',
+    ngdocs: 'docs/ngdocs',
     open: {
         hostname: 'localhost',
         port: 9000
@@ -154,9 +156,9 @@ module.exports = function(grunt) {
             },
             linkBower: {
                 command: [
-                    'cd ./test/mock-app/',
-                    'ln -s ../../bower_components .',
-                    'cd ../../'
+                    'cd ./docs/',
+                    'ln -s ../bower_components .',
+                    'cd ../'
                 ].join(' && ')
             }
         },
@@ -178,9 +180,16 @@ module.exports = function(grunt) {
                     'test/mock-app/src/**/*.js' ]
         },
 
+        coveralls: {
+            options: {
+                debug: true,
+                coverage_dir: 'coverage/'
+            }
+        },
+
         ngdocs: {
             options: {
-                'dest': 'dist/ngdocs',
+                'dest': 'docs/ngdocs',
                 'title': 'rxDataTable Developer Documentation',
                 'html5Mode': false
             },
@@ -244,7 +253,8 @@ module.exports = function(grunt) {
                     https: false,
                     changeOrigin: false,
                     rewrite: {
-                        '/api': '/api'
+                        '/api': '/api',
+                        '/ngdocs': '/ngdocs'
                     }
                 }
             ],
@@ -254,7 +264,7 @@ module.exports = function(grunt) {
                         var config = gruntConnectConfig;
                         return [
                             config.proxyRequest,
-                            config.modRewrite(['!\\.\\w+$ /']),
+                            config.modRewrite([ '^/ngdocs/$ /ngdocs/index.html', '!\\.\\w+$ /' ]),
                             config.liveReloadPage,
                             config.mountFolder(cnct, '.tmp'),
                             config.mountFolder(cnct, config.app)
@@ -325,6 +335,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-hustler');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-karma-coveralls');
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-ngdocs');
     grunt.loadNpmTasks('grunt-stubby');

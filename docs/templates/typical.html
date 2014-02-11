@@ -1,0 +1,38 @@
+<h1>{{title}}</h1>
+<div class="bs-example">
+    <rx-data-table
+       row-key="ref_no"
+       visibilty="true"
+       column-configuration="dtConfig"
+       list-of-data="dtData"
+       column-display="dtColumnDisplay"
+       column-presets="dtColumnPresets"
+       predicate="dtDefaultSort"
+       row-style="{class: 'item-color-mapping', field: 'severity', bool: false}"
+       checkbox-event="checkEvent">
+    </rx-data-table>
+</div>
+<div class="highlight">
+    <pre class="html">
+        &lt;!--This is your HTML Template for this Table--&gt;
+        &lt;rx-data-table
+           row-key="ref_no"
+           visibilty="true"
+           column-configuration="dtConfig"
+           list-of-data="dtData"
+           column-display="dtColumnDisplay"
+           column-presets="dtColumnPresets"
+           predicate="dtDefaultSort"
+           row-style="{class: 'item-color-mapping', field: 'severity', bool: false}"
+           checkbox-event="checkEvent"&gt;
+        &lt;/rx-data-table&gt;
+    </pre>
+</div>
+<h3>The Data on the Controller Should look like:</h3>
+<pre class="json">
+$scope.dtConfig = {{ dtConfig | JSONPrint }};
+$scope.dtData = {{ dtData | JSONPrint }};
+$scope.dtColumnPresets = {{ dtColumnPresets | JSONPrint }};
+$scope.dtColumnDisplay = {{ dtColumnDisplay | JSONPrint }};
+$scope.dtDefaultSort = {{ dtDefaultSort | JSONPrint }};
+</pre>

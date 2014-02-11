@@ -26,7 +26,7 @@
     "coveralls": "",
     "karma-coverage": "~0.1.0",
     "grunt-simple-mocha": "~0.4.0",
-    "karma-mocha": "~0.1.0",
+    "karma-mocha": "~0.1.1",
     "chai": "~1.7.2",
     "karma-chai": "0.0.1",
     "sinon-chai": "~2.4.0",
@@ -39,7 +39,8 @@
     "grunt-connect-proxy": "~0.1.7",
     "grunt-contrib-jshint": "~0.8.0",
     "grunt-stubby": "~0.1.4",
-    "grunt-bump": "0.0.13"
+    "grunt-bump": "0.0.13",
+    "grunt-karma-coveralls": "~2.3.0"
   },
   "repository": {
     "type": "git",

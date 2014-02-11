@@ -1,9 +1,5 @@
 [
     {
-        "checkbox": true,
-        "checkAll": true
-    },
-    {
         "title": "ID",
         "dataField": "ref_no",
         "sortField": "severity",
