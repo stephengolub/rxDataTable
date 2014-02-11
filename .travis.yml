@@ -4,3 +4,5 @@ node_js:
 before_script:
   - 'npm install -g grunt-cli bower'
   - 'bower install'
+after_success:
+  - 'grunt coveralls'
