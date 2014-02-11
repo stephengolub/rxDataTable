@@ -6,6 +6,7 @@ bower_components
 *.sw*
 captures/*
 .DS_Store
+.grunt/*
 src/styles/rx-data-table.css
 src/styles/rx-data-table.css
 src/scripts/rx-data-table.js

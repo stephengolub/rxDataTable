@@ -98,6 +98,15 @@ module.exports = function(grunt) {
                     trim: '',
                     module: 'rxDataTable'
                 }
+            },
+            demoViews: {
+                files: {
+                    'docs/src/scripts/templates.js': 'docs/templates/**/*.html'
+                },
+                options: {
+                    trim: '',
+                    module: 'demo'
+                }
             }
         },
 
@@ -320,8 +329,13 @@ module.exports = function(grunt) {
                 pushTo: 'origin',
                 gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d' // options to use with '$ git describe'
             }
+        },
+        'gh-pages': {
+            options: {
+                base: './docs/'
+            },
+            src: ['./**/*', './bower_components', './dist', './api-mocks']
         }
-
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -340,6 +354,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-ngdocs');
     grunt.loadNpmTasks('grunt-stubby');
     grunt.loadNpmTasks('grunt-bump');
+    grunt.loadNpmTasks('grunt-gh-pages');
 
     grunt.registerTask('dev', [
         'clean',
@@ -365,7 +380,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask('release', [
         'default',
-        'bump'
+        'bump',
+        'gh-pages'
     ]);
 
     // TODO: Testing/page objects

@@ -2,8 +2,8 @@
 <html ng-app="demo">
     <head>
         <title>rxDataTable Demo</title>
-        <link rel="stylesheet" href="/dist/styles/rx-data-table.css" type="text/css">
-        <link rel="stylesheet" href="/src/styles/demo-app.css" type="text/css">
+        <link rel="stylesheet" href="dist/styles/rx-data-table.css" type="text/css">
+        <link rel="stylesheet" href="src/styles/demo-app.css" type="text/css">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
@@ -20,7 +20,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">rxDataTable</a>
+                    <a class="navbar-brand" href="#">rxDataTable</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
@@ -34,8 +34,8 @@
                                 <li ng-class="isActive('full-featured')"><a href="#/examples/full-featured">Full-Featured</a></li>
                             </ul>
                         </li>
-                        <li ng-class="isActive('rxDataTable')"><a href="http://localhost:9000/ngdocs/#/api/rxDataTable" target="_self">API Docs</a></li>
-                        <li ng-class="isActive('guides')"><a href="/ngdocs/#/guides/rx-data-table" target="_self">Dev Guides</a></li>
+                        <li ng-class="isActive('rxDataTable')"><a href="ngdocs/#/api/rxDataTable" target="_self">API Docs</a></li>
+                        <li ng-class="isActive('guides')"><a href="ngdocs/#/guides/rx-data-table" target="_self">Dev Guides</a></li>
                     </ul>
                 </div>
             </div>
@@ -56,15 +56,17 @@
         </div>
         <script src="https://code.jquery.com/jquery.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-        <script src="/bower_components/angular/angular.js"></script>
-        <script src="/bower_components/angular-route/angular-route.js"></script>
-        <script src="/bower_components/angular-resource/angular-resource.js"></script>
-        <script src="/bower_components/angular-xeditable/dist/js/xeditable.js"></script>
-        <script src="/bower_components/lodash/dist/lodash.js"></script>
-        <script src="/dist/scripts/rx-data-table.js"></script>
-        <script src="/src/scripts/app.js"></script>
-        <script src="/src/scripts/filters.js"></script>
-        <script src="/src/scripts/controllers.js"></script>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+        <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+        <script src="bower_components/angular-resource/angular-resource.js"></script>
+        <script src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+        <script src="bower_components/lodash/dist/lodash.js"></script>
+        <script src="dist/scripts/rx-data-table.js"></script>
+        <script src="src/scripts/app.js"></script>
+        <script src="src/scripts/templates.js"></script>
+        <script src="src/scripts/filters.js"></script>
+        <script src="src/scripts/controllers.js"></script>
         <script>
             hljs.initHighlightingOnLoad();
             $(document).ready(function() {

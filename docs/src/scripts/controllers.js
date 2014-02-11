@@ -19,10 +19,6 @@ angular.module('demo')
         return data;
     }
     $scope.dtData = generateTriangleNumbers(10);
-    $('pre').each(function(i, e) {
-        /* global hljs */
-        hljs.highlightBlock(e);
-    });
 })
 .controller('basicCtrl', function ($scope, TableInfo) {
     $scope.title = 'Colors';

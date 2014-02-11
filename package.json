@@ -40,7 +40,8 @@
     "grunt-contrib-jshint": "~0.8.0",
     "grunt-stubby": "~0.1.4",
     "grunt-bump": "0.0.13",
-    "grunt-karma-coveralls": "~2.3.0"
+    "grunt-karma-coveralls": "~2.3.0",
+    "grunt-gh-pages": "~0.9.0"
   },
   "repository": {
     "type": "git",
