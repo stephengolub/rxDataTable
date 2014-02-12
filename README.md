@@ -4,6 +4,9 @@
 Data Table Directive
 ==========================
  
+## Documentation & Live Demo
+**http://nickburns2006.github.io/rxDataTable/**
+
 ##Overview##
 The `rx-data-table` directive is designed to pretty much be a catch-all
 solution for displaying data in a table format in a basic or extremely
