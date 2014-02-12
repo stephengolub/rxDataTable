@@ -1,5 +1,5 @@
 [![Build Status](https://api.travis-ci.org/nickburns2006/rxDataTable.png)](https://travis-ci.org/nickburns2006/rxDataTable)
-[![Coverage Status](https://coveralls.io/repos/nickburns2006/rxDataTable/badge.png)](https://coveralls.io/r/nickburns2006/rxDataTable)
+[![Coverage Status](https://coveralls.io/repos/nickburns2006/rxDataTable/badge.png?branch=master)](https://coveralls.io/r/nickburns2006/rxDataTable?branch=master)
 [![Dependency Status](https://david-dm.org/nickburns2006/rxDataTable.png)](https://david-dm.org/nickburns2006/rxDataTable.png)
 Data Table Directive
 ==========================
