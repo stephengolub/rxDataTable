@@ -1,6 +1,6 @@
 angular.module('demo', ['ngRoute', 'ngResource', 'rxDataTable', 'ngSanitize'])
 .factory('TableInfo', ['$resource', function ($resource) {
-    var url = 'api-mocks/responses/:type-:level.json';
+    var url = 'api-mocks/responses/rx-data-table/:type-:level.json';
     if (window.location.host.indexOf('localhost') >= 0) {
         url = 'http://127.0.0.1:8882/api/mocks/:type/:level';
     }
