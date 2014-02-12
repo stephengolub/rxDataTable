@@ -1,6 +1,11 @@
 angular.module('demo', ['ngRoute', 'ngResource', 'rxDataTable', 'ngSanitize'])
 .factory('TableInfo', ['$resource', function ($resource) {
-    return $resource('http://127.0.0.1:8882/api/mocks/:type/:level', {}, {
+    var url = 'api-mocks/responses/:type-:level.json';
+    if (window.location.host.indexOf('localhost') >= 0) {
+        url = 'http://127.0.0.1:8882/api/mocks/:type/:level';
+    }
+
+    return $resource(url, {}, {
         // Type could be "config" or "data"
         // Level could be "simple", "typical", or "full-featured"
         retrieve: {method: 'GET', isArray: true }

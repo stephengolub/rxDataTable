@@ -1,0 +1,35 @@
+-   request:
+        url: ^/api/mocks/config/typical$
+        method: GET
+    response:
+        status: 200
+        file: test/api-mocks/responses/rx-data-table/config-typical.json
+        headers:
+          content-type: application/json
+
+-   request:
+        url: ^/api/mocks/data/typical$
+        method: GET
+    response:
+        status: 200
+        file: test/api-mocks/responses/rx-data-table/data-typical.json
+        headers:
+          content-type: application/json
+
+-   request:
+        url: ^/api/mocks/config/basic$
+        method: GET
+    response:
+        status: 200
+        file: test/api-mocks/responses/rx-data-table/config-basic.json
+        headers:
+          content-type: application/json
+
+-   request:
+        url: ^/api/mocks/data/basic$
+        method: GET
+    response:
+        status: 200
+        file: test/api-mocks/responses/rx-data-table/data-basic.json
+        headers:
+          content-type: application/json

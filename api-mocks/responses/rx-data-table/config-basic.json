@@ -1,0 +1,27 @@
+[
+    {
+        "title": "Color Name",
+        "dataField": "colorName",
+        "sortField": "colorName",
+        "cols": "4"
+    },
+    {
+        "title": "Hex Value",
+        "dataField": "hex",
+        "sortField": "hex",
+        "linkField": "hexLink",
+        "cols": "4"
+    },
+    {
+        "title": "Compliment Name",
+        "cols": "4",
+        "dataField": "compName",
+        "sortField": "compName"
+    },
+    {
+        "title": "Compliment Hex Value",
+        "cols": "4",
+        "dataField": "compHex",
+        "linkField": "compHexLink"
+    }
+]
