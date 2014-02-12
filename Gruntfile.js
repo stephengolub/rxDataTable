@@ -98,6 +98,15 @@ module.exports = function(grunt) {
                     trim: '',
                     module: 'rxDataTable'
                 }
+            },
+            demoViews: {
+                files: {
+                    'docs/src/scripts/templates.js': 'docs/templates/**/*.html'
+                },
+                options: {
+                    trim: '',
+                    module: 'demo'
+                }
             }
         },
 

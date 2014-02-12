@@ -1,44 +1,36 @@
-angular.module('demo', ['ngRoute', 'ngResource', 'rxDataTable'])
+angular.module('demo', ['ngRoute', 'ngResource', 'rxDataTable', 'ngSanitize'])
 .factory('TableInfo', ['$resource', function ($resource) {
     return $resource('http://127.0.0.1:8882/api/mocks/:type/:level', {}, {
         // Type could be "config" or "data"
         // Level could be "simple", "typical", or "full-featured"
-        retrieve: {method: 'GET', isArray: true, interceptor: {
-                response: function () {
-                    $('pre').each(function(i, e) {
-                        /* global hljs */
-                        hljs.highlightBlock(e);
-                    });
-                }
-            }
-        }
-        });
+        retrieve: {method: 'GET', isArray: true }
+    });
 }])
 .config(function ($routeProvider, $locationProvider) {
     $routeProvider
     .when('/examples/simple', {
-        templateUrl: '/templates/simple.html',
+        templateUrl: 'templates/simple.html',
         controller: 'simpleCtrl'
     })
     .when('/examples/basic', {
-        templateUrl: '/templates/basic.html',
+        templateUrl: 'templates/basic.html',
         controller: 'basicCtrl'
     })
     .when('/examples/typical', {
-        templateUrl: '/templates/typical.html',
+        templateUrl: 'templates/typical.html',
         controller: 'typicalCtrl'
     })
     .when('/examples/complex', {
-        templateUrl: '/templates/complex.html',
+        templateUrl: 'templates/complex.html',
         controller: 'complexCtrl'
     })
     .when('/examples/full-featured', {
-        templateUrl: '/templates/full-featured.html',
+        templateUrl: 'templates/full-featured.html',
         controller: 'fullFeaturedCtrl'
     })
     .when('/', {
         controller: 'mainCtrl',
-        templateUrl: '/templates/main.html'
+        templateUrl: 'templates/main.html'
     })
     .otherwise({
         redirectTo: '/',
@@ -49,4 +41,13 @@ angular.module('demo', ['ngRoute', 'ngResource', 'rxDataTable'])
     $rootScope.isActive = function (type) {
         return ($location.path().indexOf(type) >= 0) ? 'active' : undefined;
     };
+
+    $rootScope.$on('$routeChangeSuccess', function () {
+        setTimeout(function () {
+            $('.highlight pre').each(function(i, e) {
+                /* global hljs */
+                hljs.highlightBlock(e);
+            });
+        }, 0);
+    });
 });

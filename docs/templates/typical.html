@@ -29,10 +29,10 @@
     </pre>
 </div>
 <h3>The Data on the Controller Should look like:</h3>
-<pre class="json">
-$scope.dtConfig = {{ dtConfig | JSONPrint }};
-$scope.dtData = {{ dtData | JSONPrint }};
-$scope.dtColumnPresets = {{ dtColumnPresets | JSONPrint }};
-$scope.dtColumnDisplay = {{ dtColumnDisplay | JSONPrint }};
-$scope.dtDefaultSort = {{ dtDefaultSort | JSONPrint }};
+<pre>
+$scope.dtConfig = <span ng-bind-html="dtConfig | JSONPrint:true"></span>;
+$scope.dtData = <span ng-bind-html="dtData | JSONPrint:true"></span>;
+$scope.dtColumnPresets = <span ng-bind-html="dtColumnPresets | JSONPrint:true"></span>;
+$scope.dtColumnDisplay = <span ng-bind-html="dtColumnDisplay | JSONPrint:true"></span>;
+$scope.dtDefaultSort = <span ng-bind-html="dtDefaultSort | JSONPrint:true"></span>;
 </pre>
