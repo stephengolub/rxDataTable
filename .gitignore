@@ -11,6 +11,7 @@ src/styles/rx-data-table.css
 src/styles/rx-data-table.css
 src/scripts/rx-data-table.js
 src/scripts/rx-data-table.tpls.js
+docs/ngdocs/*
 # Allow the option to use a local protractor conf
 test/protractor.conf.local.js
 

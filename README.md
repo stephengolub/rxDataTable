@@ -50,9 +50,7 @@ project to use this.
 This project uses the [angular-xeditable](http://vitalets.github.io/angular-xeditable/ "angular-xeditable homepage") for it's inline editing capabilities.
 
 ##TODO##
-1. Set up multiple examples for quick implementation.
-2. Simplify usage for basic implementations.
-
+...
 ##License##
 
 [MIT](./LICENSE.md)

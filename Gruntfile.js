@@ -335,6 +335,13 @@ module.exports = function(grunt) {
                 base: './docs/'
             },
             src: ['./**/*', './bower_components', './dist', './api-mocks']
+        },
+        markdown: {
+            all: {
+                files: {
+                    'docs/templates/main.html': 'README.md'
+                }
+            }
         }
     });
 
@@ -355,6 +362,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-stubby');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-gh-pages');
+    grunt.loadNpmTasks('grunt-markdown');
 
     grunt.registerTask('dev', [
         'clean',
@@ -364,11 +372,17 @@ module.exports = function(grunt) {
         'copy'
     ]);
 
+    grunt.registerTask('docs', [
+        'ngdocs',
+        'markdown',
+        'ngTemplateCache:demoViews'
+    ]);
+
     grunt.registerTask('default', [
         'dev',
         'uglify',
         'cssmin',
-        'ngdocs'
+        'docs'
     ]);
 
     grunt.registerTask('serve', [
