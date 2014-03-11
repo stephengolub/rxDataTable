@@ -62,6 +62,11 @@ for you to attach conditional styles to each row or column.</p>
 <td>If you specify this attribute, then the value will be resolved to the appropriate filter. The filter should expect row, column objects to be passed to it.</td>
 </tr>
 <tr>
+<td>filterParameters</td>
+<td><a href class="label type-hint type-hint-array">array</a></td>
+<td>This is an optional list of parameters to pass to the filter.</td>
+</tr>
+<tr>
 <td>help</td>
 <td><a href class="label type-hint type-hint-object">object</a></td>
 <td>If this is specified, then the column will have a help bubble beside the header that can have information populating it. The object MUST have a <code>body</code> attribute which should be the body of the text. It can also have a <code>title</code> attribute that will give the popover a title header.</td>
@@ -77,9 +82,19 @@ for you to attach conditional styles to each row or column.</p>
 <td>This is a list of objects that will resolve to icons to be displayed. The attributes for the objects are as follows: <ul><li><strong>name</strong>: If this is specified, the column uses Font Awesome icons. The name is the name of the Font Awesome icon class.</li><li><strong>class</strong>: If class is specified, then a div is created and the class is applied to it.</li><li><strong>field</strong>: Which field should the icon get its data from.</li><li><strong>fieldValue</strong>: What should the field be compared against to determinewhether or not this particular icon should be shown. If this is not applied, then a truthy check is done on the field.</li><li><strong>alt</strong>: This is the alt text that gets applied to the icon.</li></ul></td>
 </tr>
 <tr>
+<td>linkFunction</td>
+<td><a href class="label type-hint type-hint-function">function</a></td>
+<td>This is a function that will generate the link for this column.</td>
+</tr>
+<tr>
 <td>linkField</td>
 <td><a href class="label type-hint type-hint-string">string</a></td>
-<td>This is the data field where a link will be pulled from for the a href link.</td>
+<td>This is the data field where a link will be pulled from for the a href link.  This is ignored if there is a linkFunction present.</td>
+</tr>
+<tr>
+<td>linkTarget</td>
+<td><a href class="label type-hint type-hint-string">string</a></td>
+<td>This is the a target that you would like the link to go to.</td>
 </tr>
 <tr>
 <td>ng-class</td>
