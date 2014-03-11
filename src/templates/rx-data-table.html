@@ -97,8 +97,8 @@
             <div ng-if="!column.checkbox">
                 <i ng-repeat="icon in iconUnwrap(column, row, 'i')" class="data-table-cell-icon {{ icon.name }}"></i>
                 <div ng-repeat="icon in iconUnwrap(column, row, 'div')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}"></div>
-                <a ng-if="column.linkField && hasValue(row, column)" href="{{ row[column.linkField] }}" class="data-cell-content" target="_blank">{{ row | ColumnValue:column }}</a>
-                <span ng-if="!column.linkField && hasValue(row, column)" class="data-cell-content">
+                <a ng-if="buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : '_blank' }}">{{ row | ColumnValue:column }}</a>
+                <span ng-if="!buildLink(row, column) && hasValue(row, column)" class="data-cell-content">
                     <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span>
                     <span ng-if="allowEditing(column,row)" class="data-editable">
                         <span ng-switch="getEditType(column, row)">

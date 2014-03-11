@@ -114,6 +114,15 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 scope.columnDisplay = {index: 0};
             }
 
+
+            scope.buildLink = function (row, column) {
+                if (_.has(column, 'linkField') && _.has(row, column.linkField)) {
+                    return row[column.linkField];
+                } else if (_.has(column, 'linkFunction') && _.isFunction(column.linkFunction)) {
+                    return column.linkFunction(row);
+                }
+            };
+
             scope.getPredicate = function () {
                 if (scope.predicate === false) {
                     // This means we're going to be disabling sorting on all
@@ -643,7 +652,11 @@ app.filter('ColumnValue', function ($filter) {
         _.forEach(field, function (fieldName, fieldIndex, field) {
             if (_.has(this.row, fieldName)) {
                 if (_.has(this.column, 'filter')) {
-                    this.columnValue.value += $filter(this.column.filter)(this.row[fieldName]);
+                    if (_.has(this.column, 'filterParameters')) {
+                        this.columnValue.value += $filter(this.column.filter).apply(this, [this.row[fieldName]].concat(this.column.filterParameters));
+                    } else {
+                        this.columnValue.value += $filter(this.column.filter)(this.row[fieldName]);
+                    }
                 } else {
                     this.columnValue.value += this.row[fieldName];
                 }

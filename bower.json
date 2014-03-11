@@ -21,6 +21,7 @@
     "angular-resource": "1.2.1"
   },
   "gitHead": "1ec968cbad44477534ccf07ce5f8650e93589016",
+  "interactive": false,
   "repository": {
     "type": "git",
     "url": "git://github.com/nickburns2006/rxDataTable"
