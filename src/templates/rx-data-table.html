@@ -94,7 +94,21 @@
             <div ng-if="column.checkbox" class="checkbox">
                 <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction('{{ row[column.dataField] }}')" id="checkbox_{{ row[column.dataField] }}">
             </div>
-            <div ng-if="!column.checkbox">
+            <div ng-if="column.menu" class="menu-column">
+                <button class="menu-toggle btn-link" ng-click="toggleMenu(row, column)">
+                    <i ng-if="!column.menu.icon" class="fa fa-cog fa-lg"></i>
+                    <i ng-if="column.menu.icon" class="fa" ng-class="column.menu.icon"></i>
+                </button>
+                <ul class="menu-items" ng-show="isMenuShown(row, column)">
+                    <li class="menu-item" ng-repeat="menuItem in column.menu.items">
+                        <button class="btn-link" ng-class="menuItem.class" ng-click="executeAction(row, menuItem)">
+                            <i ng-if="menuItem.icon" class="fa" ng-class="menuItem.icon"></i>
+                            <span class="menu-item-text">{{ menuItem.text }}</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div ng-if="!column.checkbox && !column.menu">
                 <i ng-repeat="icon in iconUnwrap(column, row, 'i')" class="data-table-cell-icon {{ icon.name }}"></i>
                 <div ng-repeat="icon in iconUnwrap(column, row, 'div')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}"></div>
                 <a ng-if="buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : '_blank' }}">{{ row | ColumnValue:column }}</a>

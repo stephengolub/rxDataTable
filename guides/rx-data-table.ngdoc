@@ -36,6 +36,7 @@
  | linkFunction  | <a href class="label type-hint type-hint-function">function</a>  | This is a function that will generate the link for this column. |
  | linkField  | <a href class="label type-hint type-hint-string">string</a>  | This is the data field where a link will be pulled from for the a href link.  This is ignored if there is a linkFunction present. |
  | linkTarget  | <a href class="label type-hint type-hint-string">string</a>  | This is the a target that you would like the link to go to. |
+ | menu   | <a href class="label type-hint type-hint-object">object</a> | This attribute should be an object describing how you would like the menu to be displayed. The base object only has two root elements: `icon` (optional) which is a class for the icon in the menu (defaults to fa-cog), and then `items` which is the list of Menu Item Objects, the configuration of which can be found {@link #/guides/rx-data-table#menus here}. |
  | ng-class   | <a href class="label type-hint type-hint-function">function(row)</a>  | This is a function that gets passed the row. The return value is expected to be a string that will get applied as a class. |
  | sortField  | <a href class="label type-hint type-hint-string">string</a>  | This is the data field that the column will sort by. If it is not supplied, the column will default to sort by the dataField. |
  | sortInverse| <a href class="label type-hint type-hint-boolean">boolean=false</a> | Should the display of this column's sort be inverted. |
@@ -61,57 +62,20 @@
  | postUpdateSuccess     | <a href class="label type-hint type-hint-function">function(column, row, newValue)</a> | This method will run after the update is successfully completed with the server, if it does so. |
  | postUpdateError     | <a href class="label type-hint type-hint-function">function(column, row, newValue)</a> | This method will run after the update fails to complete with the server, if it does so. It will not rollback any of the changes applied during the **`updateMethod`**, unless you specifically add them to this method. |
  
-##Examples##
-<doc:example>
-   <doc:source>
-      <script> 
-         require('/app/scripts/directives/rx-data-table.js');
-         var app = angular.module('dt-example1', ['rxDataTableModule']);
+<a href="menus"></a>
+ ##Contextual Menus##
+ 
+ The Data Table Directive has the capability to have one or more of the columns
+ have a contextual menu with configurable actions and options.
 
-         function Ctrl($scope) {
-             $scope.columns = [
-                 {
-                     'title': 'ID',
-                     'cols': '1',
-                     'dataField': 'id',
-                 },
-                 {
-                     'title': 'Name',
-                     'cols': '2',
-                     'dataField': 'name',
-                 },
-                 {
-                     'title': 'Team',
-                     'cols': '2',
-                     'dataField': 'team',
-                 }
-             ];
-             $scope.data = [
-                 {
-                     'id': '0',
-                     'name': 'George',
-                     'team': 'a2'
-                 },
-                 {
-                     'id': '1',
-                     'name': 'Shep',
-                     'team': 'a1'
-                 }
-             ];
-             $scope.colDisplay = {
-                 index: 0,
-                 config: [0,1]
-             };
-             $scope.presets = [
-                 {
-                     title: 'Default',
-                     config: [0,1]
-                 }
-             ];
-         }
-      </script>
-      <div ng-controller="Ctrl">
-          <rx-data-table list-of-data="data" column-configuration="columns" column-display="colDisplay" column-presets="presets" visibility="true" row-key="team" ></rx-data-table>
-      </div>
-   </doc:source>
-</doc:example>
+ The Menu will take a list of items that you want to show up.
+ 
+ | Attribute  | Type      | Details   |
+ |------------|-----------|-----------|
+ | text      | <a href class="label type-hint type-hint-string">string</a>  | This will be the text that will appear for the menu option. |
+ | icon      | <a href class="label type-hint type-hint-string">string</a>  | This will be the CSS Class that will be used to apply the icon. It should be a FontAwesome Icon. |
+ | class      | <a href class="label type-hint type-hint-string">string</a>  | This will be the CSS Class that will be applied to this menu option. You can use this for styling purposes. |
+ | action | <a href class="label type-hint
+ type-hint-function">function(row)</a>  | This is a function that will execute
+ when the menu option is clicked. Closing the menu will automatically be
+ appended once the action is run. |
