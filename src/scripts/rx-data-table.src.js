@@ -609,12 +609,46 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
             };
 
+            scope.menuShown = {};
+            scope.toggleMenu = function (row, column) {
+                if (scope.isMenuShown(row, column)) {
+                    scope.menuShown = {};
+                } else {
+                    scope.menuShown = {col: column, row: row};
+                }
+            };
+
+            scope.isMenuShown = function (row, column) {
+                if (_.isUndefined(scope.menuShown)) {
+                    scope.menuShown = {};
+                }
+
+                return (_.isEqual(scope.menuShown, {row: row, col: column}));
+            };
+
+            scope.executeAction = function (row, menuItem) {
+                if (_.has(menuItem, 'action') && _.isFunction(menuItem.action)) {
+                    menuItem.action(row);
+                    scope.menuShown = {};
+                }
+            };
+
             // Have to a setTimeout so that it's there.
             setTimeout(function () {
-                angular.element(document.querySelector('.data-table-config-container')).on('click', function (e) {
+                var stopProp = function (e) {
                     e.stopPropagation();
-                });
+                };
+
+                angular.element(document.querySelector('.data-table-config-container')).on('click', stopProp);
+                angular.element(document.querySelector('.menu-column')).on('click', stopProp);
             }, 1);
+
+            scope.$watch(function () { return scope.listOfData; }, function () {
+                var stopProp = function (e) {
+                    e.stopPropagation();
+                };
+                angular.element(document.querySelector('.menu-column')).on('click', stopProp);
+            }, true);
 
             $document.on('click', function () {
                 this.toggleVisibility(false);

@@ -234,15 +234,23 @@ module.exports = function(grunt) {
                 }
             },
             css: {
-                files: ['app/styles/**/*.less'],
+                files: ['src/styles/**/*.less'],
                 tasks: ['less', 'dev'],
                 options: {
                     livereload: 35730
                 }
             },
             html: {
-                files: ['app/index.html', 'app/views/{,*/}*.html'],
+                files: ['app/index.html', 'src/templates/**/*.html'],
                 tasks: ['dev'],
+                options: {
+                    livereload: 35730
+                }
+            },
+            dev: {
+                /* jshint maxlen:300 */
+                files: ['Gruntfile.js', 'src/scripts/**/*.js', '!src/scripts/**/*.spec.js', 'app/index.html', 'src/templates/**/*.html', 'src/styles/**/*.less', 'app/scripts/**/*.spec.js'],
+                tasks: ['jshint:scripts', 'karma:single', 'dev'],
                 options: {
                     livereload: 35730
                 }
