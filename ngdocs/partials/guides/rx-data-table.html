@@ -97,6 +97,11 @@ for you to attach conditional styles to each row or column.</p>
 <td>This is the a target that you would like the link to go to.</td>
 </tr>
 <tr>
+<td>menu</td>
+<td><a href class="label type-hint type-hint-object">object</a></td>
+<td>This attribute should be an object describing how you would like the menu to be displayed. The base object only has two root elements: <code>icon</code> (optional) which is a class for the icon in the menu (defaults to fa-cog), and then <code>items</code> which is the list of Menu Item Objects, the configuration of which can be found <a href="#/guides/rx-data-table#menus">here</a>.</td>
+</tr>
+<tr>
 <td>ng-class</td>
 <td><a href class="label type-hint type-hint-function">function(row)</a></td>
 <td>This is a function that gets passed the row. The return value is expected to be a string that will get applied as a class.</td>
@@ -179,67 +184,42 @@ field editable on rows that only meet certain conditions.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="data-table-directive-guide_examples">Examples</h3>
-<h3 id="data-table-directive-guide_source">Source</h3>
-<div source-edit="" source-edit-deps="angular.js script.js" source-edit-html="index.html" source-edit-css="" source-edit-js="script.js" source-edit-json="" source-edit-unit="" source-edit-scenario=""></div>
-<div class="tabbable"><div class="tab-pane" title="index.html">
-<pre class="prettyprint linenums" ng-set-text="index.html" ng-html-wrap-loaded=" angular.js script.js"></pre>
-<script type="text/ng-template" id="index.html">
-     
-     <div ng-controller="Ctrl">
-         <rx-data-table list-of-data="data" column-configuration="columns" column-display="colDisplay" column-presets="presets" visibility="true" row-key="team" ></rx-data-table>
-     </div>
-  </script>
-</div>
-<div class="tab-pane" title="script.js">
-<pre class="prettyprint linenums" ng-set-text="script.js"></pre>
-<script type="text/ng-template" id="script.js"> 
-        require('/app/scripts/directives/rx-data-table.js');
-        var app = angular.module('dt-example1', ['rxDataTableModule']);
-
-        function Ctrl($scope) {
-            $scope.columns = [
-                {
-                    'title': 'ID',
-                    'cols': '1',
-                    'dataField': 'id',
-                },
-                {
-                    'title': 'Name',
-                    'cols': '2',
-                    'dataField': 'name',
-                },
-                {
-                    'title': 'Team',
-                    'cols': '2',
-                    'dataField': 'team',
-                }
-            ];
-            $scope.data = [
-                {
-                    'id': '0',
-                    'name': 'George',
-                    'team': 'a2'
-                },
-                {
-                    'id': '1',
-                    'name': 'Shep',
-                    'team': 'a1'
-                }
-            ];
-            $scope.colDisplay = {
-                index: 0,
-                config: [0,1]
-            };
-            $scope.presets = [
-                {
-                    title: 'Default',
-                    config: [0,1]
-                }
-            ];
-        }
-     </script>
-</div>
-</div><h3 id="data-table-directive-guide_demo">Demo</h3>
-<div class="well doc-example-live animate-container" ng-embed-app="" ng-set-html="index.html" ng-eval-javascript="script.js"></div>
+<p><a href="menus"></a></p>
+<h3 id="data-table-directive-guide_contextual-menus">Contextual Menus</h3>
+<p>The Data Table Directive has the capability to have one or more of the columns
+have a contextual menu with configurable actions and options.</p>
+<p>The Menu will take a list of items that you want to show up.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Type</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text</td>
+<td><a href class="label type-hint type-hint-string">string</a></td>
+<td>This will be the text that will appear for the menu option.</td>
+</tr>
+<tr>
+<td>icon</td>
+<td><a href class="label type-hint type-hint-string">string</a></td>
+<td>This will be the CSS Class that will be used to apply the icon. It should be a FontAwesome Icon.</td>
+</tr>
+<tr>
+<td>class</td>
+<td><a href class="label type-hint type-hint-string">string</a></td>
+<td>This will be the CSS Class that will be applied to this menu option. You can use this for styling purposes.</td>
+</tr>
+<tr>
+<td>action</td>
+<td>&lt;a href class=&quot;label type-hint</td>
+</tr>
+</tbody>
+</table>
+<p>type-hint-function&quot;&gt;function(row)</a>  | This is a function that will execute
+when the menu option is clicked. Closing the menu will automatically be
+appended once the action is run. |</p>
 </div></div>
