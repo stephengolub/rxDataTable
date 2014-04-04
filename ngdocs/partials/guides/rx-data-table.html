@@ -69,7 +69,7 @@ for you to attach conditional styles to each row or column.</p>
 <tr>
 <td>help</td>
 <td><a href class="label type-hint type-hint-object">object</a></td>
-<td>If this is specified, then the column will have a help bubble beside the header that can have information populating it. The object MUST have a <code>body</code> attribute which should be the body of the text. It can also have a <code>title</code> attribute that will give the popover a title header.</td>
+<td>If this is specified, then the column will have a help bubble beside the header that can have information populating it. The object MUST have a <code>body</code> attribute which should be the body of the text. It can also have a <code>title</code> attribute that will give the popover a title header. <strong>REQUIRES UI Bootstrap Popover Module</strong></td>
 </tr>
 <tr>
 <td>hideable</td>
@@ -79,7 +79,7 @@ for you to attach conditional styles to each row or column.</p>
 <tr>
 <td>icon</td>
 <td><a href class="label type-hint type-hint-array">array.&lt;object&gt;</a></td>
-<td>This is a list of objects that will resolve to icons to be displayed. The attributes for the objects are as follows: <ul><li><strong>name</strong>: If this is specified, the column uses Font Awesome icons. The name is the name of the Font Awesome icon class.</li><li><strong>class</strong>: If class is specified, then a div is created and the class is applied to it.</li><li><strong>field</strong>: Which field should the icon get its data from.</li><li><strong>fieldValue</strong>: What should the field be compared against to determinewhether or not this particular icon should be shown. If this is not applied, then a truthy check is done on the field.</li><li><strong>alt</strong>: This is the alt text that gets applied to the icon.</li></ul></td>
+<td>This is a list of objects that will resolve to icons to be displayed. The attributes for the objects are as follows: <ul><li><strong>name</strong>: If this is specified, the column uses Font Awesome icons. The name is the name of the Font Awesome icon class.</li><li><strong>class</strong>: If class is specified, then a div is created and the class is applied to it.</li><li><strong>field</strong>: Which field should the icon get its data from.</li><li><strong>fieldValue</strong>: What should the field be compared against to determinewhether or not this particular icon should be shown. If this is not applied, then a truthy check is done on the field.</li><li><strong>alt</strong>: This is the alt text that gets applied to the icon.</li><li><strong>tooltip</strong>: This will use add the ui-bootstrap tooltip module and allow you to have a tooltip for this icon. This should be an object with <code>text</code> as the tooltip text (REQUIRED) and can take <code>placement</code> to place the tooltip according to the module&#39;s accepted values. <strong>REQUIRES UI Bootstrap Tooltip Module</strong></li></ul></td>
 </tr>
 <tr>
 <td>linkFunction</td>
