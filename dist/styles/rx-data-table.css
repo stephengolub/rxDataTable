@@ -190,7 +190,7 @@
   display: block;
   vertical-align: middle;
   float: left;
-  margin-right: 2px;
+  margin: 2px;
 }
 .data-row .data-cell .data-cell-content {
   white-space: pre;
