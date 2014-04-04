@@ -21,6 +21,15 @@ angular.module('rxDataTable')
             scope: {
                 pageTracking: '=',
                 numberOfPages: '@'
+            },
+            link: function (scope) {
+                scope.$watch(function () {
+                    return scope.pageTracking.total;
+                }, function () {
+                    if (scope.pageTracking.pageNumber >= scope.pageTracking.totalPages) {
+                        scope.pageTracking.pageNumber = 0;
+                    }
+                });
             }
         };
     })
