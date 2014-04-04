@@ -83,7 +83,7 @@
             </span>
             <button ng-if="!column.checkbox" ng-click="sort($event, column)" class="btn-link data-link">
                 <span class='data-header-cell-content'>{{ column.title }}</span>
-                <i ng-if="column.help" class="fa fa-question-circle" data-popover="{{ column.help.body }}" data-popover-title="{{ column.help.title }}" data-trigger="focus"></i>
+                <i ng-if="column.help" class="fa fa-question-circle" popover="{{ column.help.body }}" popover-title="{{ column.help.title }}" popover-trigger="mouseenter"></i>
                 <i class="fa fa-chevron-down" ng-show="sortedBy(column, true)"></i>
                 <i class="fa fa-chevron-up" ng-show="sortedBy(column)"></i>
             </button>
@@ -109,8 +109,8 @@
                 </ul>
             </div>
             <div ng-if="!column.checkbox && !column.menu">
-                <i ng-repeat="icon in iconUnwrap(column, row, 'i')" class="data-table-cell-icon {{ icon.name }}"></i>
-                <div ng-repeat="icon in iconUnwrap(column, row, 'div')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}"></div>
+                <i ng-repeat="icon in iconUnwrap(column, row, 'i')" class="data-table-cell-icon {{ icon.name }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : 'top' }}"></i>
+                <div ng-repeat="icon in iconUnwrap(column, row, 'div')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : 'top' }}"></div>
                 <a ng-if="buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : '_blank' }}">{{ row | ColumnValue:column }}</a>
                 <span ng-if="!buildLink(row, column) && hasValue(row, column)" class="data-cell-content">
                     <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span>

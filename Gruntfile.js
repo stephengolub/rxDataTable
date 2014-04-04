@@ -227,7 +227,7 @@ module.exports = function(grunt) {
                 }
             },
             specs: {
-                files: ['app/scripts/**/*.spec.js'],
+                files: ['src/scripts/**/*.spec.js'],
                 tasks: ['jshint:specs', 'karma:single'],
                 options: {
                     livereload: false
