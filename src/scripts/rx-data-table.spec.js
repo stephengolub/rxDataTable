@@ -542,7 +542,7 @@ describe('Data Table Directive', function () {
         var itemHeaderHelp = el.find('.data-header-cell[data-title="ID"] i');
 
         expect(itemHeaderHelp.hasClass('fa-question-circle')).to.equal(true);
-        expect(itemHeaderHelp.attr('data-popover')).to.equal('This field is sorted by severity, not the ref_no');
+        expect(itemHeaderHelp.attr('popover')).to.equal('This field is sorted by severity, not the ref_no');
     });
 
     it('should should create x-editable elements for columns with config', function () {
