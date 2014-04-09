@@ -3,7 +3,7 @@
         {{ updateFieldStatus.message }}
     </div>
     <div class="data-info-row">
-        <strong ng-if="!pager.showAll">{{(pager.last == 0) ? '0' : pager.first}} - {{pager.last}} of <span class='total-data-items'>{{pager.total}} {{ itemName && itemName || 'Items' }}</span></strong>
+        <strong ng-if="!pagerObject.showAll">{{(pagerObject.last == 0) ? '0' : pagerObject.first}} - {{pagerObject.last}} of <span class='total-data-items'>{{pagerObject.total}} {{ itemName && itemName || 'Items' }}</span></strong>
         <div class="data-table-config-container" ng-if="enableColumnReordering||enableColumnMultiSort" ng-class="{'dropdown-shown': configurationVisible}">
             <button class="btn-link" ng-click="toggleVisibility()">
                 <i class="fa fa-table data-table-config-icon" title="Configure Data Table"></i>
@@ -89,7 +89,7 @@
             </button>
         </div>
     </div>
-    <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate:pager track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)">
+    <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate:pagerObject track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)">
         <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)">
             <div ng-if="column.checkbox" class="checkbox">
                 <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction('{{ row[column.dataField] }}')" id="checkbox_{{ row[column.dataField] }}">
@@ -130,10 +130,10 @@
             </div>
         </div>
     </div>
-    <div ng-if="!pager.showAll" class="pagination-container" ng-show="pager.total > 0">
-        <rx-data-table-paginate page-tracking="pager" />
+    <div ng-if="!pagerObject.showAll" class="pagination-container" ng-show="pagerObject.total > 0">
+        <rx-data-table-paginate page-tracking="pagerObject" />
     </div>
-    <div ng-if="!pager.showAll" class="items-per-page-container" ng-show="pager.total > 0">
-        <rx-data-table-items-per-page pager="pager" label="{{ itemName && itemName || 'Items'}} Per Page"/></rx-data-table-items-per-page>
+    <div ng-if="!pagerObject.showAll" class="items-per-page-container" ng-show="pagerObject.total > 0">
+        <rx-data-table-items-per-page pager-object="pagerObject" label="{{ itemName && itemName || 'Items'}} Per Page"/></rx-data-table-items-per-page>
     </div>
 </div>

@@ -96,7 +96,7 @@ angular.module('rxDataTable')
  * items and outputs a select box that allows you to change how many items in
  * the list to show at a time
  *
- * @param {Object} pager This is the page tracking service instance to
+ * @param {Object} pager-object This is the page tracking service instance to
  * be used for this directive
  * @param {string='Items'} label This is the name of the items that you are
  * restricting. It defaults to 'Items' and thus outputs 'Items per page'
@@ -108,29 +108,29 @@ angular.module('rxDataTable')
             templateUrl: 'src/templates/rx-data-table-itemsPerPage.html',
             scope: {
                 label: '@',
-                pager: '=?'
+                pagerObject: '=?'
             },
             link: function(scope) {
-                if (_.isUndefined(scope.pager)) {
-                    scope.pager = PageTracking.createInstance();
+                if (_.isUndefined(scope.pagerObject)) {
+                    scope.pagerObject = PageTracking.createInstance();
                 }
 
-                if (!scope.pager.pageInit) {
-                    scope.pager.pageInit = true;
+                if (!scope.pagerObject.pageInit) {
+                    scope.pagerObject.pageInit = true;
                 }
                             
                 try {
                     scope.updatePaging = function () {
-                        scope.pager.itemsPerPage = parseInt(scope.pager.itemsPerPage, 10);
-                        scope.pager.pageNumber = 0;
+                        scope.pagerObject.itemsPerPage = parseInt(scope.pagerObject.itemsPerPage, 10);
+                        scope.pagerObject.pageNumber = 0;
                     }.bind(scope);
                 } catch (err) {
                     // This is here because the tests are being weird.
                 }
 
-                scope.pager.itemSizeList = _.range(scope.pager.MIN_PER_PAGE,
-                    scope.pager.MAX_PER_PAGE + scope.pager.ITEMS_PER_PAGE_STEP,
-                    scope.pager.ITEMS_PER_PAGE_STEP);
+                scope.pagerObject.itemSizeList = _.range(scope.pagerObject.MIN_PER_PAGE,
+                    scope.pagerObject.MAX_PER_PAGE + scope.pagerObject.ITEMS_PER_PAGE_STEP,
+                    scope.pagerObject.ITEMS_PER_PAGE_STEP);
             }
         };
     })
@@ -144,30 +144,30 @@ angular.module('rxDataTable')
  * items list for the paging.
  *
  * @param {Object} items The list of items that are to be sliced into pages
- * @param {Object} pager The instance of the PageTracking service. If not
+ * @param {Object} pager-object The instance of the PageTracking service. If not
  * specified, a new one will be created.
  *
  * @returns {Object} The list of items for the current page in the PageTracking object
  */
     .filter('Paginate', function (PageTracking) {
-        return function (items, pager) {
-            if (!pager) {
-                pager = PageTracking.createInstance();
+        return function (items, pagerObject) {
+            if (!pagerObject) {
+                pagerObject = PageTracking.createInstance();
             }
-            if (pager.showAll) {
-                pager.total = items.length;
+            if (pagerObject.showAll) {
+                pagerObject.total = items.length;
                 return items;
             }
             if (items) {
-                pager.total = items.length;
-                pager.totalPages = Math.ceil(pager.total / pager.itemsPerPage);
+                pagerObject.total = items.length;
+                pagerObject.totalPages = Math.ceil(pagerObject.total / pagerObject.itemsPerPage);
 
-                var first = pager.pageNumber * pager.itemsPerPage;
-                var added = first + pager.itemsPerPage;
+                var first = pagerObject.pageNumber * pagerObject.itemsPerPage;
+                var added = first + pagerObject.itemsPerPage;
                 var last = (added > items.length) ? items.length : added;
 
-                pager.first = parseInt(first + 1, 10);
-                pager.last = parseInt(last, 10);
+                pagerObject.first = parseInt(first + 1, 10);
+                pagerObject.last = parseInt(last, 10);
 
                 return items.slice(first, last);
             }
@@ -181,30 +181,30 @@ angular.module('rxDataTable')
  * This is the pagination filter that is used to limit the number of pages
  * shown
  *
- * @param {Object} pager The instance of the PageTracking service. If not
+ * @param {Object} pager-object The instance of the PageTracking service. If not
  * specified, a new one will be created.
  *
  * @returns {Array} The list of page numbers that will be displayed.
  */
     .filter('Page', function (PageTracking) {
-        return function (pager) {
-            if (!pager) {
-                pager = PageTracking.createInstance();
+        return function (pagerObject) {
+            if (!pagerObject) {
+                pagerObject = PageTracking.createInstance();
             }
 
             var displayPages = [],
                 // the next four variables determine the number of pages to show ahead of and behind the current page
-                pagesToShow = pager.pagesToShow || 5,
+                pagesToShow = pagerObject.pagesToShow || 5,
                 pageDelta = (pagesToShow - 1) / 2,
                 pagesAhead = Math.ceil(pageDelta),
                 pagesBehind = Math.floor(pageDelta);
 
-            if ( pager && pager.length !== 0) {
+            if ( pagerObject && pagerObject.length !== 0) {
                     // determine starting page based on (current page - (1/2 of pagesToShow))
-                var pageStart = Math.max(Math.min(pager.pageNumber - pagesBehind, pager.totalPages - pagesToShow), 0),
+                var pageStart = Math.max(Math.min(pagerObject.pageNumber - pagesBehind, pagerObject.totalPages - pagesToShow), 0),
 
                     // determine ending page based on (current page + (1/2 of pagesToShow))
-                    pageEnd = Math.min(Math.max(pager.pageNumber + pagesAhead, pagesToShow - 1), pager.totalPages - 1);
+                    pageEnd = Math.min(Math.max(pagerObject.pageNumber + pagesAhead, pagesToShow - 1), pagerObject.totalPages - 1);
 
                 for (pageStart; pageStart <= pageEnd; pageStart++) {
                     // create array of page indexes
