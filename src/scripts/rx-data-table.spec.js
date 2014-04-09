@@ -30,7 +30,7 @@ describe('Data Table Directive', function () {
                 row-style="{class: \'item-color-mapping\', field: \'severity\',\
                     bool: false}"\
                 column-multi-sort="true" column-reordering="true"\
-                pager="pager"></rx-data-table>';
+                pager-object="pager"></rx-data-table>';
 
             scope.predicate = ['-severity'];
 
@@ -301,8 +301,8 @@ describe('Data Table Directive', function () {
     });
 
     it('should build the table with pagination configuration passed in', function () {
-        expect(elScope.pager.showAll).to.equal(false);
-        expect(elScope.pager.itemsPerPage).to.equal(10);
+        expect(elScope.pagerObject.showAll).to.equal(false);
+        expect(elScope.pagerObject.itemsPerPage).to.equal(10);
     });
 
     it('should apply configured row class to every row', function () {

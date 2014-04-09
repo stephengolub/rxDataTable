@@ -13,7 +13,7 @@ var app = angular.module('rxDataTable', []);
  * - {@link rxDataTable.paginate:rxPaginate rxPaginate} Pagination Directive
  * - {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage} Items per Page Directive
  * 
- * @param {Object=} pager This is the page tracking object for the directive. If
+ * @param {Object=} pager-object This is the page tracking object for the directive. If
  * no page tracking object is passed in, then the data table will be shown
  * without pagination.
  * @param {Array.<Object>} list-of-data This is the list of data that the data table will represent 
@@ -68,7 +68,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
         templateUrl: 'src/templates/rx-data-table.html',
         replace: true,
         scope: {
-            pager: '=?',
+            pagerObject: '=?',
             columnConfiguration: '=',
             columnDisplay: '=?',
             columnPresets: '=?',
@@ -91,9 +91,9 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             scope.defaultNotificationDuration = (_.isUndefined(scope.notifyDuration)) ? 3000 : parseInt(scope.notifyDuration, 10);
 
-            if (_.isUndefined(scope.pager)) {
-                scope.pager = PageTracking.createInstance();
-                scope.pager.showAll = true;
+            if (_.isUndefined(scope.pagerObject)) {
+                scope.pagerObject = PageTracking.createInstance();
+                scope.pagerObject.showAll = true;
             }
 
             if (_.isUndefined(scope.columnPresets)) {
@@ -505,7 +505,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             };
 
             scope.singleColumnSort = function(column) {
-                scope.pager.pageNumber = 0;
+                scope.pagerObject.pageNumber = 0;
 
                 if (scope.sortedBy(column)) {
                     scope.predicate = [scope.compilePredicateString(column, true)];
