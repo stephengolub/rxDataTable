@@ -539,10 +539,11 @@ describe('Data Table Directive', function () {
     });
 
     it('should attach a help icon for columns that have it configured', function () {
+        var itemHeaderButton = el.find('.data-header-cell[data-title="ID"] button');
         var itemHeaderHelp = el.find('.data-header-cell[data-title="ID"] i');
 
         expect(itemHeaderHelp.hasClass('fa-question-circle')).to.equal(true);
-        expect(itemHeaderHelp.attr('popover')).to.equal('This field is sorted by severity, not the ref_no');
+        expect(itemHeaderButton.attr('popover')).to.equal('This field is sorted by severity, not the ref_no');
     });
 
     it('should should create x-editable elements for columns with config', function () {
