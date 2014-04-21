@@ -238,7 +238,13 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
             scope.updateField = function(column, row, data) {
                 if (!_.has(column.editable, 'endpoint')) {
-                    return false;
+                    // First we're going to see if the user has provided a
+                    // custom update method to us instead
+                    if (_.has(column.editable, 'method')) {
+                        return column.editable.method(column, row, data);
+                    } else {
+                        return false;
+                    }
                 }
                 scope.showStatusMessage('saving', 'Saving value for "' + column.title + '"', false);
 
@@ -266,7 +272,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                 }
 
                 // We'll run the method
-                updateMethod(updateURL, updateBody).then(function () {
+                return updateMethod(updateURL, updateBody).then(function () {
                     scope.showStatusMessage('success', 'Saved data for "' + column.title + '" field');
                     row[column.dataField] = _.clone(data);
 
@@ -298,10 +304,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
 
                     return true;
                 });
-
-                // We're returning false so that we are manually updating
-                // the method on success
-                return false;
             };
 
             scope.$on('data-table-error', function ($event, errorString, errorDisplayTimeout) {
