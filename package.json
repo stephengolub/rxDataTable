@@ -1,6 +1,6 @@
 {
   "name": "rx-data-table",
-  "version": "0.4.11",
+  "version": "0.5.0",
   "dependencies": {},
   "devDependencies": {
     "grunt-regarde": "~0.1.1",
