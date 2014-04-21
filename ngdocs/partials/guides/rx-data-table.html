@@ -148,6 +148,11 @@ field editable on rows that only meet certain conditions.</p>
 <td>This is a function that should evaluate to a boolean value. The function will get passed the data row object so that you can run your evaluation on it.</td>
 </tr>
 <tr>
+<td>method</td>
+<td><a href class="label type-hint type-hint-function">function(column, row, data)</a></td>
+<td>This is a function that will do the submission for the field update. The function will get passed the column object, the row data, and the new data value for the row&#39;s column. It will only get called if endpoint hasn&#39;t been specified.</td>
+</tr>
+<tr>
 <td>endpoint</td>
 <td><a href class="label type-hint type-hint-object">object</a></td>
 <td>This attribute is used to update the data on the server on save. It is expecting an object with two attributes: <ul><li><strong>url</strong> - <a href class="label type-hint type-hint-string">string</a> This should be a url (absolute or relative) that you will submit the data to. If you put in a field name inside curly-braces, it will resolve them to the row&#39;s field values (i.e. &#39;/api/{system}&#39;)</li><li><strong>method</strong> <a href class="label type-hint type-hint-string">string</a> This should be the HTTP method to use. (i.e. GET, PUT, POST, etc.)</li></ul></td>
