@@ -89,6 +89,10 @@
         font-size: .85em;
     }
 
+    &.expanded {
+        background-color: rgb(177, 215, 251);
+    }
+
     &:nth-child(odd) {
         background-color: rgb(246, 246, 246);
     }
@@ -334,6 +338,61 @@
             margin: 3px 0px;
         }
     }
+}
+
+.data-header-expander {
+    .flexbox(1);
+}
+
+.data-row-expander {
+    .flexbox(1);
+    position: relative;
+    padding: 0px;
+    height: 100%;
+
+    .data-row-expansion {
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        background: none;
+        border: none;
+        background-color: rgba(148, 201, 249, .5);
+
+        .expander-icon {
+            position: relative;
+
+            &::after {
+                content: '';
+                position: absolute;
+                font-size: 2em;
+                content: "\00bb"; // angle quotation mark, right (&raquo;)
+                -webkit-transform: rotate(90deg) scaleX(1);
+                transform: rotate(90deg) scaleX(1);
+                top: 7px;
+                line-height: 0;
+                right: .25em;
+            }
+
+        }
+
+        &.expanded {
+            background-color: rgb(148, 201, 249);
+
+            .expander-icon {
+                color: #FFF;
+
+                &::after {
+                    -webkit-transform: rotate(90deg) scaleX(-1);
+                    transform: rotate(90deg) scaleX(-1);
+                }
+            }
+        }
+    }
+}
+
+.data-row-details {
+    padding: 2px;
+    background-color: rgb(233, 243, 254);
 }
 
 @import "pagination.less";

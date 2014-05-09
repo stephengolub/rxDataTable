@@ -24,6 +24,12 @@ var app = angular.module('rxDataTable', []);
  * @param {string=} row-key This is the attribute of the data objects that will
  *                       be used to attatch a data-value-key paramater to each
  *                       row of the table
+ * @param {function=} row-details Setting this attribute to a function will add
+ *      a toggle to the end of the right side of the table on each row that
+ *      will insert and fill in the result of this function onto the table.
+ * @param {expression=} row-details-clause If this attribute is set, it will be
+ *      evaluated for every row, and if true, will only apply the row details
+ *      function to those rows.
  * @param {string='Items'} item-name This is what the data table will fill in
  *                      to indicate what the items in it really are.
  * @param {number=} notify-duration This is a default notification duration in
@@ -37,7 +43,7 @@ var app = angular.module('rxDataTable', []);
  *    - **`field`** `{string}`: This is the data field that the comparisons will be made against.
  *    - **`bool`** `{boolean}`: If true, then it just checks the field to see if it's truthy and applies the class. If it's false (default), then the value of the field is applied as a class along with the value in the class attribute. To account for non-string data values in the field, this will check to see if the first character in the field value is numerical, if it is, it prepends the value with an underscore (\_).  So, for example, if you have your class as data-service-level and the field value turns out to be a 2, then the class attribute of the row will be **`class="data-service-level _2"`**. This allows you to grab that row with **`.data-service-level._2`** and apply CSS values to it.
  *                              
- * @param {Object} column-display This object will hold the current display
+ o @param {Object} column-display This object will hold the current display
  *    state of the various columns in the data table. It has/needs two
  *    properties:
  *
@@ -62,7 +68,7 @@ var app = angular.module('rxDataTable', []);
  * @param {array.<object>} column-configuration This are the available column definitions, see the
  *    extended information for this in the {@link #/guides/rx-data-table#column-object Data Table Guide}
  */
-app.directive('rxDataTable', function ($http, $timeout, $document, $filter, PageTracking) {
+app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $parse, PageTracking) {
     return {
         restrict: 'E',
         templateUrl: 'src/templates/rx-data-table.html',
@@ -80,9 +86,11 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
             checkboxEvent: '&',
             columnMultiSort: '@',
             notifyDuration: '@',
-            columnReordering: '@'
+            columnReordering: '@',
+            rowDetails: '&',
+            rowDetailsClause: '@'
         },
-        link: function (scope) {
+        link: function (scope, element) {
             /* jshint evil: true */
 
             scope.configurationVisible = false;
@@ -110,10 +118,65 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, Page
                     this.columnPresets[0].config.push(index);
                 }, scope);
             }
+
             if (_.isUndefined(scope.columnDisplay)) {
                 scope.columnDisplay = {index: 0};
             }
 
+            scope.showRowDetails = (!_.isUndefined(scope.rowDetails) && _.isFunction(scope.rowDetails()));
+            scope.canExpandRow = function (row) {
+                if (scope.showRowDetails && !_.isEmpty(scope.rowDetailsClause)) {
+                    return $parse(scope.rowDetailsClause)(row);
+                }
+
+                return scope.showRowDetails;
+            };
+            scope.currentRow = '';
+
+            scope.toggleRow = function (key) {
+                var dataTable = element[0];
+                var row = dataTable.querySelector('.data-row[data-row-key="' + key + '"]');
+                var detailsDiv;
+
+                if (scope.currentRow !== '') {
+                    detailsDiv = dataTable.querySelector('.data-row-details[data-row-key="' + scope.currentRow + '"]');
+                    dataTable.removeChild(detailsDiv);
+                } else {
+                    detailsDiv = document.createElement('div');
+                    detailsDiv.classList.add('data-row-details');
+                }
+
+                detailsDiv.innerHTML = '';
+
+                if (scope.currentRow === key) {
+                    scope.currentRow = '';
+                } else {
+                    detailsDiv.setAttribute('data-row-key', key);
+                    scope.currentRow = key;
+                    var rowDetailsFunction = scope.rowDetails();
+                    var rowDetailsElement = rowDetailsFunction(key);
+
+                    angular.element(detailsDiv).append(rowDetailsElement);
+
+                    angular.element(row).after(detailsDiv);
+                }
+            };
+
+            if (scope.showRowDetails) {
+                scope.$watch('pagerObject', function () {
+                    if (scope.currentRow !== '') {
+                        setTimeout(function () {
+                            var detailsDiv = element[0].querySelector(
+                                '.data-row-details[data-row-key="' + scope.currentRow + '"]');
+
+                            if (!detailsDiv) {
+                                scope.currentRow = '';
+                            }
+                        }, 100);
+                    }
+
+                }, true);
+            }
 
             scope.buildLink = function (row, column) {
                 if (_.has(column, 'linkField') && _.has(row, column.linkField)) {
