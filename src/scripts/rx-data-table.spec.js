@@ -909,4 +909,58 @@ describe('Data Table Directive', function () {
         document.click();
         expect(elScope.configurationVisible).to.equal(false);
     });
+
+    describe('Expandable Row Options', function () {
+        beforeEach(function () {
+            validTemplate = '<rx-data-table row-key="ref_no"\
+                column-configuration="dtConfig" list-of-data="dtData"\
+                row-details="rowDetails" row-details-clause="system == \'Manual\'"\
+            ></rx-data-table>';
+
+            scope.rowDetails = function (key) {
+                return angular.element('<div>Greetings and Salutations!!!! (' + key + ')</div>');
+            };
+
+            el = helpers.createDirective(validTemplate, compile, scope);
+            elScope = el.isolateScope();
+        });
+
+        it('should have space for the expander buttons', function () {
+            var expansionButtons = $(el).find('.data-row-expander');
+            expect(expansionButtons.length).to.eq(5);
+        });
+
+        it('should have expansion buttons on the rows where the clause is true', function () {
+            var expansionButtons = $(el).find('.data-row-expansion').not('.ng-hide');
+            expect(expansionButtons.length).to.eq(2);
+        });
+
+        it('should toggle the row expansion', function () {
+            elScope.toggleRow('140102-0000012');
+            scope.$digest();
+            expect(elScope.currentRow).to.eq('140102-0000012');
+            
+            var rowDetailsDiv = $(el).find('.data-row-details');
+            expect(rowDetailsDiv.length).to.eq(1);
+            expect(rowDetailsDiv[0].innerHTML).to.eq('<div>Greetings and Salutations!!!! (140102-0000012)</div>');
+        });
+
+        it('should close the current details and switch to a new one', function () {
+            elScope.toggleRow('140102-0000012');
+            scope.$digest();
+            expect(elScope.currentRow).to.eq('140102-0000012');
+            elScope.toggleRow('140102');
+            scope.$digest();
+            expect(elScope.currentRow).to.eq('140102');
+
+            var rowDetailsDiv = $(el).find('.data-row-details');
+            expect(rowDetailsDiv.length).to.eq(1);
+            expect(rowDetailsDiv[0].innerHTML).to.eq('<div>Greetings and Salutations!!!! (140102)</div>');
+        });
+
+        after(function () {
+            delete scope.rowDetails;
+        });
+
+    });
 });

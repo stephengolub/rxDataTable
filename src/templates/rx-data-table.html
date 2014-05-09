@@ -88,6 +88,7 @@
                 <i class="fa fa-chevron-up" ng-show="sortedBy(column)"></i>
             </button>
         </div>
+        <div class="data-header-cell data-header-expander" ng-if="showRowDetails"></div>
     </div>
     <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate:pagerObject track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)">
         <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)">
@@ -128,6 +129,12 @@
                     </span>
                 </span>
             </div>
+        </div>
+        <div class="data-row-expander" ng-if="showRowDetails">
+            <button class="data-row-expansion" ng-show="canExpandRow(row)" ng-click="toggleRow(row[rowKey])" ng-class="{'expanded': currentRow == row[rowKey]}">
+                <div class="expander-icon"></div>
+                &nbsp;
+            </button>
         </div>
     </div>
     <div ng-if="!pagerObject.showAll" class="pagination-container" ng-show="pagerObject.total > 0">
