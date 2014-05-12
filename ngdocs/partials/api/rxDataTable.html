@@ -16,10 +16,11 @@ requires the following directives:</p>
        list-of-data="{Array.&lt;Object&gt;}"
        [predicate="{Array.string=|string=|boolean}"]
        [row-key="{string}"]
+       [row-details="{function}"]
+       [row-details-clause="{expression}"]
        item-name="{string='Items'}"
        [notify-duration="{number}"]
        [row-style="{string}"]
-       column-display="{Object}"
        column-presets="{array.&lt;Object&gt;}"
        [column-multi-sort="{string}"]
        [column-reordering="{string}"]
@@ -36,6 +37,12 @@ all columns that don&#39;t have a sortField value explicitely defined.</p>
 </div></td></tr><tr><td>row-key <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is the attribute of the data objects that will
 be used to attatch a data-value-key paramater to each
 row of the table</p>
+</div></td></tr><tr><td>row-details <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="rxdatatable-page"><p>Setting this attribute to a function will add
+a toggle to the end of the right side of the table on each row that
+will insert and fill in the result of this function onto the table.</p>
+</div></td></tr><tr><td>row-details-clause <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-expression">expression</a></td><td><div class="rxdatatable-page"><p>If this attribute is set, it will be
+evaluated for every row, and if true, will only apply the row details
+function to those rows.</p>
 </div></td></tr><tr><td>item-name</td><td><a href="" class="label type-hint type-hint-string">string='Items'</a></td><td><div class="rxdatatable-page"><p>This is what the data table will fill in
 to indicate what the items in it really are.</p>
 </div></td></tr><tr><td>notify-duration <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="rxdatatable-page"><p>This is a default notification duration in
@@ -48,7 +55,7 @@ in the code and applied to each row in the table.</p>
 <li><strong><code>field</code></strong> <code>{string}</code>: This is the data field that the comparisons will be made against.</li>
 <li><strong><code>bool</code></strong> <code>{boolean}</code>: If true, then it just checks the field to see if it&#39;s truthy and applies the class. If it&#39;s false (default), then the value of the field is applied as a class along with the value in the class attribute. To account for non-string data values in the field, this will check to see if the first character in the field value is numerical, if it is, it prepends the value with an underscore (_).  So, for example, if you have your class as data-service-level and the field value turns out to be a 2, then the class attribute of the row will be <strong><code>class=&quot;data-service-level _2&quot;</code></strong>. This allows you to grab that row with <strong><code>.data-service-level._2</code></strong> and apply CSS values to it.</li>
 </ul>
-</div></td></tr><tr><td>column-display</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="rxdatatable-page"><p>This object will hold the current display
+<p>o @param {Object} column-display This object will hold the current display
 state of the various columns in the data table. It has/needs two
 properties:</p>
 <ul>

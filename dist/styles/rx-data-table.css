@@ -165,6 +165,9 @@
   top: 0px;
   font-size: .85em;
 }
+.data-row.expanded {
+  background-color: #b1d7fb;
+}
 .data-row:nth-child(odd) {
   background-color: #f6f6f6;
 }
@@ -386,6 +389,59 @@
 }
 .menu-column .menu-items .menu-item {
   margin: 3px 0px;
+}
+.data-header-expander {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+.data-row-expander {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  position: relative;
+  padding: 0px;
+  height: 100%;
+}
+.data-row-expander .data-row-expansion {
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  background: none;
+  border: none;
+  background-color: rgba(148, 201, 249, 0.5);
+}
+.data-row-expander .data-row-expansion .expander-icon {
+  position: relative;
+}
+.data-row-expander .data-row-expansion .expander-icon::after {
+  content: '';
+  position: absolute;
+  font-size: 2em;
+  content: "\00bb";
+  -webkit-transform: rotate(90deg) scaleX(1);
+  transform: rotate(90deg) scaleX(1);
+  top: 7px;
+  line-height: 0;
+  right: .25em;
+}
+.data-row-expander .data-row-expansion.expanded {
+  background-color: #94c9f9;
+}
+.data-row-expander .data-row-expansion.expanded .expander-icon {
+  color: #FFF;
+}
+.data-row-expander .data-row-expansion.expanded .expander-icon::after {
+  -webkit-transform: rotate(90deg) scaleX(-1);
+  transform: rotate(90deg) scaleX(-1);
+}
+.data-row-details {
+  padding: 2px;
+  background-color: #e9f3fe;
 }
 .paginate-area {
   text-align: center;
