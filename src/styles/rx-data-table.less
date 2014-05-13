@@ -359,18 +359,15 @@
         background-color: rgba(148, 201, 249, .5);
 
         .expander-icon {
-            position: relative;
+            width: 100%;
+            padding-left: 3px;
 
             &::after {
-                content: '';
-                position: absolute;
+                display: inline-block;
                 font-size: 2em;
                 content: "\00bb"; // angle quotation mark, right (&raquo;)
                 -webkit-transform: rotate(90deg) scaleX(1);
                 transform: rotate(90deg) scaleX(1);
-                top: 7px;
-                line-height: 0;
-                right: .25em;
             }
 
         }
