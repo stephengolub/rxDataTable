@@ -252,6 +252,7 @@
 }
 .data-table-config {
   position: absolute;
+  z-index: 1;
   overflow: visible;
   right: 0px;
   background-color: #FFF;
