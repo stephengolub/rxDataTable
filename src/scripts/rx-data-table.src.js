@@ -34,6 +34,8 @@ var app = angular.module('rxDataTable', []);
  *                      to indicate what the items in it really are.
  * @param {number=} notify-duration This is a default notification duration in
  *      milliseconds. This value is 3000 by default.
+ * @param {boolean=} data-loading This is a flag that should be passed to the
+ *      data table to indicate loading status.
  * @param {string=} row-style This is an object in a string format that is parsed
  *    in the code and applied to each row in the table.
  *
@@ -75,6 +77,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
         replace: true,
         scope: {
             pagerObject: '=?',
+            loadingData: '&',
             columnConfiguration: '=',
             columnDisplay: '=?',
             columnPresets: '=?',
@@ -92,7 +95,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
         },
         link: function (scope, element) {
             /* jshint evil: true */
-
             scope.configurationVisible = false;
             scope.enableColumnMultiSort = (!_.isEmpty(scope.columnMultiSort)) ? scope.columnMultiSort : false;
             scope.enableColumnReordering = (!_.isEmpty(scope.columnReordering)) ? scope.columnReordering : false;

@@ -77,6 +77,7 @@ angular.module('rxDataTable')
             this.pageNumber = 0;
             this.pageInit = false;
             this.total = 0;
+            this.serverPaging = false;
             this.showAll = (showAll) ? true : false;
         }
       
@@ -159,17 +160,26 @@ angular.module('rxDataTable')
                 return items;
             }
             if (items) {
-                pagerObject.total = items.length;
+                if (!pagerObject.serverPaging) {
+                    pagerObject.total = items.length;
+                } else if (!_.isNumber(pagerObject.total)) {
+                    pagerObject.total = 0;
+                }
+
                 pagerObject.totalPages = Math.ceil(pagerObject.total / pagerObject.itemsPerPage);
 
+                var modifier = (pagerObject.serverPaging) ? 1 : 0;
                 var first = pagerObject.pageNumber * pagerObject.itemsPerPage;
                 var added = first + pagerObject.itemsPerPage;
-                var last = (added > items.length) ? items.length : added;
+                var last = ((added > items.length) ? items.length : added) - modifier;
 
                 pagerObject.first = parseInt(first + 1, 10);
                 pagerObject.last = parseInt(last, 10);
+                if (pagerObject.serverPaging) {
+                    pagerObject.last += pagerObject.first;
+                }
 
-                return items.slice(first, last);
+                return (pagerObject.serverPaging) ? items : items.slice(first, last);
             }
         };
     })

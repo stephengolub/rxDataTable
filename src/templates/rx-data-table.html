@@ -90,6 +90,13 @@
         </div>
         <div class="data-header-cell data-header-expander" ng-if="showRowDetails"></div>
     </div>
+    <div class="data-loader" ng-if="loadingData()">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
+
+    </div>
     <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate:pagerObject track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)">
         <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)">
             <div ng-if="column.checkbox" class="checkbox">
@@ -118,10 +125,9 @@
                     <span ng-if="allowEditing(column,row)" class="data-editable">
                         <span ng-switch="getEditType(column, row)">
                             <span ng-switch-when="select" class="data-editable-field" editable-select="row[column.dataField]" e-ng-options="o.value as o.text for o in getEditableOptions(column, row)" buttons="no" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span>
-                            <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row) | filter:$viewValue" e-typeahead-loading="loadingData" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span>
+                            <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row) | filter:$viewValue" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span>
                             <!-- Same as ng-switch-when="text" -->
                             <span ng-switch-default class="data-editable-field" editable-text="row[column.dataField]" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span>
-                            <i class="fa fa-refresh data-table-type-loader" ng-show="loadingData"></i>
                             <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value">
                                 <i class="fa fa-times fa-lg"></i>
                             </button>

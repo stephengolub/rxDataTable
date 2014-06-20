@@ -220,7 +220,8 @@ module.exports = function(grunt) {
 
         watch: {
             scripts: {
-                files: ['Gruntfile.js', 'src/scripts/**/*.js', '!src/scripts/**/*.spec.js'],
+                files: ['Gruntfile.js', 'src/scripts/**/*.js', '!src/scripts/**/*.spec.js',
+                        '!src/scripts/**/*.tpls.js', '!src/scripts/rx-data-table.js'],
                 tasks: ['jshint:scripts', 'karma:single', 'dev'],
                 options: {
                     livereload: 35730
@@ -249,7 +250,7 @@ module.exports = function(grunt) {
             },
             dev: {
                 /* jshint maxlen:300 */
-                files: ['Gruntfile.js', 'src/scripts/**/*.js', '!src/scripts/**/*.spec.js', 'app/index.html', 'src/templates/**/*.html', 'src/styles/**/*.less', 'app/scripts/**/*.spec.js'],
+                files: ['Gruntfile.js', 'src/scripts/**/*.js', 'app/index.html', 'src/templates/**/*.html', 'src/styles/**/*.less', '!src/scripts/**/*.tpls.js', '!src/scripts/rx-data-table.js'],
                 tasks: ['jshint:scripts', 'karma:single', 'dev'],
                 options: {
                     livereload: 35730
