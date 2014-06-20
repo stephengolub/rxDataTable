@@ -387,6 +387,8 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                         return true;
                     } else if (row[icon.field] === true) {
                         return true;
+                    } else if (_.has(icon, 'fieldMinLength') && _.isArray(row[icon.field])) {
+                        return row[icon.field].length >= icon.fieldMinLength;
                     }
                 }, {row: row}).filter(function (icon) {
                     if ((_.has(icon, 'name') && (this.type === 'i'))||(_.has(icon, 'class') && (this.type === 'div'))) {
