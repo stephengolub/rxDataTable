@@ -38,7 +38,7 @@
  | linkTarget  | <a href class="label type-hint type-hint-string">string</a>  | This is the a target that you would like the link to go to. |
  | menu   | <a href class="label type-hint type-hint-object">object</a> | This attribute should be an object describing how you would like the menu to be displayed. The base object only has two root elements: `icon` (optional) which is a class for the icon in the menu (defaults to fa-cog), and then `items` which is the list of Menu Item Objects, the configuration of which can be found {@link #/guides/rx-data-table#menus here}. |
  | ng-class   | <a href class="label type-hint type-hint-function">function(row)</a>  | This is a function that gets passed the row. The return value is expected to be a string that will get applied as a class. |
- | sortField  | <a href class="label type-hint type-hint-string">string</a>  | This is the data field that the column will sort by. If it is not supplied, the column will default to sort by the dataField. |
+ | sortField  | <a href class="label type-hint type-hint-string">string</a>  | This is the data field that the column will sort by. If it is not supplied, the column will default to sort by the dataField. If equal to false, sorting will be disabled for this column. |
  | sortInverse| <a href class="label type-hint type-hint-boolean">boolean=false</a> | Should the display of this column's sort be inverted. |
  | title      | <a href class="label type-hint type-hint-string">string</a>  | The column header title. This is required unless the column type is a checkbox. |
  | tooltip    | <a href class="label type-hint type-hint-string">string</a> | This should be a string value to the data field that you want to populate the tooltip with. |

@@ -604,18 +604,22 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             };
 
             scope.sortable = function (column) {
-                return ((scope.disableSorting && _.has(column, 'sortField')) || (!scope.disableSorting));
+                if (scope.disableSorting && _.has(column, 'sortField')) {
+                    return true;
+                } else if (scope.disableSorting || column.sortField === false) {
+                    return false;
+                } else {
+                    return true;
+                }
             };
 
             scope.sort = function ($event, column) {
-                if (!scope.sortable(column)) {
-                    return;
-                }
-
-                if ($event.shiftKey) {
-                    scope.addColumnSort(column);
-                } else {
-                    scope.singleColumnSort(column);
+                if (scope.sortable(column)) {
+                    if ($event.shiftKey) {
+                        scope.addColumnSort(column);
+                    } else {
+                        scope.singleColumnSort(column);
+                    }
                 }
             };
 
