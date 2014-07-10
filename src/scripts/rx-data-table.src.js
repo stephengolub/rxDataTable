@@ -383,8 +383,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
 
             scope.iconUnwrap = function (column, row, type) {
                 return _.filter(column.icon, function (icon) {
-                    if (_.has(icon, 'fieldValue') && (icon.fieldValue === this.row[icon.field])) {
-                        return true;
+                    if (_.has(icon, 'fieldValue')) {
+                        if (_.isArray(this.row[icon.field]) && _.contains(this.row[icon.field], icon.fieldValue)) {
+                            return true;
+                        } else if (icon.fieldValue === this.row[icon.field]) {
+                            return true;
+                        }
                     } else if (row[icon.field] === true) {
                         return true;
                     } else if (_.has(icon, 'fieldMinLength') && _.isArray(row[icon.field])) {
