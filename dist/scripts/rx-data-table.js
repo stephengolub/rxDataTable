@@ -403,9 +403,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
 
             scope.rowClass = function (row) {
                 if (!_.isEmpty(scope.rowStyle)) {
-                    if (!_.has(scope, 'rowStyleObject')) {
-                        scope.rowStyleObject = eval('(' + scope.rowStyle + ')');
-                    }
+                    scope.rowStyleObject = eval('(' + scope.rowStyle + ')');
 
                     if (scope.rowStyleObject.bool) {
                         if (row[scope.rowStyleObject.field]) {
