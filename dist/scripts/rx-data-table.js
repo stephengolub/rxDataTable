@@ -79,7 +79,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             columnDisplay: '=?',
             columnPresets: '=?',
             rowKey: '@',
-            rowStyle: '@',
+            rowStyle: '&',
             itemName: '@',
             listOfData: '&',
             predicate: '=?',
@@ -402,20 +402,8 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             };
 
             scope.rowClass = function (row) {
-                if (!_.isEmpty(scope.rowStyle)) {
-                    if (!_.has(scope, 'rowStyleObject')) {
-                        scope.rowStyleObject = eval('(' + scope.rowStyle + ')');
-                    }
-
-                    if (scope.rowStyleObject.bool) {
-                        if (row[scope.rowStyleObject.field]) {
-                            return scope.rowStyleObject.class;
-                        }
-                    } else {
-                        var fClass = row[scope.rowStyleObject.field];
-                        fClass = (isNaN(parseInt(fClass.toString().charAt(0), 10))) ? fClass : '_'+fClass.toString();
-                        return scope.rowStyleObject.class + ' '+ fClass;
-                    }
+                if (!_.isUndefined(scope.rowStyle) &&  _.isFunction(scope.rowStyle())) {
+                    return scope.rowStyle()(row);
                 }
             };
 
