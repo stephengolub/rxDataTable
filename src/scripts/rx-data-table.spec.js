@@ -27,10 +27,13 @@ describe('Data Table Directive', function () {
                 column-configuration="dtConfig" list-of-data="dtData"\
                 column-display="dtColumnDisplay" column-presets="dtColumnPresets"\
                 predicate="predicate"\
-                row-style="{class: \'item-color-mapping\', field: \'severity\',\
-                    bool: false}"\
+                row-style="rowStyleFunction"\
                 column-multi-sort="true" column-reordering="true"\
                 pager-object="pager"></rx-data-table>';
+
+            scope.rowStyleFunction = function (row) {
+                return (row.severity < 4) ? '_' + row.severity : '_4';
+            };
 
             scope.predicate = ['-severity'];
 
@@ -312,7 +315,6 @@ describe('Data Table Directive', function () {
         var expectedValues = ['_1', '_2', '_3', '_3', '_4'];
 
         el.find('.data-row').each(function () {
-            expect($(this).hasClass('item-color-mapping')).to.equal(true);
             expect($(this).hasClass(expectedValues[count])).to.equal(true);
             count++;
         });
@@ -329,19 +331,6 @@ describe('Data Table Directive', function () {
             expect($(this).hasClass('_' + count)).to.equal(false);
             count++;
         });
-    });
-
-    it('should set a row style based on boolean values', function () {
-        validTemplate = '<rx-data-table\
-            column-configuration="dtConfig" list-of-data="dtData"\
-            row-style="{class: \'item-color-mapping\', field: \'assigned\',\
-                bool: true}"></rx-data-table>';
-
-        el = helpers.createDirective(validTemplate, compile, scope);
-        elScope = el.isolateScope();
-
-        expect(elScope.rowClass(scope.dtData[0])).to.equal('item-color-mapping');
-        expect(elScope.rowClass(scope.dtData[4])).to.equal(undefined);
     });
 
     it('should not fail if there is a bad ng-class function not returning a valid class', function () {
