@@ -20,6 +20,7 @@ requires the following directives:</p>
        [row-details-clause="{expression}"]
        item-name="{string='Items'}"
        [notify-duration="{number}"]
+       [data-loading="{boolean}"]
        [row-style="{string}"]
        column-presets="{array.&lt;Object&gt;}"
        [column-multi-sort="{string}"]
@@ -47,6 +48,8 @@ function to those rows.</p>
 to indicate what the items in it really are.</p>
 </div></td></tr><tr><td>notify-duration <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="rxdatatable-page"><p>This is a default notification duration in
 milliseconds. This value is 3000 by default.</p>
+</div></td></tr><tr><td>data-loading <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="rxdatatable-page"><p>This is a flag that should be passed to the
+data table to indicate loading status.</p>
 </div></td></tr><tr><td>row-style <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="rxdatatable-page"><p>This is an object in a string format that is parsed
 in the code and applied to each row in the table.</p>
 <p>It takes three attributes:</p>
