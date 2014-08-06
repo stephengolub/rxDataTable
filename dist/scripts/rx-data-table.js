@@ -946,9 +946,10 @@ angular.module('rxDataTable')
 
                 pagerObject.totalPages = Math.ceil(pagerObject.total / pagerObject.itemsPerPage);
 
+                var modifier = (pagerObject.serverPaging) ? 1 : 0;
                 var first = pagerObject.pageNumber * pagerObject.itemsPerPage;
                 var added = first + pagerObject.itemsPerPage;
-                var last = ((added > items.length) ? items.length : added) - 1;
+                var last = ((added > items.length) ? items.length : added) - modifier;
 
                 pagerObject.first = parseInt(first + 1, 10);
                 pagerObject.last = parseInt(last, 10);
