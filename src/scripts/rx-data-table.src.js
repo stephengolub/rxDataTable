@@ -723,10 +723,14 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
 });
 
 app.filter('UnusedSorts', function() {
-    return function(configObject, predicates, currentColumn) {
+    return function(configObject, predicates, currentColumn, sortableFunction) {
         return _.filter(configObject, function (column) {
             // This is here to find the sortField value
             var sortField = (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
+
+            if (_.isFunction(sortableFunction) && !sortableFunction(column)) {
+                return false;
+            }
             if (currentColumn == sortField) {
                 return true;
             } else {

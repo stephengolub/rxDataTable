@@ -19,7 +19,7 @@
                     <div class="data-config-row" ng-repeat="pred in predicate" ng-init="predColumn = decompilePredicateString(pred)">
                         <div class="multi-sort-select">
                             <select name="sort-{{$index}}" ng-model="predColumn.column" ng-change="updatePredicate($index, predColumn.column)">
-                                <option ng-repeat="column in getConfig() | UnusedSorts:predicate:predColumn.column" value="{{ getSortField(column) }}" ng-selected="getSortField(column) == predColumn.column">{{ column.title }}</option>
+                                <option ng-repeat="column in getConfig() | UnusedSorts:predicate:predColumn.column:sortable" value="{{ getSortField(column) }}" ng-selected="getSortField(column) == predColumn.column">{{ column.title }}</option>
                             </select>
                         </div>
                         <button class="btn-link multi-sort-reverse-icon" ng-click="reversePredicate($index)">
