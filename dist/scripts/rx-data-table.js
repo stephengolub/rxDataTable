@@ -639,8 +639,10 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
 
             scope.reversePredicate = function (index) {
                 var pred = scope.decompilePredicateString(scope.getPredicate()[index]);
-                pred.reverse = scope.parseReverseSort(pred.column, pred.reverse);
-                scope.predicate[index] = scope.compilePredicateString(pred.column, !pred.reverse, true);
+                if (!_.isEmpty(pred.column)) {
+                    pred.reverse = scope.parseReverseSort(pred.column, pred.reverse);
+                    scope.predicate[index] = scope.compilePredicateString(pred.column, !pred.reverse, true);
+                }
             };
 
             scope.updatePredicate = function (index, selectBoxValue) {
