@@ -211,7 +211,9 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 }
             };
             scope.getSortField = function (column) {
-                return (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
+                if (_.isObject(column)) {
+                    return (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
+                }
             };
 
             scope.allowEditing = function (column, row) {
@@ -598,12 +600,16 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             };
 
             scope.sortable = function (column) {
-                if (scope.disableSorting && _.has(column, 'sortField')) {
-                    return true;
-                } else if (scope.disableSorting || column.sortField === false) {
-                    return false;
+                if (_.isObject(column)) {
+                    if (scope.disableSorting && _.has(column, 'sortField')) {
+                        return true;
+                    } else if (scope.disableSorting || column.sortField === false) {
+                        return false;
+                    } else {
+                        return true;
+                    }
                 } else {
-                    return true;
+                    return false;
                 }
             };
 
@@ -728,7 +734,10 @@ app.filter('UnusedSorts', function() {
     return function(configObject, predicates, currentColumn, sortableFunction) {
         return _.filter(configObject, function (column) {
             // This is here to find the sortField value
-            var sortField = (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
+            var sortField = '';
+            if (_.isObject(column)) {
+                sortField = (column.sortField||(column.sortField !== false)) && column.sortField || column.dataField;
+            }
 
             if (_.isFunction(sortableFunction) && !sortableFunction(column)) {
                 return false;
