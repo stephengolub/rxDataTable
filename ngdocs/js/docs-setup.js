@@ -130,5 +130,6 @@ NG_DOCS={
   "startPage": "/api",
   "scripts": [
     "angular.min.js"
-  ]
+  ],
+  "editExample": true
 };
