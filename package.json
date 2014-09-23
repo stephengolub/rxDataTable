@@ -1,7 +1,6 @@
 {
   "name": "rx-data-table",
   "version": "0.5.12",
-  "dependencies": {},
   "devDependencies": {
     "grunt-regarde": "~0.1.1",
     "grunt-contrib-jade": "~0.5.0",
@@ -18,6 +17,7 @@
     "grunt-contrib-cssmin": "~0.6.1",
     "grunt-karma": "^0.8.3",
     "grunt-ngdocs": "~0.2.1",
+    "karma-phantomjs-launcher": "^0.1.4",
     "karma": "^0.12.16",
     "karma-jasmine": "~0.1.5",
     "karma-chrome-launcher": "~0.1.2",
