@@ -98,7 +98,7 @@
 
     </div>
     <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | orderBy:predicate | Paginate:pagerObject track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)">
-        <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)">
+        <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)" ng-mouseenter="cellMouseEnter($event)" ng-mouseleave="cellMouseLeave($event)">
             <div ng-if="column.checkbox" class="checkbox">
                 <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction('{{ row[column.dataField] }}')" id="checkbox_{{ row[column.dataField] }}">
             </div>

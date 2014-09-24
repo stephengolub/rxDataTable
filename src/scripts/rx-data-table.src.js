@@ -639,6 +639,70 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 return scope.getPredicate().indexOf(pred);
             };
 
+            scope.isOverflowActive = function (dataCell) {
+                return (dataCell.offsetWidth < dataCell.scrollWidth);
+            };
+
+            scope.hoverTimeouts = {};
+            scope.cellMouseEnter = function (enterEvent) {
+                var dataCell = enterEvent.target;
+                var dataKey = dataCell.parentElement.className + dataCell.className;
+                var dataCellContent = dataCell.querySelector('.data-cell-content');
+
+                if (_.has(scope.hoverTimeouts, dataKey)) {
+                    $timeout.cancel(scope.hoverTimeouts[dataKey]);
+                }
+
+                scope.hoverTimeouts[dataKey] = $timeout(function () {
+                    if (!_.isEmpty(dataCellContent) && scope.isOverflowActive(dataCellContent)) {
+                        // Overflow is active for this cell, let's allow it to grow
+                        var widthDelta = dataCellContent.scrollWidth - dataCellContent.offsetWidth;
+                        var heightDelta = dataCellContent.scrollHeight - dataCellContent.offsetHeight;
+
+                        var newCell = dataCell.cloneNode(true);
+                        newCell.classList.add('overflow-hover');
+
+                        newCell.style.top = dataCell.offsetTop + 'px';
+                        newCell.style.left = dataCell.offsetLeft + 'px';
+
+                        newCell.style.width = dataCell.offsetWidth + 'px';
+                        newCell.style.height = dataCell.offsetHeight + 'px';
+
+                        $timeout(function () {
+                            newCell.style.top = (dataCell.offsetTop - (heightDelta / 2)) + 'px';
+                            newCell.style.left = (dataCell.offsetLeft - (widthDelta / 2)) + 'px';
+                            newCell.style.width = (dataCell.offsetWidth + widthDelta) + 'px';
+                            newCell.style.height = (dataCell.scrollHeight + heightDelta) + 'px';
+                        }, 0);
+
+                        newCell.onmouseleave = function () {
+                            dataCell.removeChild(newCell);
+                        };
+
+                        dataCell.appendChild(newCell);
+                    }
+                }, 500);
+            };
+
+            scope.cellMouseLeave = function (leaveEvent) {
+                var dataCell = leaveEvent.target;
+                var dataKey = dataCell.parentElement.className + dataCell.className;
+                var subCell = dataCell.querySelector('.data-cell .overflow-hover');
+
+                if (_.has(scope.hoverTimeouts, dataKey)) {
+                    $timeout.cancel(scope.hoverTimeouts[dataKey]);
+                    delete scope.hoverTimeouts[dataKey];
+                }
+
+                if (subCell) {
+                    try {
+                        dataCell.removeChild(subCell);
+                    } catch(err) {
+                        // we're going to ignore problems with this.
+                    }
+                }
+            };
+
             scope.sortedBy = function (column, inverted) {
                 return (scope.getSortedIndex(column, inverted) >= 0);
             };
