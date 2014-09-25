@@ -217,6 +217,18 @@
 .data-row .data-cell .checkbox {
   text-align: center;
 }
+.data-row .data-cell.overflow-hover {
+  display: block;
+  position: absolute;
+  width: auto;
+  margin: 0px;
+  z-index: 2;
+  background-color: #f6f6f6;
+  -webkit-transition: 0.25s linear all;
+  -moz-transition: 0.25s linear all;
+  -o-transition: 0.25s linear all;
+  transition: 0.25s linear all;
+}
 .data-row .data-cell:last-child {
   border-right: 1px solid #eee;
   margin-right: -2px;
