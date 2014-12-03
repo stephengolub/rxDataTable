@@ -546,7 +546,7 @@ describe('Data Table Directive', function () {
         expect(statusColumn.attr('editable-select')).to.equal('row[column.dataField]');
         expect(assnColumn.attr('editable-text')).to.equal('row[column.dataField]');
         expect(assnColumn.attr('e-typeahead')).to.equal(
-            'o.value as o.text for o in getEditableOptions(column, row) | filter:$viewValue');
+            'o.value as o.text for o in getEditableOptions(column, row, $viewValue) | filter:$viewValue');
     });
 
     it('should return editable options for the select and typeahead', function () {

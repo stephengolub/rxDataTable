@@ -105,19 +105,13 @@
 }
 
 .flexbox-display() {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
 }
 
-.flexbox(@count: 1) {
-    -webkit-box-flex: @count;
-    -moz-box-flex: @count;
-    -webkit-flex: @count;
-    -ms-flex: @count;
-    flex: @count;
+.flexbox(@grow: 1, @shrink: 0) {
+    -webkit-flex: @grow @shrink 0px;
+    flex: @grow @shrink 0px;
 }
 
 .flex-flow(@direction: row, @wrap: nowrap) {

@@ -260,12 +260,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 return classes;
             };
 
-            scope.getEditableOptions = function (column, row) {
+            scope.getEditableOptions = function (column, row, typedValue) {
                 if (_.has(column, 'editable')) {
                     var editable = column.editable;
                     if (_.has(editable, 'data')) {
-                        var opts = editable.data(row);
-                        if (_.isArray(opts)) {
+                        var opts = editable.data(row, typedValue);
+                        if (_.isObject(opts)) {
                             return opts;
                         } else {
                             return [];
