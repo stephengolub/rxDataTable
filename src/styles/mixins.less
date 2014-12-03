@@ -112,6 +112,8 @@
 .flexbox(@grow: 1, @shrink: 0) {
     -webkit-flex: @grow @shrink 0px;
     flex: @grow @shrink 0px;
+    min-height: 0;
+    min-width: 0;
 }
 
 .flex-flow(@direction: row, @wrap: nowrap) {
