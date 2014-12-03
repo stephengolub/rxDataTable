@@ -13,42 +13,62 @@
 .flex-columns-10 {
   -webkit-flex: 10 0 0px;
   flex: 10 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-9 {
   -webkit-flex: 9 0 0px;
   flex: 9 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-8 {
   -webkit-flex: 8 0 0px;
   flex: 8 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-7 {
   -webkit-flex: 7 0 0px;
   flex: 7 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-6 {
   -webkit-flex: 6 0 0px;
   flex: 6 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-5 {
   -webkit-flex: 5 0 0px;
   flex: 5 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-4 {
   -webkit-flex: 4 0 0px;
   flex: 4 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-3 {
   -webkit-flex: 3 0 0px;
   flex: 3 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-2 {
   -webkit-flex: 2 0 0px;
   flex: 2 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .flex-columns-1 {
   -webkit-flex: 1 0 0px;
   flex: 1 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .data-table {
   margin: 0px 25px;
@@ -299,12 +319,16 @@
 .data-table-multi-sort .multi-sort-select {
   -webkit-flex: 4 0 0px;
   flex: 4 0 0px;
+  min-height: 0;
+  min-width: 0;
   text-align: left;
 }
 .data-table-multi-sort .multi-sort-reverse-icon,
 .data-table-multi-sort .multi-sort-remove-icon {
   -webkit-flex: 1 0 0px;
   flex: 1 0 0px;
+  min-height: 0;
+  min-width: 0;
   text-align: center;
   cursor: pointer;
 }
@@ -326,10 +350,14 @@
   text-align: left;
   -webkit-flex: 3 0 0px;
   flex: 3 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .data-table-column-display .column-order-arrows {
   -webkit-flex: 1 0 0px;
   flex: 1 0 0px;
+  min-height: 0;
+  min-width: 0;
   text-align: left;
   padding-left: 5px;
 }
@@ -342,6 +370,8 @@
 .data-table-column-display .column-hide-display {
   -webkit-flex: 1 0 0px;
   flex: 1 0 0px;
+  min-height: 0;
+  min-width: 0;
   text-align: center;
 }
 .menu-column {
@@ -390,10 +420,14 @@
 .data-header-expander {
   -webkit-flex: 1 0 0px;
   flex: 1 0 0px;
+  min-height: 0;
+  min-width: 0;
 }
 .data-row-expander {
   -webkit-flex: 1 0 0px;
   flex: 1 0 0px;
+  min-height: 0;
+  min-width: 0;
   position: relative;
   padding: 0px;
   height: 100%;
