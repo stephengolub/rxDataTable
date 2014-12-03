@@ -197,7 +197,6 @@
   border-left: 1px solid #eee;
   border-right: 0px;
   margin-right: -1px;
-  overflow: hidden;
 }
 .data-row .data-cell .checkbox {
   text-align: center;
