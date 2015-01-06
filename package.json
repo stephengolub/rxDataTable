@@ -1,6 +1,6 @@
 {
   "name": "rx-data-table",
-  "version": "0.5.18",
+  "version": "0.5.19",
   "devDependencies": {
     "grunt-regarde": "~0.1.1",
     "grunt-contrib-jade": "~0.5.0",
@@ -26,7 +26,7 @@
     "coveralls": "",
     "karma-coverage": "~0.2.0",
     "grunt-simple-mocha": "~0.4.0",
-    "karma-mocha": "~0.1.1",
+    "karma-mocha": "^0.1.10",
     "chai": "~1.7.2",
     "karma-chai": "0.1.0",
     "sinon-chai": "~2.4.0",
@@ -42,7 +42,9 @@
     "grunt-bump": "0.0.13",
     "grunt-karma-coveralls": "~2.3.0",
     "grunt-gh-pages": "~0.9.0",
-    "grunt-markdown": "~0.5.0"
+    "grunt-markdown": "~0.5.0",
+    "karma-mocha-reporter": "^0.3.1",
+    "mocha": "^2.1.0"
   },
   "repository": {
     "type": "git",
