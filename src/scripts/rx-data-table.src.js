@@ -73,8 +73,8 @@ var app = angular.module('rxDataTable', []);
 app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $parse, PageTracking) {
     return {
         restrict: 'E',
-        templateUrl: 'src/templates/rx-data-table.html',
         replace: true,
+        templateUrl: 'src/templates/rx-data-table.html',
         scope: {
             pagerObject: '=?',
             loadingData: '&',
@@ -86,7 +86,6 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             itemName: '@',
             listOfData: '&',
             predicate: '=?',
-            checkboxEvent: '&',
             columnMultiSort: '@',
             notifyDuration: '@',
             columnReordering: '@',
@@ -100,6 +99,8 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             scope.enableColumnReordering = (!_.isEmpty(scope.columnReordering)) ? scope.columnReordering : false;
 
             scope.defaultNotificationDuration = (_.isUndefined(scope.notifyDuration)) ? 3000 : parseInt(scope.notifyDuration, 10);
+
+            scope.isLoading = scope.loadingData;//_.memoize(scope.loadingData);
 
             if (_.isUndefined(scope.pagerObject)) {
                 scope.pagerObject = PageTracking.createInstance();
@@ -486,11 +487,11 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 }
             };
 
-            scope.getColumnPresetSelects = function () {
+            scope.getColumnPresetSelects = _.memoize(function () {
                 return _.map(scope.getColumnPresets(), function (preset, index) {
                     return {'text': preset.title, 'value': index};
                 });
-            };
+            });
 
             scope.isPresetCustom = function () {
                 return (scope.getColumnPresets()[scope.columnDisplay.index].title == 'User Preset');
@@ -535,7 +536,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 }
             };
 
-            scope.getAvailableColumns = function () {
+            scope.getAvailableColumns = _.memoize(function () {
                 var columnSelects = [];
                 _.forEach(scope.columnConfiguration, function (column, index) {
                     this.push({'value': index, 'text': column.title});
@@ -544,7 +545,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 return _.filter(columnSelects, function (column) {
                     return (!_.contains(this, column.value));
                 }, scope.columnDisplay.config);
-            };
+            });
 
             scope.findColumnFromPredicate = function (pred) {
                 var column = _.find(scope.getConfig(), function (column) {
@@ -780,7 +781,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 angular.element(document.querySelector('.menu-column')).on('click', stopProp);
             }, 1);
 
-            scope.$watch(function () { return scope.listOfData; }, function () {
+            scope.$watch(scope.dataList, function () {
                 var stopProp = function (e) {
                     e.stopPropagation();
                 };

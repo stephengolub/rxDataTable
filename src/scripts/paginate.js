@@ -16,8 +16,8 @@ angular.module('rxDataTable')
     .directive('rxDataTablePaginate', function () {
         return {
             templateUrl: 'src/templates/rx-data-table-paginate.html',
-            replace: true,
             restrict: 'E',
+            replace: true,
             scope: {
                 pageTracking: '=',
                 numberOfPages: '@'
