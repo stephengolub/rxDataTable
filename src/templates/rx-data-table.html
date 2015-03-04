@@ -41,7 +41,7 @@
                         <div class="header">Column Presets</div>
                     </div>
                     <div class="data-config-row column-preset-row">
-                        <select ng-options="preset.value as preset.text for preset in getColumnPresetSelects()" ng-model="columnDisplay.index"></select>
+                        <select ng-options="getColumnPresets().indexOf(preset) as preset.title for preset in getColumnPresets()" ng-model="columnDisplay.index"></select>
                     </div>
                     <div class="data-config-row">
                         <div class="header">Column Order</div>
@@ -68,7 +68,7 @@
                         <div class="header">Available Columns</div>
                     </div>
                     <div class="data-config-row column-show-columns" ng-if="getAvailableColumns().length > 0">
-                        <select ng-model="addColumn.index" ng-options="column.value as column.text for column in getAvailableColumns()">
+                        <select ng-model="addColumn.index" ng-options="column.id as column.title for column in getAvailableColumns()">
                         </select>
                         <button ng-click="showColumn(addColumn.index)" class="button button-tiny">add</button>
                     </div>

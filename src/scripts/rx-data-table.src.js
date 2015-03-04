@@ -100,7 +100,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
 
             scope.defaultNotificationDuration = (_.isUndefined(scope.notifyDuration)) ? 3000 : parseInt(scope.notifyDuration, 10);
 
-            scope.isLoading = scope.loadingData;//_.memoize(scope.loadingData);
+            scope.isLoading = scope.loadingData;
 
             if (_.isUndefined(scope.pagerObject)) {
                 scope.pagerObject = PageTracking.createInstance();
@@ -491,6 +491,11 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 return _.map(scope.getColumnPresets(), function (preset, index) {
                     return {'text': preset.title, 'value': index};
                 });
+            }, function () {
+                return _.template('<%=length%>|<%=indices%>', {
+                    length: scope.getColumnPresets().length,
+                    indices: _.last(scope.getColumnPresets()).config
+                });
             });
 
             scope.isPresetCustom = function () {
@@ -536,16 +541,11 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 }
             };
 
-            scope.getAvailableColumns = _.memoize(function () {
-                var columnSelects = [];
-                _.forEach(scope.columnConfiguration, function (column, index) {
-                    this.push({'value': index, 'text': column.title});
-                }, columnSelects);
-
-                return _.filter(columnSelects, function (column) {
-                    return (!_.contains(this, column.value));
-                }, scope.columnDisplay.config);
-            });
+            scope.getAvailableColumns = function () {
+                return _.filter(scope.columnConfiguration, function (column) {
+                    return (!_.contains(scope.columnDisplay.config, column.id));
+                });
+            };
 
             scope.findColumnFromPredicate = function (pred) {
                 var column = _.find(scope.getConfig(), function (column) {
