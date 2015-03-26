@@ -476,10 +476,10 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 if (!_.find(presets, {'title': 'User Preset'})) {
                     presets.push({
                         'title': 'User Preset',
-                        'config': _.clone(scope.columnDisplay.config)
+                        'config': scope.columnDisplay.config
                     });
                 } else {
-                    presets[presets.length - 1].config = _.clone(scope.columnDisplay.config);
+                    presets[presets.length - 1].config = scope.columnDisplay.config;
                 }
 
                 if (_.isNumber(scope.columnDisplay.index)) {
