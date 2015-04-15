@@ -119,8 +119,9 @@
             <div ng-if="!column.checkbox && !column.menu">
                 <i ng-repeat="icon in iconUnwrap(column, row, 'i')" class="data-table-cell-icon {{ icon.name }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : 'top' }}"></i>
                 <div ng-repeat="icon in iconUnwrap(column, row, 'div')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : 'top' }}"></div>
-                <a ng-if="buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : '_blank' }}">{{ row | ColumnValue:column }}</a>
-                <span ng-if="!buildLink(row, column) && hasValue(row, column)" class="data-cell-content">
+                <span ng-if="buildContent(row, column)" class="data-cell-content" ng-bind-html="buildContent(row, column)"></span>
+                <a ng-if="!buildContent(row, column) && buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : '_blank' }}">{{ row | ColumnValue:column }}</a>
+                <span ng-if="!buildContent(row, column) && !buildLink(row, column) && hasValue(row, column)" class="data-cell-content">
                     <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span>
                     <span ng-if="allowEditing(column,row)" class="data-editable">
                         <span ng-switch="getEditType(column, row)">

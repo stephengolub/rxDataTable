@@ -181,6 +181,12 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 }, true);
             }
 
+            scope.buildContent = function (row, column) {
+                if (_.has(column, 'contentFunction')) {
+                    return _.memoize(column.contentFunction)(row);
+                }
+            };
+
             scope.buildLink = function (row, column) {
                 if (_.has(column, 'linkField') && _.has(row, column.linkField)) {
                     return row[column.linkField];
