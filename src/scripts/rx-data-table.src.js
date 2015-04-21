@@ -861,3 +861,11 @@ app.filter('ColumnValue', function ($filter) {
         return columnValue;
     };
 });
+
+app.filter('rxDataTableSorting', function ($filter) {
+    var orderBy = $filter('orderBy');
+
+    return function (data, predicate, pagerObject) {
+        return (pagerObject.serverPaging) ? data : orderBy(data, predicate);
+    };
+});
