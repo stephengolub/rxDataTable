@@ -1,6 +1,6 @@
 {
   "name": "rx-data-table",
-  "version": "0.5.24",
+  "version": "0.5.25",
   "description": "A full-featured data table directive for angularJS",
   "main": "rx-data-table.js",
   "author": "Stephen Golub",
