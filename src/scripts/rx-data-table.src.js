@@ -90,7 +90,9 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             notifyDuration: '@',
             columnReordering: '@',
             rowDetails: '&',
-            rowDetailsClause: '@'
+            rowDetailsClause: '@',
+            rowPrefix: '&',
+            rowPrefixClause: '@'
         },
         link: function (scope, element) {
             /* jshint evil: true */
@@ -126,6 +128,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 scope.columnDisplay = {index: 0};
             }
 
+            // Here are the Row Details Things
             scope.showRowDetails = (!_.isUndefined(scope.rowDetails) && _.isFunction(scope.rowDetails()));
             scope.canExpandRow = function (row) {
                 if (scope.showRowDetails && !_.isEmpty(scope.rowDetailsClause)) {
@@ -180,6 +183,16 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
 
                 }, true);
             }
+
+            // Here's the row prefix clause
+            scope.showRowPrefix = (!_.isUndefined(scope.rowPrefix) && _.isFunction(scope.rowPrefix()));
+            scope.shouldHaveRowPrefix = function (row) {
+                if (scope.showRowPrefix && !_.isEmpty(scope.rowPrefixClause)) {
+                    return $parse(scope.rowPrefixClause)(row);
+                }
+
+                return scope.showRowPrefix;
+            };
 
             scope.buildContent = function (row, column) {
                 if (_.has(column, 'contentFunction')) {
