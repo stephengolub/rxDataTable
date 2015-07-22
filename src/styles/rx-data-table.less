@@ -124,11 +124,25 @@
     background-color: #fff;
     border-bottom: 1px solid rgb(238, 238, 238);
     height: 45px;
+    position: relative;
     .flexbox-display();
 
     .label {
         top: 0px;
         font-size: .85em;
+    }
+
+    .data-row-prefix {
+        position: absolute;
+        right: 100%;
+        height: 45px;
+        width: 30px;
+        display: block;
+
+        .prefix-container {
+            height: 100%;
+            text-align: right;
+        }
     }
 
     &.expanded {
