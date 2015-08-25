@@ -327,6 +327,9 @@
   margin-bottom: 2px;
   border-bottom: 1px solid #000;
 }
+.data-table-config .data-config-row .rxSelect {
+  width: 100%;
+}
 .data-table-multi-sort .multi-sort-select {
   -webkit-flex: 4 0 0px;
   flex: 4 0 0px;
