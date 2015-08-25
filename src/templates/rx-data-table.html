@@ -18,7 +18,7 @@
                     </div>
                     <div class="data-config-row" ng-repeat="pred in predicate" ng-init="predColumn = decompilePredicateString(pred)">
                         <div class="multi-sort-select">
-                            <select name="sort-{{$index}}" ng-model="predColumn.column" ng-change="updatePredicate($index, predColumn.column)">
+                            <select rx-select name="sort-{{$index}}" ng-model="predColumn.column" ng-change="updatePredicate($index, predColumn.column)">
                                 <option ng-repeat="column in getConfig() | UnusedSorts:predicate:predColumn.column:sortable" value="{{ getSortField(column) }}" ng-selected="getSortField(column) == predColumn.column">{{ column.title }}</option>
                             </select>
                         </div>
@@ -41,7 +41,7 @@
                         <div class="header">Column Presets</div>
                     </div>
                     <div class="data-config-row column-preset-row">
-                        <select ng-options="getColumnPresets().indexOf(preset) as preset.title for preset in getColumnPresets()" ng-model="columnDisplay.index"></select>
+                        <select rx-select ng-options="getColumnPresets().indexOf(preset) as preset.title for preset in getColumnPresets()" ng-model="columnDisplay.index"></select>
                     </div>
                     <div class="data-config-row">
                         <div class="header">Column Order</div>
@@ -68,7 +68,7 @@
                         <div class="header">Available Columns</div>
                     </div>
                     <div class="data-config-row column-show-columns" ng-if="getAvailableColumns().length > 0">
-                        <select ng-model="addColumn.index" ng-options="column.id as column.title for column in getAvailableColumns()">
+                        <select rx-select ng-model="addColumn.index" ng-options="column.id as column.title for column in getAvailableColumns()">
                         </select>
                         <button ng-click="showColumn(addColumn.index)" class="button button-tiny">add</button>
                     </div>
