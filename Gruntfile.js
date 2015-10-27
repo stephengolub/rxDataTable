@@ -63,7 +63,6 @@ module.exports = function(grunt) {
             js: {
                 src: [
                     'src/scripts/rx-data-table.src.js',
-                    'src/scripts/paginate.js',
                     'src/scripts/rx-data-table.tpls.js'
                 ],
                 dest: 'src/scripts/rx-data-table.js'

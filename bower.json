@@ -9,6 +9,7 @@
     "angular-animate": "1.2.28",
     "json3": "~3.2.4",
     "es5-shim": "~2.0.8",
+    "encore-ui": "1.26.1",
     "angular-sanitize": "1.2.28",
     "angular-xeditable": ">=0.1.7",
     "lodash": "~2.4.1",
