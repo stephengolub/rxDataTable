@@ -1,21 +1,25 @@
 #!/bin/sh
-# 
+#
 # Pre-commit hooks
-  
+
 # Lint stuff before committing
-    
+
+if [ "$ENV" = "TRAVIS" ]; then
+    exit 0
+fi
+
 FILES_PATTERN='\.js(\..+)?$'
 FORBIDDEN='console.log'
-    
+
 # Quit if no relevant files are being checked in.
 FILES=$(git diff --cached --name-only | grep -Ec $FILES_PATTERN)
 if [ "$FILES" = "0" ]; then
     exit 0
-fi  
-    
+fi
+
 git diff --cached --name-only | \
     grep -E $FILES_PATTERN | \
     GREP_COLOR='37;41' xargs grep --color --with-filename -n $FORBIDDEN && \
     echo 'Please remove debugging statements before commiting.' && exit 1
-    
+
 grunt jshint && grunt karma:single
