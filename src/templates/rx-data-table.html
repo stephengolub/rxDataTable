@@ -77,7 +77,7 @@
         </div>
     </div>
     <div class="data-header">
-        <div class="data-header-cell data-column-{{ $index + 1 }} flex-columns-{{ column.cols }}" ng-repeat="column in getConfig()" data-title="{{ column.title && column.title || column.dataField }}" ng-class="sortClass(column, $index)">
+        <div class="data-header-cell data-column-{{ $index + 1 }} flex-columns-{{ column.cols }}" ng-repeat="column in getConfig()" data-title="{{ column.title && column.title || column.dataField }}" ng-class="sortClass(column, $index)" draggable="true">
             <span class="checkbox-span" ng-if="column.checkbox && column.checkAll">
                 <input ng-click="checkAll(this)" type="checkbox" id="check_all_checkbox">
             </span>
