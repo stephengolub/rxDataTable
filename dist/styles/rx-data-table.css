@@ -155,7 +155,6 @@
 .data-header-cell .checkbox-span {
   display: block;
   height: auto;
-  width: 100%;
   text-align: left;
 }
 .data-header-cell .data-link {
@@ -241,7 +240,7 @@
   margin: 2px;
 }
 .data-row .data-cell .data-cell-content {
-  white-space: pre;
+  white-space: nowrap;
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;

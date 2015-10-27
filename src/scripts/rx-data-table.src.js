@@ -810,6 +810,112 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             $document.on('click', function () {
                 this.toggleVisibility(false);
             }.bind(scope));
+
+            if(scope.enableColumnReordering) {
+                (function InitalizeReorderableColumns() {
+                    scope.dragTarget;
+
+                    var isHeaderCell = function (el) {
+                        if (!el) {
+                            return;
+                        }
+
+                        el = angular.element(el);
+                        if (_.isUndefined(el.attr('class'))) {
+                            return;
+                        }
+
+                        var hasHeaderRegex = /data-header-cell/;
+                        var hasColumnRegex = /data-column/;
+
+                        var classString = el.attr('class');
+
+                        return hasHeaderRegex.test(classString) && hasColumnRegex.test(classString);
+                    };
+
+                    var findCompatibleParent = function (context, where) {
+                        var currentElement = angular.element(context);
+                        var resultantElement;
+
+                        if (where(currentElement[0])) {
+                            return currentElement;
+                        }
+
+                        while (!_.isEmpty(currentElement.parent())) {
+                            var parent = currentElement.parent();
+                            if (!parent) {
+                                break;
+                            }
+
+                            if (where(parent[0])) {
+                                resultantElement = parent;
+                                break;
+                            }
+
+                            currentElement = parent;
+                        }
+
+                        resultantElement = resultantElement ? resultantElement : undefined;
+
+                        return resultantElement;
+                    };
+
+                    element.on('dragstart', function (event) {
+                        scope.dragTarget = event.target;
+
+                        // FF requires data to be transfered in a drag/drop.
+                        event.dataTransfer.setData('text/plain', angular.element(scope.dragTarget).text());
+                    });
+
+                    element.on('dragend', function (event) {
+                        scope.dragTarget = undefined;
+                        event.preventDefault();
+                    });
+
+                    element.on('dragover', function (event) {
+                        var from = findCompatibleParent(event.target, isHeaderCell);
+                        var to = angular.element(event.target);
+
+                        if (!_.isUndefined(from) && (from !== to)) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    element.on('drop', function (event) {
+                        event.preventDefault();
+                        var toElement = findCompatibleParent(event.target, isHeaderCell);
+                        var fromElement = angular.element(scope.dragTarget);
+
+                        if (toElement !== fromElement) {
+                            var indicies = {
+                                from: undefined,
+                                to: undefined
+                            };
+
+                            var parseLocation = function (el) {
+                                if (!el) {
+                                    return;
+                                }
+                                var regex = /data-column-(\d*)/;
+
+                                if (regex.test(el.attr('class'))) {
+                                    return (parseInt(regex.exec(el.attr('class'))[1]) - 1);
+                                }
+                            };
+
+                            // Grab the FROM index
+                            indicies.from = parseLocation(fromElement);
+
+                            // Grab the TO index
+                            indicies.to = parseLocation(toElement);
+
+                            scope.moveColumn(indicies.from, indicies.to);
+
+                            scope.$apply();
+                        }
+                    });
+                })();
+            }
         }
     };
 });
