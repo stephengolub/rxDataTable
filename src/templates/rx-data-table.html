@@ -149,9 +149,9 @@
         </div>
     </div>
     <div ng-if="!pagerObject.showAll" class="pagination-container" ng-show="pagerObject.total > 0">
-        <rx-data-table-paginate page-tracking="pagerObject" />
-    </div>
-    <div ng-if="!pagerObject.showAll" class="items-per-page-container" ng-show="pagerObject.total > 0">
-        <rx-data-table-items-per-page pager-object="pagerObject" label="{{ itemName && itemName || 'Items'}} Per Page"/></rx-data-table-items-per-page>
+        <rx-paginate
+            page-tracking="pagerObject"
+            number-of-pages="5"
+        />
     </div>
 </div>

@@ -16,14 +16,14 @@ module.exports = function(config) {
             'bower_components/angular-mocks/angular-mocks.js',
             'bower_components/angular-sanitize/angular-sanitize.js',
             'bower_components/angular-xeditable/dist/js/xeditable.js',
+            'bower_components/encore-ui/encore-ui-tpls.js',
             'bower_components/lodash/dist/lodash.js',
+            'bower_components/ng-debounce/angular-debounce.js',
             'test/browser-helpers.js',
             'src/styles/*.css',
             'src/templates/*.html',
             'src/scripts/rx-data-table.src.js',
-            'src/scripts/paginate.js',
-            'src/scripts/rx-data-table.spec.js',
-            'src/scripts/paginate.spec.js'
+            'src/scripts/rx-data-table.spec.js'
         ],
 
         // list of files to exclude

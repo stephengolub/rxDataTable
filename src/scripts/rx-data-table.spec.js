@@ -9,8 +9,7 @@ describe('Data Table Directive', function () {
 
         // We need to load all of the templates that are going to be used
         module('src/templates/rx-data-table.html');
-        module('src/templates/rx-data-table-paginate.html');
-        module('src/templates/rx-data-table-itemsPerPage.html');
+        module('templates/rxPaginate.html');
 
         // Inject in angular constructs
         inject(function($rootScope, $compile, $document, $timeout,
@@ -305,7 +304,7 @@ describe('Data Table Directive', function () {
 
     it('should build the table with pagination configuration passed in', function () {
         expect(elScope.pagerObject.showAll).to.equal(false);
-        expect(elScope.pagerObject.itemsPerPage).to.equal(10);
+        expect(elScope.pagerObject.itemsPerPage).to.equal(200);
     });
 
     it('should apply configured row class to every row', function () {

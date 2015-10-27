@@ -1,5 +1,5 @@
 /* jshint maxlen: 1000 */
-var app = angular.module('rxDataTable', []);
+var app = angular.module('rxDataTable', ['encore.ui.rxPaginate', 'encore.ui.rxNotify']);
 /**
  *
  * @ngdoc directive
@@ -12,13 +12,13 @@ var app = angular.module('rxDataTable', []);
  *
  * - {@link rxDataTable.paginate:rxPaginate rxPaginate} Pagination Directive
  * - {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage} Items per Page Directive
- * 
+ *
  * @param {Object=} pager-object This is the page tracking object for the directive. If
  * no page tracking object is passed in, then the data table will be shown
  * without pagination.
- * @param {Array.<Object>} list-of-data This is the list of data that the data table will represent 
+ * @param {Array.<Object>} list-of-data This is the list of data that the data table will represent
  * @param {Array.string=|string=|boolean=} predicate This is the sort predicate. This should be an
- *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**). 
+ *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**).
  *      You may also pass a value of **`false`** in order to disable sorting on
  *      all columns that don't have a sortField value explicitely defined.
  * @param {string=} row-key This is the attribute of the data objects that will
@@ -44,7 +44,7 @@ var app = angular.module('rxDataTable', []);
  *    - **`class`** `{string}`: This is the class that gets to the row.
  *    - **`field`** `{string}`: This is the data field that the comparisons will be made against.
  *    - **`bool`** `{boolean}`: If true, then it just checks the field to see if it's truthy and applies the class. If it's false (default), then the value of the field is applied as a class along with the value in the class attribute. To account for non-string data values in the field, this will check to see if the first character in the field value is numerical, if it is, it prepends the value with an underscore (\_).  So, for example, if you have your class as data-service-level and the field value turns out to be a 2, then the class attribute of the row will be **`class="data-service-level _2"`**. This allows you to grab that row with **`.data-service-level._2`** and apply CSS values to it.
- *                              
+ *
  o @param {Object} column-display This object will hold the current display
  *    state of the various columns in the data table. It has/needs two
  *    properties:
@@ -56,7 +56,7 @@ var app = angular.module('rxDataTable', []);
  * @param {array.<Object>} column-presets This is a list of objects that
  *    configure the available column presets for the data table. The format of
  *    each object should be as follows:
- *    
+ *
  *    - **`title`** `{string}` This is the title of the preset that will show in the
  *      dropdown
  *    - **`config`** `{array.<integer>}` This is the list of indices from the
@@ -105,8 +105,10 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
             scope.isLoading = scope.loadingData;
 
             if (_.isUndefined(scope.pagerObject)) {
-                scope.pagerObject = PageTracking.createInstance();
-                scope.pagerObject.showAll = true;
+                scope.pagerObject = PageTracking.createInstance({
+                    showAll: true,
+                    persistItemsPerPage: false
+                });
             }
 
             if (_.isUndefined(scope.columnPresets)) {
@@ -447,7 +449,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 }
 
                 var rev = false;
-                
+
                 if (pred.substr(0,1) === '-') {
                     pred = pred.substr(1);
                     rev = true;
@@ -595,7 +597,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 } else {
                     scope.predicate = [scope.compilePredicateString(column)];
                 }
-                
+
                 angular.element(document).data('sortingData', scope.getPredicate());
             };
 
@@ -754,7 +756,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 _.forEach(scope.getConfig(), function (column) {
                     this.retObj.push({'text': column.title, 'value': this.getSortField(column)});
                 }, {'retObj': returnSelects, 'getSortField': scope.getSortField});
-                
+
                 return _.filter(_.filter(returnSelects, 'text'), 'value');
             };
 
@@ -989,237 +991,6 @@ app.filter('rxDataTableSorting', function ($filter) {
     };
 });
 
-angular.module('rxDataTable')
-/**
- *
- * @ngdoc directive
- * @name rxDataTable.paginate:rxPaginate
- * @restrict E
- * @description
- * Directive that takes in the page tracking object and outputs a page
- * switching controller
- *
- * @param {Object} page-tracking This is the page tracking service instance to
- * be used for this directive
- * @param {number} number-of-pages This is the maximum number of pages that the
- * page object will display at a time.
- */
-    .directive('rxDataTablePaginate', function () {
-        return {
-            templateUrl: 'src/templates/rx-data-table-paginate.html',
-            restrict: 'E',
-            replace: true,
-            scope: {
-                pageTracking: '=',
-                numberOfPages: '@'
-            },
-            link: function (scope) {
-                scope.$watch(function () {
-                    return scope.pageTracking.total;
-                }, function () {
-                    if (scope.pageTracking.pageNumber >= scope.pageTracking.totalPages) {
-                        scope.pageTracking.pageNumber = 0;
-                    }
-                });
-            }
-        };
-    })
-/**
- *
- * @ngdoc service
- * @name rxDataTable.paginate:PageTracking
- * @description
- * This is the data service that can be used in conjunction with the pagination
- * objects to store/control page display of data tables and other items.
- *
- * @property {number} MAX_PER_PAGE This is a value that is used in the
- * iteration function to generate the item size list.
- * @property {number} MIN_PER_PAGE This is a value that is used in the
- * iteration function to generate the item size list.
- * @property {number} ITEMS_PER_PAGE_STEP This is a value that is used in the
- * iteration function to generate the item size list.
- * @property {number} itemsPerPage This is the current setting for the number
- * of items to display per page
- * @property {number} pagesToShow This is the number of pages to show 
- * in the pagination controls
- * @property {Array} itemSizeList This is where the
- * {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage}
- * Directive will store it's list of items per page
- * @property {number} pageNumber This is where the current page number is
- * stored.
- * @property {boolean} pageInit This is used to determine if the page has been
- * initialzed before.
- * @property {number} total This is the total number of items that are in the
- * data set
- * @property {boolean} showAll This is used to determine whether or not to use
- * the pagination or not.
- *
- * @method createInstance This is used to generate the instance of the
- * PageTracking object.
- */
-    .factory('PageTracking', function() {
-        function PageTrackingObject(showAll) {
-            this.MAX_PER_PAGE = 50;
-            this.MIN_PER_PAGE = 10;
-            this.ITEMS_PER_PAGE_STEP = 10;
-            this.itemsPerPage = 10;
-            this.pagesToShow = 5;
-            this.itemSizeList = [];
-            this.pageNumber = 0;
-            this.pageInit = false;
-            this.total = 0;
-            this.serverPaging = false;
-            this.showAll = (showAll) ? true : false;
-        }
-      
-        return {
-            createInstance: function(showAll) {
-                return new PageTrackingObject(showAll);
-            }
-        };
-    }).
-/**
- *
- * @ngdoc directive
- * @name rxDataTable.paginate:rxItemsPerPage
- * @restrict E
- * @description
- * Directive that takes in a page-tracking object and a label for what to call
- * items and outputs a select box that allows you to change how many items in
- * the list to show at a time
- *
- * @param {Object} pager-object This is the page tracking service instance to
- * be used for this directive
- * @param {string='Items'} label This is the name of the items that you are
- * restricting. It defaults to 'Items' and thus outputs 'Items per page'
- */
-    directive('rxDataTableItemsPerPage', function(PageTracking) {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: 'src/templates/rx-data-table-itemsPerPage.html',
-            scope: {
-                label: '@',
-                pagerObject: '=?'
-            },
-            link: function(scope) {
-                if (_.isUndefined(scope.pagerObject)) {
-                    scope.pagerObject = PageTracking.createInstance();
-                }
-
-                if (!scope.pagerObject.pageInit) {
-                    scope.pagerObject.pageInit = true;
-                }
-                            
-                try {
-                    scope.updatePaging = function () {
-                        scope.pagerObject.itemsPerPage = parseInt(scope.pagerObject.itemsPerPage, 10);
-                        scope.pagerObject.pageNumber = 0;
-                    }.bind(scope);
-                } catch (err) {
-                    // This is here because the tests are being weird.
-                }
-
-                scope.pagerObject.itemSizeList = _.range(scope.pagerObject.MIN_PER_PAGE,
-                    scope.pagerObject.MAX_PER_PAGE + scope.pagerObject.ITEMS_PER_PAGE_STEP,
-                    scope.pagerObject.ITEMS_PER_PAGE_STEP);
-            }
-        };
-    })
-
-/**
- *
- * @ngdoc filter
- * @name rxDataTable.paginate:Paginate
- * @description
- * This is the pagination filter that is used to calculate the division in the
- * items list for the paging.
- *
- * @param {Object} items The list of items that are to be sliced into pages
- * @param {Object} pager-object The instance of the PageTracking service. If not
- * specified, a new one will be created.
- *
- * @returns {Object} The list of items for the current page in the PageTracking object
- */
-    .filter('Paginate', function (PageTracking) {
-        return function (items, pagerObject) {
-            if (!pagerObject) {
-                pagerObject = PageTracking.createInstance();
-            }
-            if (pagerObject.showAll) {
-                pagerObject.total = items.length;
-                return items;
-            }
-            if (items) {
-                if (!pagerObject.serverPaging) {
-                    pagerObject.total = items.length;
-                } else if (!_.isNumber(pagerObject.total)) {
-                    pagerObject.total = 0;
-                }
-
-                pagerObject.totalPages = Math.ceil(pagerObject.total / pagerObject.itemsPerPage);
-
-                var modifier = (pagerObject.serverPaging) ? 1 : 0;
-                var first = pagerObject.pageNumber * pagerObject.itemsPerPage;
-                var added = first + pagerObject.itemsPerPage;
-                var last = ((added > items.length) ? items.length : added) - modifier;
-
-                pagerObject.first = parseInt(first + 1, 10);
-                pagerObject.last = parseInt(last, 10);
-                if (pagerObject.serverPaging) {
-                    pagerObject.last += pagerObject.first;
-                }
-
-                return (pagerObject.serverPaging) ? items : items.slice(first, last);
-            }
-        };
-    })
-/**
- *
- * @ngdoc filter
- * @name rxDataTable.paginate:Page
- * @description
- * This is the pagination filter that is used to limit the number of pages
- * shown
- *
- * @param {Object} pager-object The instance of the PageTracking service. If not
- * specified, a new one will be created.
- *
- * @returns {Array} The list of page numbers that will be displayed.
- */
-    .filter('Page', function (PageTracking) {
-        return function (pagerObject) {
-            if (!pagerObject) {
-                pagerObject = PageTracking.createInstance();
-            }
-
-            var displayPages = [],
-                // the next four variables determine the number of pages to show ahead of and behind the current page
-                pagesToShow = pagerObject.pagesToShow || 5,
-                pageDelta = (pagesToShow - 1) / 2,
-                pagesAhead = Math.ceil(pageDelta),
-                pagesBehind = Math.floor(pageDelta);
-
-            if ( pagerObject && pagerObject.length !== 0) {
-                    // determine starting page based on (current page - (1/2 of pagesToShow))
-                var pageStart = Math.max(Math.min(pagerObject.pageNumber - pagesBehind, pagerObject.totalPages - pagesToShow), 0),
-
-                    // determine ending page based on (current page + (1/2 of pagesToShow))
-                    pageEnd = Math.min(Math.max(pagerObject.pageNumber + pagesAhead, pagesToShow - 1), pagerObject.totalPages - 1);
-
-                for (pageStart; pageStart <= pageEnd; pageStart++) {
-                    // create array of page indexes
-                    displayPages.push(pageStart);
-                }
-            }
-
-            return displayPages;
-        };
-
-    });
-
 angular.module('rxDataTable').run(['$templateCache', function ($templateCache) {
-	$templateCache.put('src/templates/rx-data-table-itemsPerPage.html', '<form rx-form id="itemsPerPageForm" class="itemsPerPage"> <rx-form-section> <div></div> <rx-field> <rx-field-content> <rx-input> <rx-prefix>{{ label }}</rx-prefix> <select rx-select name="itemsPerPageSelector" id="itemsPerPageSelector" ng-model="pagerObject.itemsPerPage" ng-change="updatePaging()"> <option ng-repeat="i in pagerObject.itemSizeList">{{ i }}</option> </select> </rx-input> </rx-field-content> </rx-field> <div></div> </rx-form-section> </form> ');
-	$templateCache.put('src/templates/rx-data-table-paginate.html', '<ul class="pagination"> <li ng-class="{disabled: pageTracking.pageNumber==0}" class="pagination-first"> <a ng-click="pageTracking.pageNumber=0" ng-hide="pageTracking.pageNumber==0">First</a> <span ng-show="pageTracking.pageNumber==0">First</span> </li> <li ng-class="{disabled: pageTracking.pageNumber==0}" class="pagination-prev"> <a ng-click="pageTracking.pageNumber=(pageTracking.pageNumber - 1)" ng-hide="pageTracking.pageNumber==0">« Prev</a> <span ng-show="pageTracking.pageNumber==0">« Prev</span> </li> <li ng-repeat="n in pageTracking | Page " ng-class="{active: n==pageTracking.pageNumber, \'page-number-last\': n==pageTracking.totalPages - 1}" class="pagination-page"> <a ng-click="pageTracking.pageNumber=n">{{n + 1}}</a> </li> <li ng-class="{disabled: pageTracking.pageNumber==pageTracking.totalPages - 1 || pageTracking.total==0}" class="pagination-next"> <a ng-click="pageTracking.pageNumber=(pageTracking.pageNumber + 1)" ng-hide="pageTracking.pageNumber==pageTracking.totalPages - 1 || pageTracking.total==0"> Next »</a> <span ng-show="pageTracking.pageNumber==pageTracking.totalPages - 1">Next »</span> </li> <li ng-class="{disabled: pageTracking.pageNumber==pageTracking.totalPages - 1}" class="pagination-last"> <a ng-click="pageTracking.pageNumber=pageTracking.totalPages - 1" ng-hide="pageTracking.pageNumber==pageTracking.totalPages - 1">Last</a> <span ng-show="pageTracking.pageNumber==pageTracking.totalPages - 1">Last</span> </li> </ul> ');
-	$templateCache.put('src/templates/rx-data-table.html', '<div class="data-table"> <div class=\'alert\' ng-show="updateFieldStatus" ng-class="{\'loading\': updateFieldStatus.status==\'saving\', \'success\': updateFieldStatus.status==\'success\', \'error\': updateFieldStatus.status==\'error\'}"> {{ updateFieldStatus.message }} </div> <div class="data-info-row"> <strong ng-if="!pagerObject.showAll">{{(pagerObject.last == 0) ? \'0\' : pagerObject.first}} - {{pagerObject.last}} of <span class=\'total-data-items\'>{{pagerObject.total}} {{ itemName && itemName || \'Items\' }}</span></strong> <div class="data-table-config-container" ng-if="enableColumnReordering||enableColumnMultiSort" ng-class="{\'dropdown-shown\': configurationVisible}"> <button class="btn-link" ng-click="toggleVisibility()"> <i class="fa fa-table data-table-config-icon" title="Configure Data Table"></i> </button> <div class="data-table-config reveal-animation" ng-show="configurationVisible"> <div class="header" ng-if="enableColumnMultiSort">Sorting</div> <div class="data-table-multi-sort" ng-if="enableColumnMultiSort"> <div class="data-config-row"> <div class="multi-sort-select header">Column</div> <div class="multi-sort-reverse-icon header">Dir</div> <div class="multi-sort-remove-icon header"><span ng-show="predicate.length> 1">Rem</span></div> </div> <div class="data-config-row" ng-repeat="pred in predicate" ng-init="predColumn=decompilePredicateString(pred)"> <div class="multi-sort-select"> <select rx-select name="sort-{{$index}}" ng-model="predColumn.column" ng-change="updatePredicate($index, predColumn.column)"> <option ng-repeat="column in getConfig() | UnusedSorts:predicate:predColumn.column:sortable" value="{{ getSortField(column) }}" ng-selected="getSortField(column)==predColumn.column">{{ column.title }}</option> </select> </div> <button class="btn-link multi-sort-reverse-icon" ng-click="reversePredicate($index)"> <i class="fa" ng-class="{\'fa-sort-amount-asc\': !parseReverseSort(predColumn.column, predColumn.reverse), \'fa-sort-amount-desc\': parseReverseSort(predColumn.column, predColumn.reverse)}"></i> </button> <div class="multi-sort-remove-icon"> <button class="btn-link" ng-click="removePredicate($index)"> <i class="fa fa-times" ng-if="predicate.length> 1"></i> </button> </div> </div> <button class="btn-link multi-sort-add" ng-if="canAddNewMultiSort()" ng-click="predicate.push(\'\')"> Add New Sort </button> </div> <div class="header" ng-if="enableColumnReordering">Column Configuration</div> <div class="data-table-column-display" ng-if="enableColumnReordering"> <div class="data-config-row"> <div class="header">Column Presets</div> </div> <div class="data-config-row column-preset-row"> <select rx-select ng-options="getColumnPresets().indexOf(preset) as preset.title for preset in getColumnPresets()" ng-model="columnDisplay.index"></select> </div> <div class="data-config-row"> <div class="header">Column Order</div> </div> <div class="data-config-row" ng-repeat="column in getConfig()"> <div class="data-config-column-title"> {{ column.title }} </div> <div class="column-order-arrows"> <button class="btn-link btn-move-down" ng-if="!$last" ng-click="moveColumnDown($index)"> <i class="fa fa-arrow-down"></i> </button> <button class="btn-link btn-move-up" ng-if="!$first" ng-click="moveColumnUp($index)"> <i class="fa fa-arrow-up"></i> </button> </div> <div class="column-hide-display"> <button class="btn-link" ng-click="removeColumn($index)"> <i class="fa fa-times"></i> </button> </div> </div> <div class="data-config-row" ng-if="getAvailableColumns().length> 0"> <div class="header">Available Columns</div> </div> <div class="data-config-row column-show-columns" ng-if="getAvailableColumns().length> 0"> <select rx-select ng-model="addColumn.index" ng-options="column.id as column.title for column in getAvailableColumns()"> </select> <button ng-click="showColumn(addColumn.index)" class="button button-tiny">add</button> </div> </div> </div> </div> </div> <div class="data-header"> <div class="data-header-cell data-column-{{ $index + 1 }} flex-columns-{{ column.cols }}" ng-repeat="column in getConfig()" data-title="{{ column.title && column.title || column.dataField }}" ng-class="sortClass(column, $index)" draggable="true"> <span class="checkbox-span" ng-if="column.checkbox && column.checkAll"> <input ng-click="checkAll(this)" type="checkbox" id="check_all_checkbox"> </span> <button ng-if="!column.checkbox" ng-click="sort($event, column)" class="btn-link data-link" popover="{{ column.help.body }}" popover-title="{{ column.help.title }}" popover-trigger="mouseenter"> <span class=\'data-header-cell-content\'>{{ column.title }}</span> <i ng-if="column.help" class="fa fa-question-circle"></i> <i class="fa fa-chevron-down" ng-show="sortedBy(column, true)"></i> <i class="fa fa-chevron-up" ng-show="sortedBy(column)"></i> </button> </div> <div class="data-header-cell data-header-expander" ng-if="showRowDetails"></div> </div> <div class="data-loader" ng-if="loadingData()"> <div class="spinner-container"> <div class="spinner"></div> <div class="loader-text">Loading...</div> </div> </div> <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | rxDataTableSorting:predicate:pagerObject | Paginate:pagerObject track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)"> <div class="data-row-prefix" ng-if="showRowPrefix"> <div class="prefix-container" ng-if="shouldHaveRowPrefix(row)" ng-bind-html="rowPrefix()(row)"> </div> </div> <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)" ng-mouseenter="cellMouseEnter($event)" ng-mouseleave="cellMouseLeave($event)"> <div ng-if="column.checkbox" class="checkbox"> <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction(\'{{ row[column.dataField] }}\')" id="checkbox_{{ row[column.dataField] }}"> </div> <div ng-if="column.menu" class="menu-column"> <button class="menu-toggle btn-link" ng-click="toggleMenu(row, column)"> <i ng-if="!column.menu.icon" class="fa fa-cog fa-lg"></i> <i ng-if="column.menu.icon" class="fa" ng-class="column.menu.icon"></i> </button> <ul class="menu-items" ng-show="isMenuShown(row, column)"> <li class="menu-item" ng-repeat="menuItem in column.menu.items"> <button class="btn-link" ng-class="menuItem.class" ng-click="executeAction(row, menuItem)"> <i ng-if="menuItem.icon" class="fa" ng-class="menuItem.icon"></i> <span class="menu-item-text">{{ menuItem.text }}</span> </button> </li> </ul> </div> <div ng-if="!column.checkbox && !column.menu"> <i ng-repeat="icon in iconUnwrap(column, row, \'i\')" class="data-table-cell-icon {{ icon.name }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : \'top\' }}"></i> <div ng-repeat="icon in iconUnwrap(column, row, \'div\')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : \'top\' }}"></div> <span ng-if="buildContent(row, column)" class="data-cell-content" ng-bind-html="buildContent(row, column)"></span> <a ng-if="!buildContent(row, column) && buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : \'_blank\' }}">{{ row | ColumnValue:column }}</a> <span ng-if="!buildContent(row, column) && !buildLink(row, column) && hasValue(row, column)" class="data-cell-content"> <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span> <span ng-if="allowEditing(column,row)" class="data-editable"> <span ng-switch="getEditType(column, row)"> <span ng-switch-when="select" class="data-editable-field" editable-select="row[column.dataField]" e-ng-options="o.value as o.text for o in getEditableOptions(column, row)" buttons="no" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span> <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row, $viewValue) | filter:$viewValue" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span> <span ng-switch-default class="data-editable-field" editable-text="row[column.dataField]" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span> <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value"> <i class="fa fa-times fa-lg"></i> </button> </span> </span> </span> </div> </div> <div class="data-row-expander" ng-if="showRowDetails"> <button class="data-row-expansion" ng-show="canExpandRow(row)" ng-click="toggleRow(row[rowKey])" ng-class="{\'expanded\': currentRow==row[rowKey]}"> <div class="expander-icon"></div> &nbsp; </button> </div> </div> <div ng-if="!pagerObject.showAll" class="pagination-container" ng-show="pagerObject.total> 0"> <rx-data-table-paginate page-tracking="pagerObject"/> </div> <div ng-if="!pagerObject.showAll" class="items-per-page-container" ng-show="pagerObject.total> 0"> <rx-data-table-items-per-page pager-object="pagerObject" label="{{ itemName && itemName || \'Items\'}} Per Page"/></rx-data-table-items-per-page> </div> </div> ');
+	$templateCache.put('src/templates/rx-data-table.html', '<div class="data-table"> <div class=\'alert\' ng-show="updateFieldStatus" ng-class="{\'loading\': updateFieldStatus.status==\'saving\', \'success\': updateFieldStatus.status==\'success\', \'error\': updateFieldStatus.status==\'error\'}"> {{ updateFieldStatus.message }} </div> <div class="data-info-row"> <strong ng-if="!pagerObject.showAll">{{(pagerObject.last == 0) ? \'0\' : pagerObject.first}} - {{pagerObject.last}} of <span class=\'total-data-items\'>{{pagerObject.total}} {{ itemName && itemName || \'Items\' }}</span></strong> <div class="data-table-config-container" ng-if="enableColumnReordering||enableColumnMultiSort" ng-class="{\'dropdown-shown\': configurationVisible}"> <button class="btn-link" ng-click="toggleVisibility()"> <i class="fa fa-table data-table-config-icon" title="Configure Data Table"></i> </button> <div class="data-table-config reveal-animation" ng-show="configurationVisible"> <div class="header" ng-if="enableColumnMultiSort">Sorting</div> <div class="data-table-multi-sort" ng-if="enableColumnMultiSort"> <div class="data-config-row"> <div class="multi-sort-select header">Column</div> <div class="multi-sort-reverse-icon header">Dir</div> <div class="multi-sort-remove-icon header"><span ng-show="predicate.length> 1">Rem</span></div> </div> <div class="data-config-row" ng-repeat="pred in predicate" ng-init="predColumn=decompilePredicateString(pred)"> <div class="multi-sort-select"> <select rx-select name="sort-{{$index}}" ng-model="predColumn.column" ng-change="updatePredicate($index, predColumn.column)"> <option ng-repeat="column in getConfig() | UnusedSorts:predicate:predColumn.column:sortable" value="{{ getSortField(column) }}" ng-selected="getSortField(column)==predColumn.column">{{ column.title }}</option> </select> </div> <button class="btn-link multi-sort-reverse-icon" ng-click="reversePredicate($index)"> <i class="fa" ng-class="{\'fa-sort-amount-asc\': !parseReverseSort(predColumn.column, predColumn.reverse), \'fa-sort-amount-desc\': parseReverseSort(predColumn.column, predColumn.reverse)}"></i> </button> <div class="multi-sort-remove-icon"> <button class="btn-link" ng-click="removePredicate($index)"> <i class="fa fa-times" ng-if="predicate.length> 1"></i> </button> </div> </div> <button class="btn-link multi-sort-add" ng-if="canAddNewMultiSort()" ng-click="predicate.push(\'\')"> Add New Sort </button> </div> <div class="header" ng-if="enableColumnReordering">Column Configuration</div> <div class="data-table-column-display" ng-if="enableColumnReordering"> <div class="data-config-row"> <div class="header">Column Presets</div> </div> <div class="data-config-row column-preset-row"> <select rx-select ng-options="getColumnPresets().indexOf(preset) as preset.title for preset in getColumnPresets()" ng-model="columnDisplay.index"></select> </div> <div class="data-config-row"> <div class="header">Column Order</div> </div> <div class="data-config-row" ng-repeat="column in getConfig()"> <div class="data-config-column-title"> {{ column.title }} </div> <div class="column-order-arrows"> <button class="btn-link btn-move-down" ng-if="!$last" ng-click="moveColumnDown($index)"> <i class="fa fa-arrow-down"></i> </button> <button class="btn-link btn-move-up" ng-if="!$first" ng-click="moveColumnUp($index)"> <i class="fa fa-arrow-up"></i> </button> </div> <div class="column-hide-display"> <button class="btn-link" ng-click="removeColumn($index)"> <i class="fa fa-times"></i> </button> </div> </div> <div class="data-config-row" ng-if="getAvailableColumns().length> 0"> <div class="header">Available Columns</div> </div> <div class="data-config-row column-show-columns" ng-if="getAvailableColumns().length> 0"> <select rx-select ng-model="addColumn.index" ng-options="column.id as column.title for column in getAvailableColumns()"> </select> <button ng-click="showColumn(addColumn.index)" class="button button-tiny">add</button> </div> </div> </div> </div> </div> <div class="data-header"> <div class="data-header-cell data-column-{{ $index + 1 }} flex-columns-{{ column.cols }}" ng-repeat="column in getConfig()" data-title="{{ column.title && column.title || column.dataField }}" ng-class="sortClass(column, $index)" draggable="true"> <span class="checkbox-span" ng-if="column.checkbox && column.checkAll"> <input ng-click="checkAll(this)" type="checkbox" id="check_all_checkbox"> </span> <button ng-if="!column.checkbox" ng-click="sort($event, column)" class="btn-link data-link" popover="{{ column.help.body }}" popover-title="{{ column.help.title }}" popover-trigger="mouseenter"> <span class=\'data-header-cell-content\'>{{ column.title }}</span> <i ng-if="column.help" class="fa fa-question-circle"></i> <i class="fa fa-chevron-down" ng-show="sortedBy(column, true)"></i> <i class="fa fa-chevron-up" ng-show="sortedBy(column)"></i> </button> </div> <div class="data-header-cell data-header-expander" ng-if="showRowDetails"></div> </div> <div class="data-loader" ng-if="loadingData()"> <div class="spinner-container"> <div class="spinner"></div> <div class="loader-text">Loading...</div> </div> </div> <div class="data-row data-row-{{ $index + 1}}" ng-repeat="row in listOfData() | rxDataTableSorting:predicate:pagerObject | Paginate:pagerObject track by row[rowKey]||$index" data-row-key="{{row[rowKey]}}" ng-class="rowClass(row)"> <div class="data-row-prefix" ng-if="showRowPrefix"> <div class="prefix-container" ng-if="shouldHaveRowPrefix(row)" ng-bind-html="rowPrefix()(row)"> </div> </div> <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)" ng-mouseenter="cellMouseEnter($event)" ng-mouseleave="cellMouseLeave($event)"> <div ng-if="column.checkbox" class="checkbox"> <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction(\'{{ row[column.dataField] }}\')" id="checkbox_{{ row[column.dataField] }}"> </div> <div ng-if="column.menu" class="menu-column"> <button class="menu-toggle btn-link" ng-click="toggleMenu(row, column)"> <i ng-if="!column.menu.icon" class="fa fa-cog fa-lg"></i> <i ng-if="column.menu.icon" class="fa" ng-class="column.menu.icon"></i> </button> <ul class="menu-items" ng-show="isMenuShown(row, column)"> <li class="menu-item" ng-repeat="menuItem in column.menu.items"> <button class="btn-link" ng-class="menuItem.class" ng-click="executeAction(row, menuItem)"> <i ng-if="menuItem.icon" class="fa" ng-class="menuItem.icon"></i> <span class="menu-item-text">{{ menuItem.text }}</span> </button> </li> </ul> </div> <div ng-if="!column.checkbox && !column.menu"> <i ng-repeat="icon in iconUnwrap(column, row, \'i\')" class="data-table-cell-icon {{ icon.name }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : \'top\' }}"></i> <div ng-repeat="icon in iconUnwrap(column, row, \'div\')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : \'top\' }}"></div> <span ng-if="buildContent(row, column)" class="data-cell-content" ng-bind-html="buildContent(row, column)"></span> <a ng-if="!buildContent(row, column) && buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : \'_blank\' }}">{{ row | ColumnValue:column }}</a> <span ng-if="!buildContent(row, column) && !buildLink(row, column) && hasValue(row, column)" class="data-cell-content"> <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span> <span ng-if="allowEditing(column,row)" class="data-editable"> <span ng-switch="getEditType(column, row)"> <span ng-switch-when="select" class="data-editable-field" editable-select="row[column.dataField]" e-ng-options="o.value as o.text for o in getEditableOptions(column, row)" buttons="no" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span> <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row, $viewValue) | filter:$viewValue" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span> <span ng-switch-default class="data-editable-field" editable-text="row[column.dataField]" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span> <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value"> <i class="fa fa-times fa-lg"></i> </button> </span> </span> </span> </div> </div> <div class="data-row-expander" ng-if="showRowDetails"> <button class="data-row-expansion" ng-show="canExpandRow(row)" ng-click="toggleRow(row[rowKey])" ng-class="{\'expanded\': currentRow==row[rowKey]}"> <div class="expander-icon"></div> &nbsp; </button> </div> </div> <div ng-if="!pagerObject.showAll" class="pagination-container" ng-show="pagerObject.total> 0"> <rx-paginate page-tracking="pagerObject" number-of-pages="5"/> </div> </div> ');
 }]);
