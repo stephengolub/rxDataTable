@@ -12,13 +12,13 @@ var app = angular.module('rxDataTable', []);
  *
  * - {@link rxDataTable.paginate:rxPaginate rxPaginate} Pagination Directive
  * - {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage} Items per Page Directive
- * 
+ *
  * @param {Object=} pager-object This is the page tracking object for the directive. If
  * no page tracking object is passed in, then the data table will be shown
  * without pagination.
- * @param {Array.<Object>} list-of-data This is the list of data that the data table will represent 
+ * @param {Array.<Object>} list-of-data This is the list of data that the data table will represent
  * @param {Array.string=|string=|boolean=} predicate This is the sort predicate. This should be an
- *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**). 
+ *      array of strings that will be used as sort predicates. (i.e. **`"['-severity']"`**).
  *      You may also pass a value of **`false`** in order to disable sorting on
  *      all columns that don't have a sortField value explicitely defined.
  * @param {string=} row-key This is the attribute of the data objects that will
@@ -44,7 +44,7 @@ var app = angular.module('rxDataTable', []);
  *    - **`class`** `{string}`: This is the class that gets to the row.
  *    - **`field`** `{string}`: This is the data field that the comparisons will be made against.
  *    - **`bool`** `{boolean}`: If true, then it just checks the field to see if it's truthy and applies the class. If it's false (default), then the value of the field is applied as a class along with the value in the class attribute. To account for non-string data values in the field, this will check to see if the first character in the field value is numerical, if it is, it prepends the value with an underscore (\_).  So, for example, if you have your class as data-service-level and the field value turns out to be a 2, then the class attribute of the row will be **`class="data-service-level _2"`**. This allows you to grab that row with **`.data-service-level._2`** and apply CSS values to it.
- *                              
+ *
  o @param {Object} column-display This object will hold the current display
  *    state of the various columns in the data table. It has/needs two
  *    properties:
@@ -56,7 +56,7 @@ var app = angular.module('rxDataTable', []);
  * @param {array.<Object>} column-presets This is a list of objects that
  *    configure the available column presets for the data table. The format of
  *    each object should be as follows:
- *    
+ *
  *    - **`title`** `{string}` This is the title of the preset that will show in the
  *      dropdown
  *    - **`config`** `{array.<integer>}` This is the list of indices from the
@@ -447,7 +447,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 }
 
                 var rev = false;
-                
+
                 if (pred.substr(0,1) === '-') {
                     pred = pred.substr(1);
                     rev = true;
@@ -595,7 +595,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 } else {
                     scope.predicate = [scope.compilePredicateString(column)];
                 }
-                
+
                 angular.element(document).data('sortingData', scope.getPredicate());
             };
 
@@ -754,7 +754,7 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                 _.forEach(scope.getConfig(), function (column) {
                     this.retObj.push({'text': column.title, 'value': this.getSortField(column)});
                 }, {'retObj': returnSelects, 'getSortField': scope.getSortField});
-                
+
                 return _.filter(_.filter(returnSelects, 'text'), 'value');
             };
 
@@ -796,15 +796,15 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                     e.stopPropagation();
                 };
 
-                angular.element(document.querySelector('.data-table-config-container')).on('click', stopProp);
-                angular.element(document.querySelector('.menu-column')).on('click', stopProp);
+                angular.element(element[0].querySelector('.data-table-config-container')).on('click', stopProp);
+                angular.element(element[0].querySelector('.menu-column')).on('click', stopProp);
             }, 1);
 
             scope.$watch(scope.dataList, function () {
                 var stopProp = function (e) {
                     e.stopPropagation();
                 };
-                angular.element(document.querySelector('.menu-column')).on('click', stopProp);
+                angular.element(element[0].querySelector('.menu-column')).on('click', stopProp);
             }, true);
 
             $document.on('click', function () {
