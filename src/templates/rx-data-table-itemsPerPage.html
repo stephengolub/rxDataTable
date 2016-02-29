@@ -1,16 +1,6 @@
-<form rx-form id="itemsPerPageForm" class="itemsPerPage">
-    <rx-form-section>
-        <div></div>
-        <rx-field>
-            <rx-field-content>
-                <rx-input>
-                    <rx-prefix>{{ label }}</rx-prefix>
-                    <select rx-select name="itemsPerPageSelector" id="itemsPerPageSelector" ng-model="pagerObject.itemsPerPage" ng-change="updatePaging()">
-                        <option ng-repeat="i in pagerObject.itemSizeList">{{ i }}</option>
-                    </select>
-                </rx-input>
-            </rx-field-content>
-        </rx-field>
-        <div></div>
-    </rx-form-section>
-</form>
+<span class="pagination-items-per-page">
+    Show:
+    <a ng-repeat-start="i in pagerObject.itemSizeList" ng-click="updatePaging(i)" ng-class="{ disabled: pagerObject.itemsPerPage === i }">{{ i }}</a>
+    <span ng-repeat-end ng-show="!$last">&nbsp;|&nbsp;</span>
+</span>
+

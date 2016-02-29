@@ -8,11 +8,30 @@
         text-align: center;
         width: 100%;
         margin-bottom: 15px;
-    }
+        background-color: white;
 
-    .items-per-page-container {
-        text-align: center;
-        width: 100%;
+        display: flex;
+        flex-direction: row;
+
+        .cell {
+            &:not(:nth-child(2)) {
+                flex: .25;
+                padding: 8px 8px 0 0;
+            }
+
+            &:nth-child(1) {
+                text-align: left;
+            }
+
+            &:nth-child(2) {
+                flex: .5;
+                text-align: center;
+            }
+
+            &:nth-child(3) {
+                text-align: right;
+            }
+        }
     }
 
     .data-loader {
@@ -25,10 +44,10 @@
         z-index: 5;
 
         .spinner-container {
-            position: fixed;
+            position: relative;
             left: 50%;
             top: 50%;
-            margin-left: -25px; 
+            margin-left: -25px;
             margin-top: -30px;
         }
 
@@ -308,7 +327,7 @@
 }
 
 .data-table-multi-sort {
-    
+
     .multi-sort-select {
         .flexbox(4);
         text-align: left;

@@ -49,7 +49,7 @@ angular.module('rxDataTable')
  * iteration function to generate the item size list.
  * @property {number} itemsPerPage This is the current setting for the number
  * of items to display per page
- * @property {number} pagesToShow This is the number of pages to show 
+ * @property {number} pagesToShow This is the number of pages to show
  * in the pagination controls
  * @property {Array} itemSizeList This is where the
  * {@link rxDataTable.paginate:rxItemsPerPage rxItemsPerPage}
@@ -80,7 +80,7 @@ angular.module('rxDataTable')
             this.serverPaging = false;
             this.showAll = (showAll) ? true : false;
         }
-      
+
         return {
             createInstance: function(showAll) {
                 return new PageTrackingObject(showAll);
@@ -107,10 +107,6 @@ angular.module('rxDataTable')
             restrict: 'E',
             replace: true,
             templateUrl: 'src/templates/rx-data-table-itemsPerPage.html',
-            scope: {
-                label: '@',
-                pagerObject: '=?'
-            },
             link: function(scope) {
                 if (_.isUndefined(scope.pagerObject)) {
                     scope.pagerObject = PageTracking.createInstance();
@@ -119,10 +115,14 @@ angular.module('rxDataTable')
                 if (!scope.pagerObject.pageInit) {
                     scope.pagerObject.pageInit = true;
                 }
-                            
+
                 try {
-                    scope.updatePaging = function () {
-                        scope.pagerObject.itemsPerPage = parseInt(scope.pagerObject.itemsPerPage, 10);
+                    scope.updatePaging = function (value) {
+                        if (!_.isUndefined(value)) {
+                            scope.pagerObject.itemsPerPage = parseInt(value);
+                        } else {
+                            scope.pagerObject.itemsPerPage = parseInt(scope.pagerObject.itemsPerPage, 10);
+                        }
                         scope.pagerObject.pageNumber = 0;
                     }.bind(scope);
                 } catch (err) {

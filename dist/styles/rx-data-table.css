@@ -78,10 +78,23 @@
   text-align: center;
   width: 100%;
   margin-bottom: 15px;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
 }
-.data-table .items-per-page-container {
+.data-table .pagination-container .cell:not( :nth-child(2)) {
+  flex: .25;
+  padding: 8px 8px 0 0;
+}
+.data-table .pagination-container .cell:nth-child(1) {
+  text-align: left;
+}
+.data-table .pagination-container .cell:nth-child(2) {
+  flex: .5;
   text-align: center;
-  width: 100%;
+}
+.data-table .pagination-container .cell:nth-child(3) {
+  text-align: right;
 }
 .data-table .data-loader {
   position: absolute;
@@ -93,7 +106,7 @@
   z-index: 5;
 }
 .data-table .data-loader .spinner-container {
-  position: fixed;
+  position: relative;
   left: 50%;
   top: 50%;
   margin-left: -25px;
@@ -543,4 +556,7 @@
 .pagination-sm > li > span {
   padding: 5px 10px;
   font-size: 12px;
+}
+.pagination-items-per-page {
+  color: #757575;
 }
