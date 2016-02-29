@@ -84,7 +84,7 @@
 }
 .data-table .pagination-container .cell:not( :nth-child(2)) {
   flex: .25;
-  padding: 8px 8px 0 0;
+  padding: 8px 0 0;
 }
 .data-table .pagination-container .cell:nth-child(1) {
   text-align: left;
@@ -106,7 +106,7 @@
   z-index: 5;
 }
 .data-table .data-loader .spinner-container {
-  position: relative;
+  position: fixed;
   left: 50%;
   top: 50%;
   margin-left: -25px;
