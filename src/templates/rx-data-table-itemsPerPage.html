@@ -1,6 +1,5 @@
 <span class="pagination-items-per-page">
     Show:
     <a ng-repeat-start="i in pagerObject.itemSizeList" ng-click="updatePaging(i)" ng-class="{ disabled: pagerObject.itemsPerPage === i }">{{ i }}</a>
-    <span ng-repeat-end ng-show="!$last">&nbsp;|&nbsp;</span>
+    <span ng-repeat-end ng-show="!$last">|</span>
 </span>
-

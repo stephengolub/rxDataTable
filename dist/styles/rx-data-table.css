@@ -560,3 +560,6 @@
 .pagination-items-per-page {
   color: #757575;
 }
+.pagination-items-per-page a {
+  margin: 1em;
+}
