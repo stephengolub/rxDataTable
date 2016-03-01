@@ -14,8 +14,9 @@
         flex-direction: row;
 
         .cell {
+            flex: .33;
+
             &:not(:nth-child(2)) {
-                flex: .25;
                 padding: 8px 0 0;
             }
 
@@ -24,7 +25,6 @@
             }
 
             &:nth-child(2) {
-                flex: .5;
                 text-align: center;
             }
 
