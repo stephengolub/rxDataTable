@@ -82,15 +82,16 @@
   display: flex;
   flex-direction: row;
 }
+.data-table .pagination-container .cell {
+  flex: .33;
+}
 .data-table .pagination-container .cell:not( :nth-child(2)) {
-  flex: .25;
   padding: 8px 0 0;
 }
 .data-table .pagination-container .cell:nth-child(1) {
   text-align: left;
 }
 .data-table .pagination-container .cell:nth-child(2) {
-  flex: .5;
   text-align: center;
 }
 .data-table .pagination-container .cell:nth-child(3) {
