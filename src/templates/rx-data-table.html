@@ -3,7 +3,6 @@
         {{ updateFieldStatus.message }}
     </div>
     <div class="data-info-row">
-        <strong ng-if="!pagerObject.showAll">{{(pagerObject.last == 0) ? '0' : pagerObject.first}} - {{pagerObject.last}} of <span class='total-data-items'>{{pagerObject.total}} {{ itemName && itemName || 'Items' }}</span></strong>
         <div class="data-table-config-container" ng-if="enableColumnReordering||enableColumnMultiSort" ng-class="{'dropdown-shown': configurationVisible}">
             <button class="btn-link" ng-click="toggleVisibility()">
                 <i class="fa fa-table data-table-config-icon" title="Configure Data Table"></i>
@@ -149,7 +148,7 @@
         </div>
     </div>
     <div ng-if="!pagerObject.showAll" class="pagination-container" ng-show="pagerObject.total > 0">
-        <div class="cell"></div>
+        <div class="cell"><span ng-if="!pagerObject.showAll">{{(pagerObject.last == 0) ? '0' : pagerObject.first}} - {{pagerObject.last}} of <span class='total-data-items'>{{pagerObject.total}} {{ itemName && itemName || 'Items' }}</span></span></div>
         <div class="cell"><rx-data-table-paginate page-tracking="pagerObject"></rx-data-table-paginate></div>
         <div class="cell"><rx-data-table-items-per-page></rx-data-table-items-per-page></div>
     </div>

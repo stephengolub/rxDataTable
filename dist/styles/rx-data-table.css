@@ -90,6 +90,7 @@
 }
 .data-table .pagination-container .cell:nth-child(1) {
   text-align: left;
+  padding-left: 10px;
 }
 .data-table .pagination-container .cell:nth-child(2) {
   text-align: center;
