@@ -1,0 +1,671 @@
+/* ======================================== *\
+   GLOBAL VARIABLES
+\* ======================================== */
+
+// # 2.0 Color Palette
+
+// ## Reds
+@red-100: #ffcdd2;
+@red-500: #f44336;
+@red-700: #d32f2f;
+@red-accent: #eb4d5c;
+
+// ## Blues
+@blue-100: #bbdefb;
+@blue-500: #3391ff;
+@blue-700: #0d74d1;
+@blue-900: #0d47a1;
+@blue-accent: #00bdff;
+
+// ## Greens
+@green-100: #c8e6c9;
+@green-500: #4caf51;
+@green-700: #2e7d32;
+@green-accent: #43b947;
+
+// ## Oranges
+@orange-100: #ffecb3;
+@orange-500: #ffc107;
+@orange-700: #d14904;
+@orange-accent: #ffd740;
+
+// ## Purples
+@purple-100: #4a5acc;
+@purple-500: #3b44a9;
+@purple-700: #2e3187;
+@purple-accent: #5a74f2;
+
+// ## Grays
+@white: #ffffff;
+@gray-0: #ffffff;
+@gray-25: #fafafa;
+@gray-50: #f5f5f5;
+@gray-100: #eeeeee;
+@gray-200: #e7e7e7;
+@gray-300: #e0e0e0;
+@gray-400: #d8d8d8;
+@gray-500: #bdbdbd;
+@gray-600: #9e9e9e;
+@gray-700: #757575;
+@gray-800: #616161;
+@gray-900: #424242;
+@gray-950: #333333;
+@gray-975: #212121;
+@gray-1000: #000000;
+@black: #000000;
+
+// # Text colors
+@app-headers-text-color: @gray-900;
+@app-body-text-color: @gray-800;
+@app-disabled-background-color: @gray-300;
+@app-disabled-text-color: @gray-600;
+@app-disabled-icon-color: @gray-600;
+@app-link-text-color: @blue-700;
+@app-link-hover-text-color: saturate(@app-link-text-color, 15%);
+
+// # App Global Form Vars
+@app-label-font-size: 12px;
+@app-label-text-color: @gray-800;
+@app-required-symbol-color: @red-500;
+
+// # App Default Borders
+@app-default-border-color: @gray-400;
+
+// # App Margin and Padding
+@app-default-row-margin: 0;
+@app-default-row-padding: 0;
+@app-default-column-margin: 0;
+@app-default-column-padding: 0;
+
+// # App UX Interactive States
+@app-default-selected-background-color: @blue-700;
+@app-default-selected-text-color: @white;
+@app-default-hover-background-color: @blue-100;
+@app-default-hover-text-color: @gray-900;
+
+// # Notifications
+@app-active-alert-background-color: @green-100;
+@app-active-alert-text-color: @gray-950;
+@app-active-alert-icon-color: @gray-950;
+@app-pending-alert-background-color: @orange-100;
+@app-pending-alert-text-color: @gray-950;
+@app-pending-alert-icon-color: @gray-950;
+@app-warning-alert-background-color: @orange-100;
+@app-warning-alert-text-color: @gray-950;
+@app-warning-alert-icon-color: @gray-950;
+@app-error-alert-background-color: @red-700;
+@app-error-alert-text-color: @white;
+@app-error-alert-icon-color: @white;
+@app-info-alert-background-color: @blue-100;
+@app-info-alert-text-color: @gray-950;
+@app-info-alert-icon-color: @gray-950;
+@app-disabled-alert-background-color: @app-disabled-background-color;
+@app-disabled-alert-text-color: @app-disabled-text-color;
+@app-disabled-alert-icon-color: @app-disabled-icon-color;
+
+// # Fonts
+@app-font: "Roboto", sans-serif;
+@app-line-height: 1.2;
+@app-font-size: 13px;
+@app-sans-serif-font-family: "Roboto", Helvetica, Arial, sans-serif;
+@app-monospace-font-family: "Roboto Mono", Courier New, Courier, monospace;
+@app-header-font-family: @app-sans-serif-font-family;
+@app-body-font-family: @app-sans-serif-font-family;
+
+// # PreProd warnings
+@preprod-background-color: @red-700;
+@preprod-border-top-color: @red-500;
+@preprod-border-bottom-color: darken(@preprod-background-color, 10%);
+@preprod-focus-background-color: desaturate(@preprod-background-color, 25%);
+@preprod-focus-border-top-color: darken(@preprod-background-color, 10%);
+@preprod-focus-border-bottom-color: darken(@preprod-background-color, 10%);
+@preprod-active-menu-background-color: @red-500;
+@preprod-active-item-background-color: @orange-500;
+@preprod-active-item-text-color: @black;
+@preprod-active-item-arrow-color: @orange-500;
+
+// ## Tables
+@app-table-border-color: @gray-200;
+@app-table-expanded-chevron-background-color: @gray-200;
+@app-table-expanded-chevron-border-color: @gray-200;
+@app-table-header-background-color: @gray-200;
+@app-table-header-border-color: @app-default-border-color;
+@app-table-header-text-color: @app-headers-text-color;
+@app-table-cell-text-color: @app-body-text-color;
+@app-table-cell-padding: 5px 10px;
+
+// # Global Vars for Table, rxBulkSelect and Other Data Row Layouts
+@app-default-row-background-color: @white;
+@app-striped-row-background-color: @gray-25;
+@app-selected-row-background-color: fade(@green-100, 30%);
+
+/* ======================================== *\
+   COMPONENT VARIABLES
+\* ======================================== */
+#vars {
+  /*
+   * rxDatePicker
+   */
+  .rxDatePicker {
+    // Popup
+    @popup-background-color: @white;
+    @popup-border-color: @gray-400;
+    @popup-border-top-color: @blue-700;
+    @popup-width: (7 * @day-width);
+    @popup-z-index: 100;
+    // Nav
+    @nav-arrow-icon-color: @gray-700;
+    @nav-arrow-hover-icon-color: @gray-900;
+    @nav-arrow-width: 30px;
+    @nav-text-color: @gray-900;
+    @nav-font-size: 13px;
+    @nav-height: 40px;
+    // Header
+    @header-background-color: @gray-50;
+    @header-border-bottom-color: @gray-400;
+    @header-text-color: @gray-800;
+    @header-font-size: 10px;
+    @header-height: 20px;
+    // Day
+    @day-hover-background-color: @blue-100;
+    @day-hover-text-color: @gray-900;
+    @day-text-color: @gray-800;
+    @day-width: 30px;
+    @out-of-month-day-background-color: @gray-100;
+    @selected-day-background-color: @blue-700;
+    @selected-day-text-color: @white;
+    @today-border-color: @gray-700;
+    // Control
+    @control-background-color: @white;
+    @control-border-color: @gray-500;
+    @control-cursor: pointer;
+    @control-gutter: 3px;
+    @control-height: 26px;
+    @control-icon-color: @gray-700;
+    @control-icon-width: 15px;
+    @control-padding-x: 3px;
+    @control-padding-y: 5px;
+    @control-text-color: @gray-900;
+    @control-width: 150px;
+    @disabled-control-background-color: @gray-300;
+    @disabled-control-border-color: @control-border-color;
+    @disabled-control-cursor: not-allowed;
+    @disabled-control-icon-color: @gray-600;
+    @disabled-control-text-color: @gray-600;
+    @invalid-control-border-color: @red-500;
+    @invalid-control-icon-color: @red-500;
+  }//.rxDatePicker
+
+  .rxTimePicker {
+    // Popup
+    @popup-background-color: @white;
+    @popup-border-color: @gray-400;
+    @popup-border-top-color: @blue-700;
+    @popup-width: 300px;
+    @popup-z-index: 100;
+    // Control
+    @control-background-color: @white;
+    @control-border-color: @gray-500;
+    @control-cursor: pointer;
+    @control-gutter: 3px;
+    @control-height: 26px;
+    @control-icon-color: @gray-500;
+    @control-icon-width: 15px;
+    @control-padding-x: 3px;
+    @control-padding-y: 5px;
+    @control-text-color: @gray-900;
+    @control-width: 150px;
+    @disabled-control-background-color: @gray-300;
+    @disabled-control-border-color: @control-border-color;
+    @disabled-control-cursor: not-allowed;
+    @disabled-control-icon-color: @gray-600;
+    @disabled-control-text-color: @gray-600;
+    @invalid-control-border-color: @red-500;
+    @invalid-control-icon-color: @red-500;
+  }//.rxTimePicker
+
+  .rxMultiSelect {
+    // Container
+    @container-min-width: 60px;
+    @container-height: 26px;
+    @container-background-color: @white;
+    @container-border-color: @gray-500;
+    @container-disabled-background-color: @app-disabled-background-color;
+    @container-invalid-border-color: @red-500;
+    @container-disabled-border-color: @container-border-color;
+    @container-border-width: 1px;
+    // List Items
+    @container-list-text-color: @app-body-text-color;
+    @container-list-disabled-text-color: @app-disabled-text-color;
+    // Trigger
+    @trigger-background-color: @container-background-color;
+    @trigger-disabled-background-color: @container-disabled-background-color;
+    @trigger-width: @container-height;
+    @trigger-color: @container-border-color;
+    @trigger-invalid-color: @container-invalid-border-color;
+    @trigger-disabled-color: @container-disabled-border-color;
+  }//.rxMultiSelect
+}//#vars
+
+/*
+ * Buttons
+ */
+@rxButton-default-text-color: @white;
+@rxButton-default-background-color: @blue-700;
+@rxButton-default-hover-background-color: lighten(@rxButton-default-background-color, 10%);
+@rxButton-positive-background-color: @green-700;
+@rxButton-positive-hover-background-color: lighten(@rxButton-positive-background-color, 6%);
+@rxButton-negative-background-color: @red-700;
+@rxButton-negative-hover-background-color: lighten(@rxButton-negative-background-color, 10%);
+@rxButton-cancel-background-color: @gray-700;
+@rxButton-cancel-hover-background-color: lighten(@rxButton-cancel-background-color, 10%);
+@rxButton-disabled-text-color: @gray-600;
+@rxButton-disabled-background-color: @gray-300;
+@rxButton-spinner-background-color: @white;
+@rxButton-finish-text-color: @blue-700;
+@rxButton-finish-hover-text-color: lighten(@rxButton-finish-text-color, 10%);
+@rxButton-finish-background-color: @white;
+@rxButton-finish-outline-color: @blue-700; // Color of Inset Line For Button
+@rxButton-finish-hover-outline-color: lighten(@rxButton-finish-outline-color, 10%);
+
+/*
+ * Button Groups (rxButton)
+ */
+@rxButton-button-group-border: 2px solid @gray-200;
+@rxButton-button-group-border-radius: 4px;
+
+/*
+ * rxForm
+ */
+@rxForm-font-size: 13px;
+@rxForm-gutter: 16px;
+@rxForm-field-min-width: 250px;
+@rxForm-field-max-width: 400px;
+@rxForm-input-border-color: @gray-500;
+@rxForm-input-border-color-invalid: @red-500;
+@rxForm-input-text-color: @appTextColor;
+@rxForm-input-border-radius: 0;
+@rxForm-input-background-color: @white;
+@rxForm-input-min-height: 26px;
+@rxForm-input-width: 250px;
+@rxForm-error-text-color: @red-700;
+@rxForm-error-accent-color: @red-500;
+@rxForm-selected-accent-color: @blue-500;
+@rxForm-placeholder-color: #a9a9a9;
+
+/*
+ * rxRadio
+ */
+@rxRadio-size: 16px;
+@rxRadio-background-color: @rxForm-input-background-color;
+@rxRadio-color-selected: @rxForm-selected-accent-color;
+@rxRadio-color-error: @rxForm-error-accent-color;
+@rxRadio-border-width: 1px;
+@rxRadio-border-width-invalid: 2px;
+@rxRadio-tick-margin: 3px;
+@rxRadio-tick-margin-invalid: (@rxRadio-tick-margin - (@rxRadio-border-width-invalid - @rxRadio-border-width));
+/* Size and radius must be calculated. Percentages are not consistent across browsers. */
+@rxRadio-tick-size: (@rxRadio-size - (2 * @rxRadio-border-width) - (2 * @rxRadio-tick-margin));
+@rxRadio-tick-size-invalid: (@rxRadio-size - (2 * @rxRadio-border-width-invalid) - (2 * @rxRadio-tick-margin-invalid));
+@rxRadio-tick-border-radius: (@rxRadio-tick-size / 2);
+@rxRadio-tick-border-radius-invalid: (@rxRadio-tick-size-invalid / 2);
+
+/*
+ * rxCheckbox
+ */
+@rxCheckbox-size: 16px;
+@rxCheckbox-font-size: @rxCheckbox-size - 4px;
+@rxCheckbox-color: @white;
+@rxCheckbox-background-color: @rxForm-input-background-color;
+@rxCheckbox-background-color-selected: @rxForm-selected-accent-color;
+@rxCheckbox-border-color: @rxForm-input-border-color;
+
+/*
+ * rxSelect
+ */
+@rxSelect-min-width: 60px;
+@rxSelect-height: 26px;
+@rxSelect-color: @rxForm-input-text-color;
+@rxSelect-background: @rxForm-input-background-color;
+@rxSelect-trigger-background: @rxForm-input-background-color;
+@rxSelect-color-disabled: @app-disabled-text-color;
+@rxSelect-background-disabled: @app-disabled-background-color;
+@rxSelect-border-color: @rxForm-input-border-color;
+@rxSelect-border-color-invalid: @rxForm-input-border-color-invalid;
+@rxSelect-border-color-disabled: @rxForm-input-border-color;
+@rxSelect-border-radius: @rxForm-input-border-radius;
+@rxSelect-border-width: 1px;
+@rxSelect-trigger-width: @rxSelect-height;
+@rxSelect-trigger-color: @rxForm-input-border-color;
+@rxSelect-trigger-color-invalid: @rxForm-input-border-color-invalid;
+@rxSelect-trigger-color-disabled: @rxSelect-border-color-disabled;
+
+/*
+ * rxBulkSelect
+ */
+@rxBulkSelect-header-text-color: @app-body-text-color;
+
+/*
+ * rxFieldName
+ */
+ // These Component Vars Have Been Replaced with New Global "@app-" Form Vars
+
+/*
+ * rxSearchBox
+ */
+@rxSearchBox-clear-width: 24px;
+@rxSearchBox-min-width: 5 * @rxSearchBox-clear-width;
+@rxSearchBox-min-height: @rxForm-input-min-height;
+@rxSearchBox-width: @rxForm-input-width;
+@rxSearchBox-color: @rxForm-input-text-color;
+@rxSearchBox-color-disabled: @app-disabled-text-color;
+@rxSearchBox-color-icon: @gray-500;
+@rxSearchBox-background: @rxForm-input-background-color;
+@rxSearchBox-background-disabled: @app-disabled-background-color;
+@rxSearchBox-border: 1px solid @rxForm-input-border-color;
+@rxSearchBox-padding-vertical: 3px;
+@rxSearchBox-padding-horizontal: 5px;
+
+/*
+ * Layouts Module
+ *
+ * Sizes:
+ *  0    <= size < 600     Phone
+ *  600  <= size < 960     Tablet
+ *  960  <= size < 1200    Tablet-Landscape
+ *  1200 <= size           PC
+ */
+ // All Used In: Responsive.less
+@layout-gutter-width: 16px;
+@layout-breakpoint-sm: 600px;
+@layout-breakpoint-md: 960px;
+@layout-breakpoint-lg: 1200px;
+
+/*
+ * rxMetadata
+ */
+@rxMetadata-label-color: @gray-800;
+@rxMetadata-label-font-size: 13px;
+@rxMetadata-definition-color: @gray-700;
+@rxMetadata-definition-font-size: 16px;
+@rxMetadata-gutter: 18px;
+
+/*
+ * rxTags
+ */
+@rxTag-height: 24px;
+
+/*
+ * rxToggleSwitch
+ */
+@rxToggleSwitch-off-state-color: @gray-700;
+@rxToggleSwitch-on-state-color: @green-700;
+@rxToggleSwitch-text-color: @white;
+@rxToggleSwitch-border-color: @gray-600;
+@rxToggleSwitch-knob-color: @white;
+@rxToggleSwitch-knob-border-color: @gray-200;
+@rxToggleSwitch-knob-size: 1.2em;
+@rxToggleSwitch-padding: @rxToggleSwitch-knob-size * 0.9;
+@rxToggleSwitch-line-height: @rxToggleSwitch-knob-size * 1.25;
+@rxToggleSwitch-blur-dist: @rxToggleSwitch-padding;
+@rxToggleSwitch-blur-spread: (@rxToggleSwitch-padding / 3) * -1;
+
+/*
+ * progressbar
+ */
+//** Background color of the whole progress component
+@progressbar-background-color: @gray-50;
+//** Default progress bar colors
+@progressbar-default-text-color: @gray-900;
+@progressbar-default-background-color: @blue-100;
+@progressbar-border-color: @gray-400;
+//** Secondary progress bar colors
+@progressbar-secondary-text-color: @white;
+@progressbar-secondary-background-color: @blue-700;
+//** Tertiary progress bar colors
+@progressbar-tertiary-text-color: @white;
+@progressbar-tertiary-background-color: @green-700;
+//** Font sizing for progress bar
+@progressbar-font-size: 12px;
+
+//** Unit-less `line-height` for use in components like buttons.
+@progressbar-line-height-base: 1.428571429; // 20/14
+//** Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
+@progressbar-line-height-computed: floor((@app-font-size * @progressbar-line-height-base)); // ~20px
+
+/*
+ * rxBreadcrumbs
+ */
+@rxBreadcrumbs-height: 1.2em;
+@rxBreadcrumbs-arrow-width: 9px;
+
+/*
+ * Modals
+ */
+@rxModalAction-padding: 30px;
+@rxModalAction-body-padding: 50px;
+
+/*
+ * rxPaginate
+ */
+@rxPaginate-pagination-text-color: @gray-700;
+
+/*
+/* Tooltips
+ */
+@tooltip-z-index: 1070;
+@tooltip-max-width: 200px;
+@tooltip-text-color: @white;
+@tooltip-header-text-color: @tooltip-text-color;
+@tooltip-background-color: @gray-700;
+@tooltip-opacity: 1;
+@tooltip-border-color: @gray-600;
+@tooltip-border-width: 1px;
+@tooltip-arrow-fill-color: @tooltip-background-color;
+@tooltip-arrow-border-color: @tooltip-border-color;
+// without border
+@tooltip-arrow-length: 8px;
+@tooltip-arrow-width: (2 * @tooltip-arrow-length);
+// with border
+@tooltip-arrow-border-length: (@tooltip-arrow-length + @tooltip-border-width);
+@tooltip-arrow-border-width: (@tooltip-arrow-width + (2 * @tooltip-border-width));
+
+
+/* ======================================== *\
+   FOR DEPRECATION
+\* ======================================== */
+
+// # 1.0 Color Palette
+// # Named Colors
+// deprecated
+@green: #24b56a;
+@light-green: #c8e5bf;
+@blue: #4881c0;
+@light-blue: #86cafd;
+@disabled-gray: #dededd;
+@cancel-gray: #898989;
+@orange: #db7820;
+@red: #fc0f1d;
+
+// # Fonts
+// deprecated
+@appFont: @app-font;
+@appLineHeight: @app-line-height;
+@appFontSize: @app-font-size;
+
+// # PreProd warnings
+// deprecated
+@preprodBackground: @preprod-background-color;
+@preprodBorderTop: @preprod-border-top-color;
+@preprodBorderBottom: @preprod-border-bottom-color;
+@preprodBackgroundFocus: @preprod-focus-background-color;
+@preprodActiveBackground: @preprod-active-menu-background-color;
+
+// # Text Colors
+// deprecated
+@disabled-background-color: @app-disabled-background-color;
+@disabled-text-color: @app-disabled-text-color;
+@link-color: @app-link-text-color;
+@link-hover-color: saturate(@link-color, 15%);
+@linkColor: @link-color;
+@linkColorHover: @link-hover-color;
+
+// # Backgrounds
+// deprecated
+@appBg: #f5f5f5;
+@appMenuBg: #1a1a1a;
+@siteBrandingBg: #06356b;
+@appHelpBg: @gray-950;
+
+// # Borders
+// deprecated
+@pageDivider: #e6e6e5;
+@appHelpBorder: #424242;
+
+// ## Tabs and Account Info
+// deprecated
+@tabBorder: #4480c1;
+
+// # Text colors
+// deprecated
+@appTextColor: #404040;
+@menuLinkLightBlue: #97b1d0;
+@menuLinkOrange: #ffa61b;
+@menuRed: #f37a7c;
+@warnRed: #eb2124;
+@warnRedHover: saturate(@warnRed, 15%);
+@actionGreen: #3ab661;
+@actionGreenHover: saturate(@actionGreen, 15%);
+@infoOrange: #dd7800;
+@infoOrangeHover: saturate(@infoOrange, 15%);
+@infoBlue: #4580c2;
+@infoBlueHover: saturate(@infoBlue, 15%);
+@wellText: #727272;
+@subduedText: #bbbbbb;
+@subduedTextHover: darken(@subduedText, 15%);
+@subduedTitle: #989998;
+@closeText: #e5e5e5;
+@closeTextHover: darken(@closeText, 10%);
+
+// # Input Colors
+// deprecated
+@inputColorDisabled: #999999; // replaced by @app-disabled-text-color (used on more than just inputs)
+@inputBackgroundDisabled: @disabled-gray; // replaced by @app-disabled-background-color (used on more than just inputs)
+@inputColor: @appTextColor; // replaced by @rxForm-input-text-color
+@inputBorderColor: #cccccc; // replaced by @rxForm-input-border-color
+@inputBorderColorInvalid: #ff2400; // replaced by @rxForm-input-border-color-invalid
+@inputBorderRadius: 0px; // replaced by @rxForm-input-border-radius
+@inputBackground: @white; // replaced by @rxForm-input-background-color
+@inputLabelColor: @subduedTitle; // replaced by @rxFieldName-color
+@inputLabelWidth: 110px; // replaced by @rxFieldName-width
+@inputPlaceholderColor: #a9a9a9; // replaced by @rxForm-placeholder-color
+@inputWidth: 250px; // replaced by @rxForm-input-width
+@inputSelectWidth: @inputWidth; // replaced by @rxForm-input-width
+@inputNumberWidth: 150px; // replaced by @rxForm-input-number-width
+@inputColorError: @red; // replaced by @rxForm-error-text-color
+@inputBackgroundError: @inputColorError; // replaced by @rxForm-error-accent-color
+@rxCheckbox-color-selected: @white; // not used, replaced by @rxForm-input-background-color
+
+// ## Tables
+// deprecated
+@tableHeaderBg: @app-table-header-background-color;
+@tableBg: @app-default-row-background-color;
+@tableBgAlt: @app-striped-row-background-color;
+@tableRowSelected: @app-selected-row-background-color;
+@tableBorder: @app-table-border-color;
+@tableHeaderBorder: @app-table-header-border-color;
+@subtableBorder: @gray-500;
+@tableHeaderText: @app-table-header-text-color;
+@tableCellText: @app-table-cell-text-color;
+@tableCellPadding: @app-table-cell-padding;
+
+// Buttons
+// deprecated
+@optionHighlightBg: @blue-500;
+@buttonColor: @rxButton-default-text-color;
+@buttonColorDisabled: @rxButton-disabled-text-color;
+@buttonDefaultBg: @rxButton-default-background-color;
+@buttonDefaultBgHover: @rxButton-default-hover-background-color;
+@buttonPositiveBg: @rxButton-positive-background-color;
+@buttonPositiveBgHover: @rxButton-positive-hover-background-color;
+@buttonNegativeBg: @rxButton-negative-background-color;
+@buttonNegativeBgHover: @rxButton-negative-hover-background-color;
+@buttonCancelBg: @rxButton-cancel-background-color;
+@buttonCancelBgHover: @rxButton-cancel-hover-background-color;
+@buttonDisabledBg: @rxButton-disabled-background-color;
+@buttonSpinnerBg: @rxButton-spinner-background-color;
+
+// # Button Groups (rxButton)
+// deprecated
+@buttonGroupBorder: @rxButton-button-group-border;
+@buttonGroupBorderRadius: @rxButton-button-group-border-radius;
+
+// # Progressbar
+// deprecated
+@progress-bg: @progressbar-background-color;
+@progress-bar-bg: @progressbar-default-background-color;
+@progress-bar-secondary-bg: @progressbar-secondary-background-color;
+@progress-bar-tertiary-bg: @progressbar-tertiary-background-color;
+@font-size-base: @app-font-size;
+@progressbar-font-size-base: @app-font-size;
+@font-size-large: ceil((@font-size-base * 1.25));
+@font-size-small: ceil((@font-size-base * 0.85));
+@line-height-base: @progressbar-line-height-base;
+@line-height-computed: floor((@font-size-base * @line-height-base)); // ~20px
+
+// # Modals
+// deprecated
+@modalPadding: @rxModalAction-padding;
+@modalBodyPadding: @rxModalAction-body-padding;
+
+/*
+ * rxForm
+ */
+ // deprecated
+@rxForm-section-min-width: 400px;
+@rxForm-input-number-width: 150px;
+
+/*
+ * rxFieldName
+ */
+ // deprecated
+@rxFieldName-color: @app-label-text-color;
+@rxFieldName-symbol-color: @app-required-symbol-color;
+@rxFieldName-font-size: @app-label-font-size;
+
+/*
+ * rxRadio
+ */
+ // deprecated
+@rxRadio-color-disabled: @app-disabled-background-color;
+
+/*
+ * rxCheckbox
+ */
+ // deprecated
+@rxCheckbox-border-color-selected: @rxCheckbox-background-color-selected;
+
+/*
+ * rxSearchBox
+ */
+ // deprecated
+@rxSearchBox-border-radius: @rxForm-input-border-radius;
+
+/*
+ * rxPaginate
+ */
+ // deprecated
+@paginationColor: @rxPaginate-pagination-text-color;
+@paginationColor: @gray-700;
+
+/*
+/* Tooltips
+ */
+@zindexTooltip: 1070;
+@tooltipMaxWidth: 200px;
+@tooltipHeaderColor: @white;
+@tooltipColor: @white;
+@tooltipBg: @gray-700;
+@tooltipOpacity: 1;
+@tooltipArrowWidth: 5px;
+@tooltipArrowColor: @tooltipBg;
