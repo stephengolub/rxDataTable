@@ -413,6 +413,8 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                         } else if (icon.fieldValue === this.row[icon.field]) {
                             return true;
                         }
+                    } if (_.has(icon, 'fieldValues')) {
+                        return _.isArray(icon.fieldValues) && _.contains(icon.fieldValues, this.row[icon.field]);
                     } else if (row[icon.field] === true) {
                         return true;
                     } else if (_.has(icon, 'fieldMinLength') && _.isArray(row[icon.field])) {
