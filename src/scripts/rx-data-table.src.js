@@ -423,6 +423,8 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                         return row[icon.field].length >= icon.fieldMinLength;
                     } else if (icon.persistent === true) {
                         return true;
+                    } else if (_.has(icon, 'editable') && icon.editable === true) {
+                        return !_.isUndefined(column.editable) && column.editable.clause(row);
                     }
                 }, {row: row}).filter(function (icon) {
                     if ((_.has(icon, 'name') && (this.type === 'i'))||(_.has(icon, 'class') && (this.type === 'div'))) {
