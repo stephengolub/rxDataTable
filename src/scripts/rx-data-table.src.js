@@ -242,9 +242,10 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
 
             scope.getEditType = function (column, row) {
                 if (scope.allowEditing(column, row)) {
-                    if (_.has(column.editable, 'data')) {
+                    var editable = column.editable;
+                    if (_.has(editable, 'data')) {
                         return 'typeahead';
-                    } else if (_.has(column.editable, 'options')) {
+                    } else if (_.has(editable, 'options') || _.has(editable, 'dataOptions')) {
                         return 'select';
                     } else {
                         return 'text';
@@ -285,11 +286,10 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                     var editable = column.editable;
                     if (_.has(editable, 'data')) {
                         var opts = editable.data(row, typedValue);
-                        if (_.isObject(opts)) {
-                            return opts;
-                        } else {
-                            return [];
-                        }
+                        return _.isObject(opts) ? opts : [];
+                    } else if (_.has(editable, 'dataOptions')) {
+                            var opts = editable.dataOptions(row, typedValue);
+                            return _.isObject(opts) ? opts : [];
                     } else if (_.has(editable, 'options')) {
                         return editable.options;
                     }
