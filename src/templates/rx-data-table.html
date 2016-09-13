@@ -80,7 +80,7 @@
             <span class="checkbox-span" ng-if="column.checkbox && column.checkAll">
                 <input ng-click="checkAll(this)" type="checkbox" id="check_all_checkbox">
             </span>
-            <button ng-if="!column.checkbox" ng-click="sort($event, column)" class="btn-link data-link" popover="{{ column.help.body }}" popover-title="{{ column.help.title }}" popover-trigger="mouseenter">
+            <button ng-if="!column.checkbox" ng-click="sort($event, column)" class="btn-link data-link" popover="{{ column.help.body }}" popover-append-to-body="true" popover-popup-delay="1500" popover-title="{{ column.help.title }}" popover-trigger="mouseenter">
                 <span class='data-header-cell-content'>{{ column.title }}</span>
                 <i ng-if="column.help" class="fa fa-question-circle"></i>
                 <i class="fa fa-chevron-down" ng-show="sortedBy(column, true)"></i>
