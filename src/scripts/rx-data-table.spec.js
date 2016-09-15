@@ -499,7 +499,7 @@ describe('Data Table Directive', function () {
     });
 
     it('should build icons in the columns that have them defined', function () {
-        var statusHeaderALink = el.find('.data-header-cell[data-title="Status"] button');
+        var statusHeaderALink = el.find('.data-header-cell[data-title="Status"] .btn-link');
         statusHeaderALink.click();
         scope.$digest();
 
@@ -528,11 +528,13 @@ describe('Data Table Directive', function () {
     });
 
     it('should attach a help icon for columns that have it configured', function () {
-        var itemHeaderButton = el.find('.data-header-cell[data-title="ID"] button');
-        var itemHeaderHelp = el.find('.data-header-cell[data-title="ID"] i');
+        var itemHeaderButton = el.find('.data-header-cell[data-title="ID"]');
+        var itemHeaderHelp = el.find('.data-header-cell[data-title="ID"] .btn-link i');
+
+        var popover = itemHeaderButton.attr('popover');
 
         expect(itemHeaderHelp.hasClass('fa-question-circle')).to.equal(true);
-        expect(itemHeaderButton.attr('popover')).to.equal('This field is sorted by severity, not the ref_no');
+        expect(popover).to.equal('This field is sorted by severity, not the ref_no');
     });
 
     it('should should create x-editable elements for columns with config', function () {
@@ -928,7 +930,7 @@ describe('Data Table Directive', function () {
             elScope.toggleRow('140102-0000012');
             scope.$digest();
             expect(elScope.currentRow).to.eq('140102-0000012');
-            
+
             var rowDetailsDiv = $(el).find('.data-row-details');
             expect(rowDetailsDiv.length).to.eq(1);
             expect(rowDetailsDiv[0].innerHTML).to.eq('<div>Greetings and Salutations!!!! (140102-0000012)</div>');
