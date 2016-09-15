@@ -101,43 +101,45 @@
             <div class="prefix-container" ng-if="shouldHaveRowPrefix(row)" ng-bind-html="rowPrefix()(row)">
             </div>
         </div>
-        <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-class="getNGClass(column, row)" ng-mouseenter="cellMouseEnter($event)" ng-mouseleave="cellMouseLeave($event)">
-            <div ng-if="column.checkbox" class="checkbox">
-                <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction('{{ row[column.dataField] }}')" id="checkbox_{{ row[column.dataField] }}">
-            </div>
-            <div ng-if="column.menu" class="menu-column">
-                <button class="menu-toggle btn-link" ng-click="toggleMenu(row, column)">
-                    <i ng-if="!column.menu.icon" class="fa fa-cog fa-lg"></i>
-                    <i ng-if="column.menu.icon" class="fa" ng-class="column.menu.icon"></i>
-                </button>
-                <ul class="menu-items" ng-show="isMenuShown(row, column)">
-                    <li class="menu-item" ng-repeat="menuItem in column.menu.items">
-                        <button class="btn-link" ng-class="menuItem.class" ng-click="executeAction(row, menuItem)">
-                            <i ng-if="menuItem.icon" class="fa" ng-class="menuItem.icon"></i>
-                            <span class="menu-item-text">{{ menuItem.text }}</span>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-            <div ng-if="!column.checkbox && !column.menu">
-                <i ng-repeat="icon in iconUnwrap(column, row, 'i')" class="data-table-cell-icon {{ icon.name }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : 'top' }}"></i>
-                <div ng-repeat="icon in iconUnwrap(column, row, 'div')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : 'top' }}"></div>
-                <span ng-if="buildContent(row, column)" class="data-cell-content" ng-bind-html="buildContent(row, column)"></span>
-                <a ng-if="!buildContent(row, column) && buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : '_blank' }}">{{ row | ColumnValue:column }}</a>
-                <span ng-if="!buildContent(row, column) && !buildLink(row, column) && hasValue(row, column)" class="data-cell-content">
-                    <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span>
-                    <span ng-if="allowEditing(column,row)" class="data-editable">
-                        <span ng-switch="getEditType(column, row)">
-                            <span ng-switch-when="select" class="data-editable-field" editable-select="row[column.dataField]" e-ng-options="o.value as o.text for o in getEditableOptions(column, row)" buttons="no" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span>
-                            <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row, $viewValue) | filter:$viewValue" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span>
-                            <!-- Same as ng-switch-when="text" -->
-                            <span ng-switch-default class="data-editable-field" editable-text="row[column.dataField]" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span>
-                            <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value">
-                                <i class="fa fa-times fa-lg"></i>
+        <div class="data-cell flex-columns-{{ column.cols }} data-column-{{ $index + 1}} {{ column.class }}" ng-repeat="column in getConfig()" data-title="{{ column.title }}" ng-mouseenter="cellMouseEnter($event)" ng-mouseleave="cellMouseLeave($event)">
+            <div ng-class="getNGClass(column, row)">
+                <div ng-if="column.checkbox" class="checkbox">
+                    <input type="checkbox" value="{{ row[column.dataField] }}" ng-click="clickAction('{{ row[column.dataField] }}')" id="checkbox_{{ row[column.dataField] }}">
+                </div>
+                <div ng-if="column.menu" class="menu-column">
+                    <button class="menu-toggle btn-link" ng-click="toggleMenu(row, column)">
+                        <i ng-if="!column.menu.icon" class="fa fa-cog fa-lg"></i>
+                        <i ng-if="column.menu.icon" class="fa" ng-class="column.menu.icon"></i>
+                    </button>
+                    <ul class="menu-items" ng-show="isMenuShown(row, column)">
+                        <li class="menu-item" ng-repeat="menuItem in column.menu.items">
+                            <button class="btn-link" ng-class="menuItem.class" ng-click="executeAction(row, menuItem)">
+                                <i ng-if="menuItem.icon" class="fa" ng-class="menuItem.icon"></i>
+                                <span class="menu-item-text">{{ menuItem.text }}</span>
                             </button>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-if="!column.checkbox && !column.menu">
+                    <i ng-repeat="icon in iconUnwrap(column, row, 'i')" class="data-table-cell-icon {{ icon.name }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : 'top' }}"></i>
+                    <div ng-repeat="icon in iconUnwrap(column, row, 'div')" class="data-table-cell-icon {{ icon.class }}" alt="{{ icon.alt }}" tooltip="{{ icon.tooltip.text }}" tooltip-placement="{{ (icon.tooltip.placement) ? icon.tooltip.placement : 'top' }}"></div>
+                    <span ng-if="buildContent(row, column)" class="data-cell-content" ng-bind-html="buildContent(row, column)"></span>
+                    <a ng-if="!buildContent(row, column) && buildLink(row, column) && hasValue(row, column)" href="{{ buildLink(row, column) }}" class="data-cell-content" target="{{ (column.linkTarget) ? column.linkTarget : '_blank' }}">{{ row | ColumnValue:column }}</a>
+                    <span ng-if="!buildContent(row, column) && !buildLink(row, column) && hasValue(row, column)" class="data-cell-content">
+                        <span ng-if="!allowEditing(column,row)">{{ row | ColumnValue:column:false }}</span>
+                        <span ng-if="allowEditing(column,row)" class="data-editable">
+                            <span ng-switch="getEditType(column, row)">
+                                <span ng-switch-when="select" class="data-editable-field" editable-select="row[column.dataField]" e-ng-options="o.value as o.text for o in getEditableOptions(column, row)" buttons="no" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span>
+                                <span ng-switch-when="typeahead" class="data-editable-field" editable-text="row[column.dataField]" e-typeahead="o.value as o.text for o in getEditableOptions(column, row, $viewValue) | filter:$viewValue" e-typeahead-on-select="updateField(column, row, $data, this)" buttons="no" onshow="getEditableOptions(column, row)">{{ row | ColumnValue:column }}</span>
+                                <!-- Same as ng-switch-when="text" -->
+                                <span ng-switch-default class="data-editable-field" editable-text="row[column.dataField]" onbeforesave="updateField(column, row, $data, this)">{{ row | ColumnValue:column }}</span>
+                                <button class="data-table-field-nullable btn-link" ng-if="column.editable.nullable" ng-click="nullField(column, row, this)" title="Remove {{ column.title }} Value">
+                                    <i class="fa fa-times fa-lg"></i>
+                                </button>
+                            </span>
                         </span>
                     </span>
-                </span>
+                </div>
             </div>
         </div>
         <div class="data-row-expander" ng-if="showRowDetails">

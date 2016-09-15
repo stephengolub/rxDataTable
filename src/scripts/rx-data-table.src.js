@@ -272,7 +272,13 @@ app.directive('rxDataTable', function ($http, $timeout, $document, $filter, $par
                     var classValue = classFunction(row);
 
                     if (!_.isEmpty(classValue)) {
-                        classes[classValue] = true;
+                        if (_.isArray(classValue)) {
+                            _.map(classValue, function (className) {
+                                classes[className] = true;
+                            });
+                        } else {
+                            classes[classValue] = true;
+                        }
                     }
                 } else if (_.has(column, 'ng-class') && _.isObject(column['ng-class'])) {
                     classes = angular.extend(classes, column['ng-class']);
